@@ -138,6 +138,54 @@ flutter_launcher_icons:
     });
   });
 
+  group('explicit flavor from args', () {
+    final ArgParser parser = ArgParser()
+      ..addOption(
+        main_dart.fileOption,
+        abbr: 'f',
+        defaultsTo: defaultConfigFile,
+      );
+
+    test('returns null when -f is not given', () {
+      expect(
+        main_dart.explicitFlavorFromArgs(parser.parse(<String>[])),
+        isNull,
+      );
+    });
+
+    test('returns null when -f names the default config file', () {
+      expect(
+        main_dart.explicitFlavorFromArgs(parser.parse(<String>['-f', defaultConfigFile])),
+        isNull,
+      );
+    });
+
+    test('returns null when -f names a non-flavor file', () {
+      expect(
+        main_dart.explicitFlavorFromArgs(parser.parse(<String>['-f', 'custom.yaml'])),
+        isNull,
+      );
+    });
+
+    test('returns the flavor when -f names a flavor file', () {
+      expect(
+        main_dart.explicitFlavorFromArgs(
+          parser.parse(<String>['-f', 'flutter_launcher_icons-staging.yaml']),
+        ),
+        equals('staging'),
+      );
+    });
+
+    test('matches flavor files in subdirectories by basename', () {
+      expect(
+        main_dart.explicitFlavorFromArgs(
+          parser.parse(<String>['-f', 'config/flutter_launcher_icons-prod.yaml']),
+        ),
+        equals('prod'),
+      );
+    });
+  });
+
   test('image_path is in config', () {
     final Map<String, dynamic> flutterIconsConfig = <String, dynamic>{
       'image_path': 'assets/images/icon-710x599.png',
