@@ -3,6 +3,7 @@ import 'package:test/test.dart';
 import 'abs/icon_generator_test.dart' as icon_generator_test;
 import 'android_test.dart' as android_test;
 import 'config_test.dart' as fli_config;
+import 'custom_exceptions_test.dart' as custom_exceptions_test;
 import 'ios/ios_liquid_glass_test.dart' as ios_liquid_glass_test;
 import 'ios/ios_pbxproj_test.dart' as ios_pbxproj_test;
 import 'linux/linux_icon_generator_test.dart' as linux_icon_gen_test;
@@ -19,6 +20,7 @@ void main() {
     // others
     utils_test.main();
     fli_config.main();
+    custom_exceptions_test.main();
     icon_generator_test.main();
 
     main_test.main();
