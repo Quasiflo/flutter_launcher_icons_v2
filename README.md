@@ -40,20 +40,32 @@ dev_dependencies:
   flutter_launcher_icons: "^0.14.4"
 
 flutter_launcher_icons:
-  android: "launcher_icon"
-  ios: true
   image_path: "assets/icon/icon.png"
-  min_sdk_android: 21 # android min sdk min:16, default 21
-  # iOS Liquid Glass Icon (optional)
-  image_path_ios_liquid_glass_icon: "assets/icon/liquid_glass_icon.png"
-  liquid_glass_icon_scale: 1.0
-  liquid_glass_translucency_ios: 0.5
-  liquid_glass_specular_ios: true
-  liquid_glass_shadow_kind_ios: "Neutral" # "Neutral" or "Chromatic"
-  liquid_glass_shadow_opacity_ios: 0.5
-  liquid_glass_blur_ios: 0.5
-  liquid_glass_offset_x_ios: 0.0
-  liquid_glass_offset_y_ios: 0.0
+  android:
+    generate: true
+    # image_path: "assets/icon/icon-android.png"
+    # icon_name: "launcher_icon" # generate a new icon without removing the old default
+    min_sdk: 21 # android min sdk min:16, default 21
+    # adaptive_icon_background: "assets/icon/background.png"  # color or png/jpg/jpeg/webp image
+    # adaptive_icon_foreground: "assets/icon/foreground.png"
+    # adaptive_icon_foreground_inset: 16
+    # adaptive_icon_monochrome: "assets/icon/monochrome.png"
+  ios:
+    generate: true
+    # image_path: "assets/icon/icon-ios.png"
+    # icon_name: "My-Launcher-Icon" # generate a new icon without removing the old default
+    remove_alpha: true
+    # background_color: "#ffffff"
+    # iOS Liquid Glass Icon (optional)
+    # image_path_liquid_glass_icon: "assets/icon/liquid_glass_icon.png"
+    # liquid_glass_icon_scale: 1.0
+    # liquid_glass_translucency: 0.5
+    # liquid_glass_specular: true
+    # liquid_glass_shadow_kind: "Neutral" # "Neutral" or "Chromatic"
+    # liquid_glass_shadow_opacity: 0.5
+    # liquid_glass_blur: 0.5
+    # liquid_glass_offset_x: 0.0
+    # liquid_glass_offset_y: 0.0
   web:
     generate: true
     image_path: "path/to/image.png"
@@ -92,8 +104,10 @@ Note: If you are not using the existing `pubspec.yaml` ensure that your config f
 
 If you encounter any issues [please report them here](https://github.com/fluttercommunity/flutter_launcher_icons/issues).
 
-In the above configuration, the package is setup to replace the existing launcher icons in both the Android and iOS project
-with the icon located in the image path specified above and given the name "launcher_icon" in the Android project and "Example-Icon" in the iOS project.
+In the above configuration, the package is setup to replace the existing launcher icons
+with the icon located in the image path specified above for every platform with
+`generate: true`. Set `android.icon_name` / `ios.icon_name` to generate a new
+icon under a custom name without removing the old default one.
 
 ### Command-line options
 
@@ -135,13 +149,12 @@ the Windows `.ico`.
 
 ### Android
 
-- `android`
-  - `true`: Override the default existing Flutter launcher icon for the platform specified
-  - `false`: Ignore making launcher icons for this platform
-  - `icon/path/here.png`: This will generate a new launcher icons for the platform with the name you specify, without removing the old default existing Flutter launcher icon.
-- `image_path_android`: The location of the icon image file specific for Android platform (optional - if not defined then the image_path is used)
-- `min_sdk_android`: Specify android min sdk value
-**The next two attributes are only used when generating Android launcher icon**
+- `android`: Add Android related configs
+  - `generate`: Specifies whether to generate icons for Android platform or not
+  - `image_path`: The location of the icon image file specific for Android platform (optional - if not defined then the image_path is used)
+  - `icon_name`: Custom icon name (e.g. `"ic_launcher"`). When specified, a new launcher icon is generated without removing the old default existing Flutter launcher icon (also updates `AndroidManifest.xml`). When omitted, the default icon is overridden.
+  - `min_sdk`: Specify android min sdk value
+**The next attributes are only used when generating Android launcher icon**
 
 - `adaptive_icon_background`: The color (E.g. `"#ffffff"`) or image asset (png, jpg, jpeg, or webp - E.g. `"assets/images/christmas-background.png"`) which will
 be used to fill out the background of the adaptive icon.
@@ -154,30 +167,29 @@ foreground of the Android 13+ themed icon. For more information see [Android Ada
 
 ### IOS
 
-- `ios`
-  - `true`: Override the default existing Flutter launcher icon for the platform specified
-  - `false`: Ignore making launcher icons for this platform
-  - `icon/path/here.png`: This will generate a new launcher icons for the platform with the name you specify, without removing the old default existing Flutter launcher icon.
-- `image_path_ios`: The location of the icon image file specific for iOS platform (optional - if not defined then the image_path is used)
-- `remove_alpha_ios`: Removes alpha channel for IOS icons
-- `image_path_ios_dark_transparent`: The location of the dark mode icon image file specific for iOS 18+ platform. *Note: Apple recommends this icon to be transparent. For more information see [Apple Human Interface Guidelines for App Icons](https://developer.apple.com/design/human-interface-guidelines/app-icons#iOS-iPadOS)*
-- `image_path_ios_tinted_grayscale`: The location of the tinted mode icon image file specific for iOS 18+ platform. *Note: This icon should be an grayscale image. Use `desaturate_tinted_to_grayscale_ios: true` to automatically desaturate the image provided here.*
-- `desaturate_tinted_to_grayscale_ios`: Automatically desaturates tinted mode icon image to grayscale, *defaults to false*
-- `background_color_ios`: The color (in the format "#RRGGBB") to be used as the background when removing the alpha channel. **Only takes effect when `remove_alpha_ios: true`** — it is the matte color blended under transparent pixels. Without `remove_alpha_ios`, this setting is ignored and transparent regions stay transparent (rendered black by some viewers). (optional - if not defined then `#ffffff` is used)
+- `ios`: Add iOS related configs
+  - `generate`: Specifies whether to generate icons for iOS platform or not
+  - `image_path`: The location of the icon image file specific for iOS platform (optional - if not defined then the image_path is used)
+  - `icon_name`: Custom icon set name (e.g. `"My-Launcher-Icon"`). When specified, a new launcher icon is generated without removing the old default existing Flutter launcher icon. When omitted, the default icon is overridden.
+- `remove_alpha`: Removes alpha channel for iOS icons (blended against `background_color`)
+- `image_path_dark_transparent`: The location of the dark mode icon image file specific for iOS 18+ platform. *Note: Apple recommends this icon to be transparent. For more information see [Apple Human Interface Guidelines for App Icons](https://developer.apple.com/design/human-interface-guidelines/app-icons#iOS-iPadOS)*
+- `image_path_tinted_grayscale`: The location of the tinted mode icon image file specific for iOS 18+ platform. *Note: This icon should be an grayscale image. Use `desaturate_tinted_to_grayscale: true` to automatically desaturate the image provided here.*
+- `desaturate_tinted_to_grayscale`: Automatically desaturates tinted mode icon image to grayscale, *defaults to false*
+- `background_color`: The color (in the format "#RRGGBB") to be used as the background when removing the alpha channel. **Only takes effect when `remove_alpha: true`** — it is the matte color blended under transparent pixels. Without `remove_alpha`, this setting is ignored and transparent regions stay transparent (rendered black by some viewers). (optional - if not defined then `#ffffff` is used)
 
 **Liquid Glass Icon Settings (iOS)**
 *Liquid glass icons create modern, translucent app icons with customizable glass effects, shadows, and positioning. These settings generate .icon files compatible with Apple's Icon Composer.*
 
-- `image_path_ios_liquid_glass_icon`: The location of the icon image file specific for iOS liquid glass icon generation (optional - enables liquid glass icon generation when specified)
-- `remove_liquid_glass_ios`: Disables the glass effect for the liquid glass icon, *defaults to false*
+- `image_path_liquid_glass_icon`: The location of the icon image file specific for iOS liquid glass icon generation (optional - enables liquid glass icon generation when specified)
+- `remove_liquid_glass`: Disables the glass effect for the liquid glass icon, *defaults to false*
 - `liquid_glass_icon_scale`: Scale factor for the icon within the liquid glass effect, *defaults to 1.0*
-- `liquid_glass_translucency_ios`: Translucency value for the glass effect (0.0 = opaque, 1.0 = fully transparent), *defaults to 0.5*
-- `liquid_glass_specular_ios`: Enable specular highlights on the glass surface, *defaults to true*
-- `liquid_glass_shadow_kind_ios`: Type of shadow effect - "Neutral" for standard shadows or "Chromatic" for colored shadows, *defaults to "Neutral"*
-- `liquid_glass_shadow_opacity_ios`: Opacity of the shadow effect (0.0 = no shadow, 1.0 = full opacity), *defaults to 0.5*
-- `liquid_glass_blur_ios`: Amount of blur applied to the glass effect (0.0 = no blur, higher values = more blur), *defaults to 0.5*
-- `liquid_glass_offset_x_ios`: Horizontal offset for icon positioning within the glass effect in points, *defaults to 0.0*
-- `liquid_glass_offset_y_ios`: Vertical offset for icon positioning within the glass effect in points, *defaults to 0.0*
+- `liquid_glass_translucency`: Translucency value for the glass effect (0.0 = opaque, 1.0 = fully transparent), *defaults to 0.5*
+- `liquid_glass_specular`: Enable specular highlights on the glass surface, *defaults to true*
+- `liquid_glass_shadow_kind`: Type of shadow effect - "Neutral" for standard shadows or "Chromatic" for colored shadows, *defaults to "Neutral"*
+- `liquid_glass_shadow_opacity`: Opacity of the shadow effect (0.0 = no shadow, 1.0 = full opacity), *defaults to 0.5*
+- `liquid_glass_blur`: Amount of blur applied to the glass effect (0.0 = no blur, higher values = more blur), *defaults to 0.5*
+- `liquid_glass_offset_x`: Horizontal offset for icon positioning within the glass effect in points, *defaults to 0.0*
+- `liquid_glass_offset_y`: Vertical offset for icon positioning within the glass effect in points, *defaults to 0.0*
 
 ### Web
 
@@ -201,7 +213,7 @@ foreground of the Android 13+ themed icon. For more information see [Android Ada
   - `generate`: Specifies whether to generate icons for MacOS platform or not
   - `image_path`: Path to macos icon.png file
 
-*Note: macOS icons are resized copies of your source image — transparency is preserved, not filled (unlike iOS `remove_alpha_ios`). Prefer an opaque source image: transparent regions can render unpredictably under system themes (e.g. macOS Tahoe), and macOS will not round the artwork for you.*
+*Note: macOS icons are resized copies of your source image — transparency is preserved, not filled (unlike iOS `remove_alpha`). Prefer an opaque source image: transparent regions can render unpredictably under system themes (e.g. macOS Tahoe), and macOS will not round the artwork for you.*
 
 ### Linux
 

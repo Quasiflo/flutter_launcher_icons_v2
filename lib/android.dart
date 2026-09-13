@@ -52,7 +52,7 @@ Future<void> createDefaultIcons(
   final concurrentIconUpdates = <Future<void>>[];
   if (config.isCustomAndroidFile) {
     utils.printStatus('Adding a new Android launcher icon');
-    final String iconName = config.android;
+    final String iconName = config.androidConfig!.iconName!;
     isAndroidIconNameCorrectFormat(iconName);
     final String iconPath = '$iconName.png';
     for (AndroidIconTemplate template in androidIcons) {
@@ -101,8 +101,9 @@ Future<void> createAdaptiveIcons(
   utils.printStatus('Creating adaptive icons Android');
 
   // Retrieve the necessary Flutter Launcher Icons configuration from the pubspec.yaml file
-  final String? backgroundConfig = config.adaptiveIconBackground;
-  final String? foregroundImagePath = config.adaptiveIconForeground;
+  final androidConfig = config.androidConfig!;
+  final String? backgroundConfig = androidConfig.adaptiveIconBackground;
+  final String? foregroundImagePath = androidConfig.adaptiveIconForeground;
   if (backgroundConfig == null || foregroundImagePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
@@ -147,7 +148,8 @@ Future<void> createAdaptiveMonochromeIcons(
   utils.printStatus('Creating adaptive monochrome icons Android');
 
   // Retrieve the necessary Flutter Launcher Icons configuration from the pubspec.yaml file
-  final String? monochromeImagePath = config.adaptiveIconMonochrome;
+  final String? monochromeImagePath =
+      config.androidConfig!.adaptiveIconMonochrome;
   if (monochromeImagePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
@@ -188,9 +190,10 @@ Future<void> createMipmapXmlFile(
   utils.printStatus('Creating mipmap xml file Android');
 
   String xmlContent = '';
+  final androidConfig = config.androidConfig!;
 
   if (config.hasAndroidAdaptiveConfig) {
-    if (isAdaptiveIconConfigImageFile(config.adaptiveIconBackground!)) {
+    if (isAdaptiveIconConfigImageFile(androidConfig.adaptiveIconBackground!)) {
       xmlContent +=
           '  <background android:drawable="@drawable/ic_launcher_background"/>\n';
     } else {
@@ -202,7 +205,7 @@ Future<void> createMipmapXmlFile(
   <foreground>
       <inset
           android:drawable="@drawable/ic_launcher_foreground"
-          android:inset="${config.adaptiveIconForegroundInset}%" />
+          android:inset="${androidConfig.adaptiveIconForegroundInset}%" />
   </foreground>
 ''';
   }
@@ -212,7 +215,7 @@ Future<void> createMipmapXmlFile(
   <monochrome>
       <inset
           android:drawable="@drawable/ic_launcher_monochrome"
-          android:inset="${config.adaptiveIconForegroundInset}%" />
+          android:inset="${androidConfig.adaptiveIconForegroundInset}%" />
   </monochrome>
 ''';
   }
@@ -220,7 +223,9 @@ Future<void> createMipmapXmlFile(
   late File mipmapXmlFile;
   if (config.isCustomAndroidFile) {
     mipmapXmlFile = File(
-      constants.androidAdaptiveXmlFolder(flavor) + config.android + '.xml',
+      constants.androidAdaptiveXmlFolder(flavor) +
+          androidConfig.iconName! +
+          '.xml',
     );
   } else {
     mipmapXmlFile = File(

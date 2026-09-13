@@ -27,16 +27,64 @@ void main() {
         );
         expect(configs, isNotNull);
         // android configs
-        expect(configs!.android, isTrue);
+        expect(configs!.hasAndroidConfig, isTrue);
+        expect(configs.isNeedingNewAndroidIcon, isTrue);
+        expect(configs.isCustomAndroidFile, isFalse);
         expect(configs.imagePath, isNotNull);
-        expect(configs.imagePathAndroid, isNotNull);
-        expect(configs.adaptiveIconBackground, isNotNull);
-        expect(configs.adaptiveIconForeground, isNotNull);
-        expect(configs.minSdkAndroid, equals(21));
+        expect(
+          configs.getImagePathAndroid(),
+          equals('assets/images/icon-710x599-android.png'),
+        );
+        expect(configs.androidConfig!.adaptiveIconBackground, isNotNull);
+        expect(configs.androidConfig!.adaptiveIconForeground, isNotNull);
+        expect(configs.androidConfig!.minSdk, equals(21));
+        expect(
+          configs.androidConfig!.toJson(),
+          equals(<String, dynamic>{
+            'generate': true,
+            'image_path': 'assets/images/icon-710x599-android.png',
+            'icon_name': null,
+            'min_sdk': 21,
+            'adaptive_icon_foreground':
+                'assets/images/icon-foreground-432x432.png',
+            'adaptive_icon_foreground_inset': 16,
+            'adaptive_icon_background':
+                'assets/images/christmas-background.png',
+            'adaptive_icon_monochrome':
+                'assets/images/icon-monochrome-432x432.png',
+          }),
+        );
         // ios configs
-        expect(configs.ios, isTrue);
-        expect(configs.imagePathIOS, isNotNull);
-        expect(configs.removeAlphaIOS, isFalse);
+        expect(configs.hasIOSConfig, isTrue);
+        expect(configs.isNeedingNewIOSIcon, isTrue);
+        expect(
+          configs.getImagePathIOS(),
+          equals('assets/images/icon-1024x1024.png'),
+        );
+        expect(configs.iosConfig!.removeAlpha, isFalse);
+        expect(
+          configs.iosConfig!.toJson(),
+          equals(<String, dynamic>{
+            'generate': true,
+            'image_path': 'assets/images/icon-1024x1024.png',
+            'icon_name': null,
+            'image_path_dark_transparent': null,
+            'image_path_tinted_grayscale': null,
+            'image_path_liquid_glass_icon': null,
+            'remove_alpha': false,
+            'remove_liquid_glass': false,
+            'desaturate_tinted_to_grayscale': false,
+            'background_color': '#ffffff',
+            'liquid_glass_icon_scale': 1.0,
+            'liquid_glass_translucency': 0.5,
+            'liquid_glass_specular': true,
+            'liquid_glass_shadow_kind': 'Neutral',
+            'liquid_glass_shadow_opacity': 0.5,
+            'liquid_glass_blur': 0.5,
+            'liquid_glass_offset_x': 0.0,
+            'liquid_glass_offset_y': 0.0,
+          }),
+        );
         // web configs
         expect(configs.webConfig, isNotNull);
         expect(configs.webConfig!.generate, isTrue);
@@ -117,17 +165,19 @@ void main() {
         const String imagePath = 'assets/images/icon-710x599.png';
         expect(configs!.imagePath, equals(imagePath));
         // android configs
-        expect(configs.android, isTrue);
-        expect(configs.imagePathAndroid, isNull);
+        expect(configs.hasAndroidConfig, isTrue);
+        expect(configs.isNeedingNewAndroidIcon, isTrue);
+        expect(configs.androidConfig!.imagePath, isNull);
         expect(configs.getImagePathAndroid(), equals(imagePath));
-        expect(configs.adaptiveIconBackground, isNull);
-        expect(configs.adaptiveIconForeground, isNull);
-        expect(configs.minSdkAndroid, equals(21));
+        expect(configs.androidConfig!.adaptiveIconBackground, isNull);
+        expect(configs.androidConfig!.adaptiveIconForeground, isNull);
+        expect(configs.androidConfig!.minSdk, equals(21));
         // ios configs
-        expect(configs.ios, isTrue);
-        expect(configs.imagePathIOS, isNull);
+        expect(configs.hasIOSConfig, isTrue);
+        expect(configs.isNeedingNewIOSIcon, isTrue);
+        expect(configs.iosConfig!.imagePath, isNull);
         expect(configs.getImagePathIOS(), equals(imagePath));
-        expect(configs.removeAlphaIOS, isFalse);
+        expect(configs.iosConfig!.removeAlpha, isFalse);
         // web configs
         expect(configs.webConfig, isNull);
         // windows
@@ -151,16 +201,64 @@ void main() {
         final configs = Config.loadConfigFromPubSpec(prefixPath);
         expect(configs, isNotNull);
         // android configs
-        expect(configs!.android, isTrue);
+        expect(configs!.hasAndroidConfig, isTrue);
+        expect(configs.isNeedingNewAndroidIcon, isTrue);
+        expect(configs.isCustomAndroidFile, isFalse);
         expect(configs.imagePath, isNotNull);
-        expect(configs.imagePathAndroid, isNotNull);
-        expect(configs.adaptiveIconBackground, isNotNull);
-        expect(configs.adaptiveIconForeground, isNotNull);
-        expect(configs.minSdkAndroid, equals(21));
+        expect(
+          configs.getImagePathAndroid(),
+          equals('assets/images/icon-710x599-android.png'),
+        );
+        expect(configs.androidConfig!.adaptiveIconBackground, isNotNull);
+        expect(configs.androidConfig!.adaptiveIconForeground, isNotNull);
+        expect(configs.androidConfig!.minSdk, equals(21));
+        expect(
+          configs.androidConfig!.toJson(),
+          equals(<String, dynamic>{
+            'generate': true,
+            'image_path': 'assets/images/icon-710x599-android.png',
+            'icon_name': null,
+            'min_sdk': 21,
+            'adaptive_icon_foreground':
+                'assets/images/icon-foreground-432x432.png',
+            'adaptive_icon_foreground_inset': 16,
+            'adaptive_icon_background':
+                'assets/images/christmas-background.png',
+            'adaptive_icon_monochrome':
+                'assets/images/icon-monochrome-432x432.png',
+          }),
+        );
         // ios configs
-        expect(configs.ios, isTrue);
-        expect(configs.imagePathIOS, isNotNull);
-        expect(configs.removeAlphaIOS, isFalse);
+        expect(configs.hasIOSConfig, isTrue);
+        expect(configs.isNeedingNewIOSIcon, isTrue);
+        expect(
+          configs.getImagePathIOS(),
+          equals('assets/images/icon-1024x1024.png'),
+        );
+        expect(configs.iosConfig!.removeAlpha, isFalse);
+        expect(
+          configs.iosConfig!.toJson(),
+          equals(<String, dynamic>{
+            'generate': true,
+            'image_path': 'assets/images/icon-1024x1024.png',
+            'icon_name': null,
+            'image_path_dark_transparent': null,
+            'image_path_tinted_grayscale': null,
+            'image_path_liquid_glass_icon': null,
+            'remove_alpha': false,
+            'remove_liquid_glass': false,
+            'desaturate_tinted_to_grayscale': false,
+            'background_color': '#ffffff',
+            'liquid_glass_icon_scale': 1.0,
+            'liquid_glass_translucency': 0.5,
+            'liquid_glass_specular': true,
+            'liquid_glass_shadow_kind': 'Neutral',
+            'liquid_glass_shadow_opacity': 0.5,
+            'liquid_glass_blur': 0.5,
+            'liquid_glass_offset_x': 0.0,
+            'liquid_glass_offset_y': 0.0,
+          }),
+        );
         // web configs
         expect(configs.webConfig, isNotNull);
         expect(configs.webConfig!.generate, isTrue);
@@ -249,14 +347,16 @@ void main() {
           prefixPath,
         );
         expect(configs, isNotNull);
-        expect(configs!.android, isTrue);
+        expect(configs!.hasAndroidConfig, isTrue);
+        expect(configs.isNeedingNewAndroidIcon, isTrue);
         expect(configs.imagePath, isNotNull);
-        expect(configs.imagePathAndroid, isNotNull);
-        expect(configs.adaptiveIconBackground, isNotNull);
-        expect(configs.adaptiveIconForeground, isNotNull);
+        expect(configs.androidConfig!.imagePath, isNotNull);
+        expect(configs.androidConfig!.adaptiveIconBackground, isNotNull);
+        expect(configs.androidConfig!.adaptiveIconForeground, isNotNull);
         // ios configs
-        expect(configs.ios, isTrue);
-        expect(configs.imagePathIOS, isNotNull);
+        expect(configs.hasIOSConfig, isTrue);
+        expect(configs.isNeedingNewIOSIcon, isTrue);
+        expect(configs.iosConfig!.imagePath, isNotNull);
         // web configs
         expect(configs.webConfig, isNotNull);
         expect(configs.webConfig!.generate, isTrue);

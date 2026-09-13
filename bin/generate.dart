@@ -86,30 +86,34 @@ const _configFileTemplate = '''
 flutter_launcher_icons:
   image_path: "assets/icon/icon.png"
 
-  android: "launcher_icon"
-  # image_path_android: "assets/icon/icon.png"
-  min_sdk_android: 21 # android min sdk min:16, default 21
-  # adaptive_icon_background: "assets/icon/background.png"  # color or png/jpg/jpeg/webp image
-  # adaptive_icon_foreground: "assets/icon/foreground.png"
-  # adaptive_icon_foreground_inset: 16
-  # adaptive_icon_monochrome: "assets/icon/monochrome.png"
+  android:
+    generate: true
+    # image_path: "assets/icon/icon-android.png"
+    # icon_name: "launcher_icon" # generate a new icon without removing the old default
+    min_sdk: 21 # android min sdk min:16, default 21
+    # adaptive_icon_background: "assets/icon/background.png"  # color or png/jpg/jpeg/webp image
+    # adaptive_icon_foreground: "assets/icon/foreground.png"
+    # adaptive_icon_foreground_inset: 16
+    # adaptive_icon_monochrome: "assets/icon/monochrome.png"
 
-  ios: true
-  # image_path_ios: "assets/icon/icon.png"
-  remove_alpha_ios: true
-  # image_path_ios_dark_transparent: "assets/icon/icon_dark.png"
-  # image_path_ios_tinted_grayscale: "assets/icon/icon_tinted.png"
-  # desaturate_tinted_to_grayscale_ios: true
-  # background_color_ios: "#ffffff"
-  # image_path_ios_liquid_glass_icon: "assets/icon/liquid_glass_icon.png"
-  # liquid_glass_icon_scale: 1.0
-  # liquid_glass_translucency_ios: 0.5
-  # liquid_glass_specular_ios: true
-  # liquid_glass_shadow_kind_ios: "Neutral" # "Neutral" or "Chromatic"
-  # liquid_glass_shadow_opacity_ios: 0.5
-  # liquid_glass_blur_ios: 0.5
-  # liquid_glass_offset_x_ios: 0.0
-  # liquid_glass_offset_y_ios: 0.0
+  ios:
+    generate: true
+    # image_path: "assets/icon/icon-ios.png"
+    # icon_name: "My-Launcher-Icon" # generate a new icon without removing the old default
+    remove_alpha: true
+    # image_path_dark_transparent: "assets/icon/icon_dark.png"
+    # image_path_tinted_grayscale: "assets/icon/icon_tinted.png"
+    # desaturate_tinted_to_grayscale: true
+    # background_color: "#ffffff"
+    # image_path_liquid_glass_icon: "assets/icon/liquid_glass_icon.png"
+    # liquid_glass_icon_scale: 1.0
+    # liquid_glass_translucency: 0.5
+    # liquid_glass_specular: true
+    # liquid_glass_shadow_kind: "Neutral" # "Neutral" or "Chromatic"
+    # liquid_glass_shadow_opacity: 0.5
+    # liquid_glass_blur: 0.5
+    # liquid_glass_offset_x: 0.0
+    # liquid_glass_offset_y: 0.0
 
   web:
     generate: true
