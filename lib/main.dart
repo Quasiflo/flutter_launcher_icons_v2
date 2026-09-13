@@ -25,7 +25,7 @@ const String flavorConfigFilePattern = r'^flutter_launcher_icons-(.*).yaml$';
 
 Future<List<String>> getFlavors({String searchPath = '.'}) async {
   final List<String> flavors = [];
-  
+
   // Recursively search through directories
   await for (var item in Directory(searchPath).list(recursive: true)) {
     if (item is File) {
@@ -38,7 +38,6 @@ Future<List<String>> getFlavors({String searchPath = '.'}) async {
   }
   return flavors;
 }
-
 
 Future<void> createIconsFromArguments(List<String> arguments) async {
   final ArgParser parser = ArgParser(allowTrailingOptions: true);
@@ -145,10 +144,12 @@ Future<void> createIconsFromConfig(
 
   final concurrentIconCreation = <Future<void>>[];
   if (flutterConfigs.isNeedingNewAndroidIcon) {
-    concurrentIconCreation.add(android_launcher_icons.createDefaultIcons(flutterConfigs, flavor));
+    concurrentIconCreation
+        .add(android_launcher_icons.createDefaultIcons(flutterConfigs, flavor));
   }
   if (flutterConfigs.hasAndroidAdaptiveConfig) {
-    concurrentIconCreation.add(android_launcher_icons.createAdaptiveIcons(flutterConfigs, flavor));
+    concurrentIconCreation.add(
+        android_launcher_icons.createAdaptiveIcons(flutterConfigs, flavor));
   }
   if (flutterConfigs.hasAndroidAdaptiveMonochromeConfig) {
     concurrentIconCreation.add(

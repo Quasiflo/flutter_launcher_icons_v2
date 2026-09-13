@@ -11,6 +11,9 @@ class WindowsIconGenerator extends IconGenerator {
   WindowsIconGenerator(IconGeneratorContext context)
       : super(context, 'Windows');
 
+  // Minimal, sensible defaults for Windows ICOs.
+  static const List<int> _icoSizes = [16, 24, 32, 48, 256];
+
   @override
   bool get isEnabled => context.windowsConfig?.generate ?? false;
 
@@ -54,14 +57,13 @@ class WindowsIconGenerator extends IconGenerator {
       return false;
     }
 
-    // if icon_size is given it should be between 48<=icon_size<=256
-    // because .ico only supports this size
-    if (windowsConfig.iconSize != null &&
-        (windowsConfig.iconSize! < 48 || windowsConfig.iconSize! > 256)) {
-      context.logger.error(
-        'Invalid windows.icon_size=${windowsConfig.iconSize}. Icon size should be between 48<=icon_size<=256',
+    // DEPRECATED: read only to warn, then ignored.
+    // ignore: deprecated_member_use_from_same_package
+    if (windowsConfig.iconSize != null) {
+      context.logger.info(
+        'DEPRECATED: `windows.icon_size` is ignored. The generator now '
+        'produces a multi-size .ico (${_icoSizes.join(', ')}).',
       );
-      return false;
     }
     final entitesToCheck = [
       path.join(context.prefixPath, constants.windowsDirPath),
@@ -74,7 +76,7 @@ class WindowsIconGenerator extends IconGenerator {
     final failedEntityPath = utils.areFSEntiesExist(entitesToCheck);
     if (failedEntityPath != null) {
       context.logger.error(
-        '$failedEntityPath this file or folder is required to generate web icons',
+        '$failedEntityPath this file or folder is required to generate windows icons',
       );
       return false;
     }
@@ -83,13 +85,19 @@ class WindowsIconGenerator extends IconGenerator {
   }
 
   Future<void> _generateIcon(Image image) async {
-    final favIcon = utils.createResizedImage(
-      context.windowsConfig!.iconSize ?? constants.windowsDefaultIconSize,
-      image,
-    );
+    // Build a multi-frame ICO: one frame per target size.
+    Image? multi;
+    for (final sz in _icoSizes) {
+      final resized = utils.createResizedImage(sz, image);
+      if (multi == null) {
+        multi = resized;
+      } else {
+        multi.addFrame(resized);
+      }
+    }
     final favIconFile = await utils.createFileIfNotExist(
       path.join(context.prefixPath, constants.windowsIconFilePath),
     );
-    await favIconFile.writeAsBytes(encodeIco(favIcon));
+    await favIconFile.writeAsBytes(encodeIco(multi!));
   }
 }

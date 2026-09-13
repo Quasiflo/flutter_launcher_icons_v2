@@ -1,3 +1,4 @@
+// ignore_for_file: deprecated_member_use_from_same_package
 import 'dart:io';
 
 import 'package:flutter_launcher_icons/abs/icon_generator.dart';
@@ -13,6 +14,35 @@ import 'package:test_descriptor/test_descriptor.dart' as d;
 
 import '../templates.dart' as templates;
 import 'windows_icon_generator_test.mocks.dart';
+
+/// Parses the ICONDIR of a `.ico` file, returning one entry per embedded
+/// image. Width/height of `0` means 256 (per the ICO spec).
+List<({int width, int height, int offset, int size})> _parseIcoDirectory(
+  List<int> bytes,
+) {
+  if (bytes.length < 6) {
+    fail('ico is smaller than the 6 byte ICONDIR header');
+  }
+  final count = bytes[4] | bytes[5] << 8;
+  if (6 + count * 16 > bytes.length) {
+    fail('ico ICONDIR is truncated');
+  }
+  return [
+    for (var i = 0; i < count; i++)
+      (
+        width: bytes[6 + i * 16],
+        height: bytes[6 + i * 16 + 1],
+        size: bytes[6 + i * 16 + 8] |
+            bytes[6 + i * 16 + 9] << 8 |
+            bytes[6 + i * 16 + 10] << 16 |
+            bytes[6 + i * 16 + 11] << 24,
+        offset: bytes[6 + i * 16 + 12] |
+            bytes[6 + i * 16 + 13] << 8 |
+            bytes[6 + i * 16 + 14] << 16 |
+            bytes[6 + i * 16 + 15] << 24,
+      ),
+  ];
+}
 
 @GenerateMocks([Config, WindowsConfig, FLILogger])
 void main() {
@@ -45,6 +75,7 @@ void main() {
         generator = WindowsIconGenerator(context);
         // initilize mock defaults
         when(mockLogger.error(argThat(anything))).thenReturn(anything);
+        when(mockLogger.info(argThat(anything))).thenReturn(anything);
         when(mockLogger.verbose(argThat(anything))).thenReturn(anything);
         when(mockLogger.isVerbose).thenReturn(false);
         when(mockConfig.windowsConfig).thenReturn(mockWindowsConfig);
@@ -85,15 +116,28 @@ void main() {
       });
 
       test(
-          'should return false when windows.icon_size is not between 48 and 256',
-          () {
-        when(mockWindowsConfig.iconSize).thenReturn(40);
-        expect(generator.validateRequirements(), isFalse);
-        verify(mockWindowsConfig.iconSize).called(equals(3));
+          'should warn (deprecated) but not fail when windows.icon_size is set',
+          () async {
+        // Ensure required filesystem entities exist so any failure is NOT due to missing files.
+        await d.dir('fli_test', [
+          d.dir('windows'),
+          d.file('app_icon.png', testImageFile.readAsBytesSync()),
+        ]).create();
+        await expectLater(
+          d.dir('fli_test', [
+            d.dir('windows'),
+            d.file('app_icon.png', anything),
+          ]).validate(),
+          completes,
+        );
 
-        when(mockWindowsConfig.iconSize).thenReturn(257);
-        expect(generator.validateRequirements(), isFalse);
-        verify(mockWindowsConfig.iconSize).called(equals(4));
+        // Set any value; it’s ignored but should trigger a deprecation log.
+        when(mockWindowsConfig.iconSize).thenReturn(40);
+
+        expect(generator.validateRequirements(), isTrue);
+
+        // We logged a deprecation notice (non-fatal).
+        verify(mockLogger.info(argThat(contains('DEPRECATED')))).called(1);
       });
 
       test('should return false when windows dir does not exist', () async {
@@ -164,6 +208,35 @@ void main() {
         ]).validate(),
         completes,
       );
+
+      final icoBytes = File(
+        path.join(
+          prefixPath,
+          'windows',
+          'runner',
+          'resources',
+          'app_icon.ico',
+        ),
+      ).readAsBytesSync();
+      expect(icoBytes.length, greaterThan(6));
+
+      final entries = _parseIcoDirectory(icoBytes);
+      int toPixels(int byte) => byte == 0 ? 256 : byte;
+      expect(
+        entries.map((e) => toPixels(e.width)).toList(),
+        [16, 24, 32, 48, 256],
+      );
+      expect(
+        entries.map((e) => toPixels(e.height)).toList(),
+        [16, 24, 32, 48, 256],
+      );
+
+      final firstDataOffset = 6 + entries.length * 16;
+      expect(entries.first.offset, firstDataOffset);
+      for (var i = 1; i < entries.length; i++) {
+        expect(entries[i].offset, entries[i - 1].offset + entries[i - 1].size);
+      }
+      expect(entries.last.offset + entries.last.size, icoBytes.length);
     });
   });
 }

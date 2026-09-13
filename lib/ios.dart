@@ -245,14 +245,16 @@ Future<void> createIcons(Config config, String? flavor) async {
     if (darkImage != null) {
       printStatus('Overwriting default iOS dark launcher icon with new icon');
       for (IosIconTemplate template in generateIosIcons) {
-        concurrentIconUpdates.add(overwriteDefaultIcons(template, darkImage, '-Dark'));
+        concurrentIconUpdates
+            .add(overwriteDefaultIcons(template, darkImage, '-Dark'));
       }
       darkIconName = iosDefaultIconName + '-Dark';
     }
     if (tintedImage != null) {
       printStatus('Overwriting default iOS tinted launcher icon with new icon');
       for (IosIconTemplate template in generateIosIcons) {
-        concurrentIconUpdates.add(overwriteDefaultIcons(template, tintedImage, '-Tinted'));
+        concurrentIconUpdates
+            .add(overwriteDefaultIcons(template, tintedImage, '-Tinted'));
       }
       tintedIconName = iosDefaultIconName + '-Tinted';
     }
@@ -360,7 +362,8 @@ String addLiquidGlassIconReference(String pbxprojContent, String iconName) {
   }
 
   // Generate unique IDs for the .icon file references
-  final String fileRefId = _generateUniqueId('fileRef$iconName', pbxprojContent);
+  final String fileRefId =
+      _generateUniqueId('fileRef$iconName', pbxprojContent);
   final String buildFileId =
       _generateUniqueId('buildRef$iconName', pbxprojContent);
 
@@ -532,7 +535,8 @@ Future<void> changeIosLauncherIcon(String iconName, String? flavor) async {
 
       if (currentConfig != null &&
           (flavor == null || currentConfig.contains('-$flavor')) &&
-          line.contains('ASSETCATALOG') &&  line.contains('APPICON_NAME')) {
+          line.contains('ASSETCATALOG') &&
+          line.contains('APPICON_NAME')) {
         lines[x] = line.replaceAll(RegExp('\=(.*);'), '= $iconName;');
       }
     }
@@ -550,7 +554,8 @@ Future<void> modifyContentsFile(
 ) async {
   final String newContentsFilename =
       iosAssetFolder + newIconName + '.appiconset/Contents.json';
-  final contentsJsonFile = await File(newContentsFilename).create(recursive: true);
+  final contentsJsonFile =
+      await File(newContentsFilename).create(recursive: true);
   final String contentsFileContent =
       generateContentsFileAsString(newIconName, darkIconName, tintedIconName);
   await contentsJsonFile.writeAsString(contentsFileContent);

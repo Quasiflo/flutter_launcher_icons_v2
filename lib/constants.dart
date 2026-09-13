@@ -37,9 +37,12 @@ const String iosDefaultIconName = 'Icon-App';
 
 // iOS Liquid Glass .icon constants
 const String iosRunnerFolder = 'ios/Runner/';
-String iosLiquidGlassIconPath(String iconName) => '$iosRunnerFolder$iconName.icon/';
-String iosLiquidGlassAssetsPath(String iconName) => '${iosLiquidGlassIconPath(iconName)}Assets/';
-String iosLiquidGlassConfigPath(String iconName) => '${iosLiquidGlassIconPath(iconName)}icon.json';
+String iosLiquidGlassIconPath(String iconName) =>
+    '$iosRunnerFolder$iconName.icon/';
+String iosLiquidGlassAssetsPath(String iconName) =>
+    '${iosLiquidGlassIconPath(iconName)}Assets/';
+String iosLiquidGlassConfigPath(String iconName) =>
+    '${iosLiquidGlassIconPath(iconName)}icon.json';
 
 // web
 /// favicon.ico size
@@ -73,10 +76,6 @@ String windowsResourcesDirPath =
 
 /// Relative path to windows icon file path
 String windowsIconFilePath = path.join(windowsResourcesDirPath, 'app_icon.ico');
-
-/// Default windows icon size for flutter
-///
-const int windowsDefaultIconSize = 48;
 
 // MacOS
 
