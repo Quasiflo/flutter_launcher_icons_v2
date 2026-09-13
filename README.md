@@ -147,6 +147,7 @@ the Windows `.ico`.
 be used to fill out the background of the adaptive icon.
 - `adaptive_icon_foreground`: The image asset which will be used for the icon foreground of the adaptive icon
 *Note: Adaptive Icons will only be generated when both adaptive_icon_background and adaptive_icon_foreground are specified. (the image_path is not automatically taken as foreground)*
+*Note: If you only set `image_path`, launchers that use round icons (e.g. many Android launchers) may show a white circle with your square icon inside. For correct round/adaptive icons, always set both `adaptive_icon_background` and `adaptive_icon_foreground` (plus `adaptive_icon_monochrome` for Android 13+ themed icons). The tool does not auto-round artwork or add padding — use `adaptive_icon_foreground_inset` to control foreground padding.*
 - `adaptive_icon_foreground_inset`: This is used to add padding (in %) to the foreground icon when generating an adaptive icon. The default value is `16`.
 - `adaptive_icon_monochrome`: The image asset which will be used for the icon
 foreground of the Android 13+ themed icon. For more information see [Android Adaptive Icons](https://developer.android.com/develop/ui/compose/system/icon_design_adaptive)
