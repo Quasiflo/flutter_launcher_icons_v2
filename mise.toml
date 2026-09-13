@@ -1,0 +1,11 @@
+[tools."http:flutter"]
+version = "3.47.2"
+version_expr = 'fromJSON(body).releases | filter({ #.channel == "stable" }) | map({ replace(#.version, "-stable", "") }) | sortVersions()'
+checksum_expr = '"sha256:" + filter(fromJSON(body).releases, { #.archive endsWith filename })[0].sha256'
+version_list_url = "https://storage.googleapis.com/flutter_infra_release/releases/releases_linux.json"
+
+[tools."http:flutter".platforms]
+macos-x64 = { url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_{{ version }}-stable.zip", checksum_url = "https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json" }
+macos-arm64 = { url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_{{ version }}-stable.zip", checksum_url = "https://storage.googleapis.com/flutter_infra_release/releases/releases_macos.json" }
+windows-x64 = { url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_{{ version }}-stable.zip", checksum_url = "https://storage.googleapis.com/flutter_infra_release/releases/releases_windows.json" }
+linux-x64 = { url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_{{ version }}-stable.tar.xz", checksum_url = "https://storage.googleapis.com/flutter_infra_release/releases/releases_linux.json" }
