@@ -201,6 +201,8 @@ foreground of the Android 13+ themed icon. For more information see [Android Ada
   - `generate`: Specifies whether to generate icons for MacOS platform or not
   - `image_path`: Path to macos icon.png file
 
+*Note: macOS icons are resized copies of your source image — transparency is preserved, not filled (unlike iOS `remove_alpha_ios`). Prefer an opaque source image: transparent regions can render unpredictably under system themes (e.g. macOS Tahoe), and macOS will not round the artwork for you.*
+
 ### Linux
 
 - `linux`: Add Linux related configs
