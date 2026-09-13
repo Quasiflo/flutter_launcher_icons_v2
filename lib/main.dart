@@ -40,6 +40,15 @@ Future<List<String>> getFlavors({String searchPath = '.'}) async {
   return flavors;
 }
 
+/// Returns the flavor named by an explicit `-f flutter_launcher_icons-<flavor>.yaml`
+/// argument, or `null` when `-f` does not point at a flavor config file.
+String? explicitFlavorFromArgs(ArgResults argResults) {
+  final String filePath = argResults[fileOption] as String;
+  final match =
+      RegExp(flavorConfigFilePattern).firstMatch(path.basename(filePath));
+  return match?.group(1);
+}
+
 Future<void> createIconsFromArguments(List<String> arguments) async {
   final ArgParser parser = ArgParser(allowTrailingOptions: true);
   parser
@@ -77,10 +86,44 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
   }
 
   // Flavors management
+  final String prefixPath = argResults[prefixOption];
+
+  // An explicit `-f flutter_launcher_icons-<flavor>.yaml` runs only that
+  // flavor instead of looping over every discovered flavor (#215).
+  // The file is loaded from the given path directly, so flavor configs in
+  // subdirectories work too.
+  final onlyFlavor = explicitFlavorFromArgs(argResults);
+  if (onlyFlavor != null) {
+    final String filePath = argResults[fileOption] as String;
+    final flutterLauncherIconsConfigs = Config.loadConfigFromPath(
+      filePath,
+      prefixPath,
+    );
+    if (flutterLauncherIconsConfigs == null) {
+      throw NoConfigFoundException(
+        'No configuration found for $onlyFlavor flavor at $filePath. '
+        'To discover flavor files in subdirectories use --flavor-path.',
+      );
+    }
+    try {
+      print('\nFlavor: $onlyFlavor');
+      await createIconsFromConfig(
+        flutterLauncherIconsConfigs,
+        logger,
+        prefixPath,
+        onlyFlavor,
+      );
+      print('\n✓ Successfully generated launcher icons');
+    } catch (e) {
+      stderr.writeln('\n✕ Could not generate launcher icons');
+      stderr.writeln(e);
+      exit(2);
+    }
+    return;
+  }
+
   final flavors = await getFlavors(searchPath: argResults['flavor-path']);
   final hasFlavors = flavors.isNotEmpty;
-
-  final String prefixPath = argResults[prefixOption];
 
   // Create icons
   if (!hasFlavors) {
