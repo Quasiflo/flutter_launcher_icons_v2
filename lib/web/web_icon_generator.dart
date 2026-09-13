@@ -56,6 +56,7 @@ class WebIconGenerator extends IconGenerator {
       context.webConfig!.imagePath ?? context.config.imagePath!,
     );
 
+    // load and decode the image file
     context.logger
         .verbose('Decoding and loading image file at $imgFilePath...');
     final imgFile = await utils.decodeImageFile(imgFilePath);
@@ -64,9 +65,31 @@ class WebIconGenerator extends IconGenerator {
       throw FileNotFoundException(imgFilePath);
     }
 
+    // resolve the favicon image path and file, which is either one explicitly
+    // provided or the same as the image file loaded above
+    late final String faviconImgFilePath;
+    late final Image faviconImgFile;
+    final faviconImagePathOverride = context.webConfig!.imagePathFavicon;
+    if (faviconImagePathOverride != null) {
+      // favicon override was specified, construct the full path and decode
+      faviconImgFilePath =
+          path.join(context.prefixPath, faviconImagePathOverride);
+      final faviconImageFile = await utils.decodeImageFile(faviconImgFilePath);
+      if (faviconImageFile == null) {
+        context.logger
+            .error('Image File not found at give path $faviconImgFilePath...');
+        throw FileNotFoundException(faviconImgFilePath);
+      }
+      faviconImgFile = faviconImageFile;
+    } else {
+      // no favicon override, use the fallback image file
+      faviconImgFilePath = imgFilePath;
+      faviconImgFile = imgFile;
+    }
+
     // generate favicon in web/favicon.png
-    context.logger.verbose('Generating favicon from $imgFilePath...');
-    await _generateFavicon(imgFile);
+    context.logger.verbose('Generating favicon from $faviconImgFilePath...');
+    await _generateFavicon(faviconImgFile);
 
     // generate icons in web/icons/
     context.logger.verbose('Generating icons from $imgFilePath...');
