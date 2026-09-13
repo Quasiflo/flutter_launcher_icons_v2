@@ -230,7 +230,7 @@ The configuration file format is the same.
 Flavor configuration files are looked up recursively, so they may live in a subdirectory of your project. To search a directory other than the current directory, use the `--flavor-path` option:
 
 ```shell
-flutter pub run flutter_launcher_icons --flavor-path=<directory>
+dart run flutter_launcher_icons --flavor-path=<directory>
 ```
 
 *Note: `--flavor-path` only controls where flavor configuration files are searched for and the search is performed recursively. Each flavor's configuration file (`flutter_launcher_icons-<flavor>.yaml`) is still loaded from the directory you run the command from (the current working directory).*
