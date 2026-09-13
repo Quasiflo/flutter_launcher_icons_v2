@@ -115,6 +115,24 @@ Shown below is the full list of attributes which you can specify within your Flu
 
 - `image_path`: The location of the icon image file which you want to use as the app launcher icon.
 
+### Source image
+
+Use a single high-resolution **PNG** as your source — **`1024x1024` recommended**.
+iOS requires a 1024px App Store icon and every other size is downscaled from the
+source, so starting smaller loses quality. JPG/JPEG/WebP sources are only
+accepted for Android adaptive backgrounds; all generated icons are PNG, except
+the Windows `.ico`.
+
+| Platform | Generated sizes |
+| --- | --- |
+| Android legacy | 48, 72, 96, 144, 192 (`mipmap-mdpi` → `mipmap-xxxhdpi`) |
+| Android adaptive foreground | 108, 162, 216, 324, 432 (`drawable-mdpi` → `drawable-xxxhdpi`) |
+| iOS | 20 – 1024 (up to the 1024px App Store icon) |
+| Web | 192, 512 (+ maskable variants), 16px favicon |
+| Windows | multi-size `.ico`: 16, 24, 32, 48, 256 |
+| macOS | 16 – 1024 (`@1x`/`@2x` sets) |
+| Linux | source PNG reused as-is from `flutter.assets` |
+
 ### Android
 
 - `android`
