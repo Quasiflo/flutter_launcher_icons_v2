@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:flutter_launcher_icons/android.dart' as android;
 import 'package:flutter_launcher_icons/config/config.dart';
+import 'package:flutter_launcher_icons/custom_exceptions.dart';
 import 'package:flutter_launcher_icons/ios.dart' as ios;
 import 'package:flutter_launcher_icons/main.dart' show defaultConfigFile;
 import 'package:flutter_launcher_icons/main.dart' as main_dart;
@@ -90,25 +91,29 @@ void main() {
       await setCurrentDirectory('default');
       await File('flutter_launcher_icons.yaml').writeAsString('''
 flutter_launcher_icons:
-  android: true
-  ios: false
+  android:
+    generate: true
+  ios:
+    generate: false
 ''');
       final ArgResults argResults = parser.parse(<String>[]);
       final Config? config = main_dart.loadConfigFileFromArgResults(argResults);
       expect(config, isNotNull);
-      expect(config!.android, isTrue);
+      expect(config!.androidConfig!.generate, isTrue);
     });
     test('default_use_pubspec', () async {
       await setCurrentDirectory('pubspec_only');
       await File('pubspec.yaml').writeAsString('''
 flutter_launcher_icons:
-  android: true
-  ios: false
+  android:
+    generate: true
+  ios:
+    generate: false
 ''');
       ArgResults argResults = parser.parse(<String>[]);
       final Config? config = main_dart.loadConfigFileFromArgResults(argResults);
       expect(config, isNotNull);
-      expect(config!.ios, isFalse);
+      expect(config!.iosConfig!.generate, isFalse);
 
       // read pubspec if provided file is not found
       argResults = parser.parse(<String>['-f', defaultConfigFile]);
@@ -119,14 +124,16 @@ flutter_launcher_icons:
       await setCurrentDirectory('custom');
       await File('custom.yaml').writeAsString('''
 flutter_launcher_icons:
-  android: true
-  ios: true
+  android:
+    generate: true
+  ios:
+    generate: true
 ''');
       // if no argument set, should fail
       ArgResults argResults = parser.parse(<String>['-f', 'custom.yaml']);
       final Config? config = main_dart.loadConfigFileFromArgResults(argResults);
       expect(config, isNotNull);
-      expect(config!.ios, isTrue);
+      expect(config!.iosConfig!.generate, isTrue);
 
       // should fail if no argument
       argResults = parser.parse(<String>[]);
@@ -189,8 +196,8 @@ flutter_launcher_icons:
   test('image_path is in config', () {
     final Map<String, dynamic> flutterIconsConfig = <String, dynamic>{
       'image_path': 'assets/images/icon-710x599.png',
-      'android': true,
-      'ios': true,
+      'android': {'generate': true},
+      'ios': {'generate': true},
     };
     final config = Config.fromJson(flutterIconsConfig);
     expect(
@@ -199,9 +206,11 @@ flutter_launcher_icons:
     );
     expect(config.getImagePathIOS(), equals('assets/images/icon-710x599.png'));
     final Map<String, dynamic> flutterIconsConfigAndroid = <String, dynamic>{
-      'image_path_android': 'assets/images/icon-710x599.png',
-      'android': true,
-      'ios': true,
+      'android': {
+        'generate': true,
+        'image_path': 'assets/images/icon-710x599.png',
+      },
+      'ios': {'generate': true},
     };
     final configAndroid = Config.fromJson(flutterIconsConfigAndroid);
     expect(
@@ -210,10 +219,14 @@ flutter_launcher_icons:
     );
     expect(configAndroid.getImagePathIOS(), isNull);
     final Map<String, dynamic> flutterIconsConfigBoth = <String, dynamic>{
-      'image_path_android': 'assets/images/icon-android.png',
-      'image_path_ios': 'assets/images/icon-ios.png',
-      'android': true,
-      'ios': true,
+      'android': {
+        'generate': true,
+        'image_path': 'assets/images/icon-android.png',
+      },
+      'ios': {
+        'generate': true,
+        'image_path': 'assets/images/icon-ios.png',
+      },
     };
     final configBoth = Config.fromJson(flutterIconsConfigBoth);
     expect(
@@ -226,8 +239,8 @@ flutter_launcher_icons:
   test('At least one platform is in config file', () {
     final Map<String, dynamic> flutterIconsConfig = <String, dynamic>{
       'image_path': 'assets/images/icon-710x599.png',
-      'android': true,
-      'ios': true,
+      'android': {'generate': true},
+      'ios': {'generate': true},
     };
     final config = Config.fromJson(flutterIconsConfig);
     expect(config.hasPlatformConfig, isTrue);
@@ -241,11 +254,11 @@ flutter_launcher_icons:
     expect(config.hasPlatformConfig, isFalse);
   });
 
-  test('No new Android icon needed - android: false', () {
+  test('No new Android icon needed - android.generate: false', () {
     final Map<String, dynamic> flutterIconsConfig = <String, dynamic>{
       'image_path': 'assets/images/icon-710x599.png',
-      'android': false,
-      'ios': true,
+      'android': {'generate': false},
+      'ios': {'generate': true},
     };
     final config = Config.fromJson(flutterIconsConfig);
     expect(config.isNeedingNewAndroidIcon, isFalse);
@@ -254,17 +267,17 @@ flutter_launcher_icons:
   test('No new Android icon needed - no Android config', () {
     final Map<String, dynamic> flutterIconsConfig = <String, dynamic>{
       'image_path': 'assets/images/icon-710x599.png',
-      'ios': true,
+      'ios': {'generate': true},
     };
     final config = Config.fromJson(flutterIconsConfig);
     expect(config.isNeedingNewAndroidIcon, isFalse);
   });
 
-  test('No new iOS icon needed - ios: false', () {
+  test('No new iOS icon needed - ios.generate: false', () {
     final Map<String, dynamic> flutterIconsConfig = <String, dynamic>{
       'image_path': 'assets/images/icon-710x599.png',
-      'android': true,
-      'ios': false,
+      'android': {'generate': true},
+      'ios': {'generate': false},
     };
     final config = Config.fromJson(flutterIconsConfig);
     expect(config.isNeedingNewIOSIcon, isFalse);
@@ -273,9 +286,43 @@ flutter_launcher_icons:
   test('No new iOS icon needed - no iOS config', () {
     final Map<String, dynamic> flutterIconsConfig = <String, dynamic>{
       'image_path': 'assets/images/icon-710x599.png',
-      'android': true,
+      'android': {'generate': true},
     };
     final config = Config.fromJson(flutterIconsConfig);
     expect(config.isNeedingNewIOSIcon, isFalse);
+  });
+
+  group('v3 schema migration guard', () {
+    test('legacy boolean android/ios values throw a migration error', () {
+      expect(
+        () => Config.fromJson(<String, dynamic>{
+          'image_path': 'assets/images/icon-710x599.png',
+          'android': true,
+          'ios': true,
+        }),
+        throwsA(isA<InvalidConfigException>()),
+      );
+    });
+
+    test('legacy string android/ios values throw a migration error', () {
+      expect(
+        () => Config.fromJson(<String, dynamic>{
+          'image_path': 'assets/images/icon-710x599.png',
+          'android': 'launcher_icon',
+          'ios': 'MyIcon',
+        }),
+        throwsA(isA<InvalidConfigException>()),
+      );
+    });
+
+    test('nested android/ios maps parse without migration error', () {
+      final config = Config.fromJson(<String, dynamic>{
+        'image_path': 'assets/images/icon-710x599.png',
+        'android': {'generate': true},
+        'ios': {'generate': true},
+      });
+      expect(config.isNeedingNewAndroidIcon, isTrue);
+      expect(config.isNeedingNewIOSIcon, isTrue);
+    });
   });
 }

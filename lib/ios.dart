@@ -70,8 +70,8 @@ List<IosIconTemplate> iosIcons = <IosIconTemplate>[
 Future<void> createIcons(Config config, String? flavor) async {
   // TODO(p-mazhnik): support prefixPath
   final String? filePath = config.getImagePathIOS();
-  final String? darkFilePath = config.imagePathIOSDarkTransparent;
-  final String? tintedFilePath = config.imagePathIOSTintedGrayscale;
+  final String? darkFilePath = config.iosConfig?.imagePathDarkTransparent;
+  final String? tintedFilePath = config.iosConfig?.imagePathTintedGrayscale;
 
   if (filePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
@@ -99,7 +99,7 @@ Future<void> createIcons(Config config, String? flavor) async {
     if (tintedImage == null) {
       return;
     }
-    if (config.desaturateTintedToGrayscaleIOS) {
+    if (config.iosConfig!.desaturateTintedToGrayscale) {
       printStatus('Desaturating iOS tinted image to grayscale');
       tintedImage = grayscale(tintedImage);
     } else {
@@ -108,7 +108,7 @@ Future<void> createIcons(Config config, String? flavor) async {
       do {
         if (pixel.r != pixel.g || pixel.g != pixel.b) {
           print(
-            '\nWARNING: Tinted iOS image is not grayscale.\nSet "desaturate_tinted_to_grayscale_ios: true" to desaturate it.\n',
+            '\nWARNING: Tinted iOS image is not grayscale.\nSet "ios.desaturate_tinted_to_grayscale: true" to desaturate it.\n',
           );
           break;
         }
@@ -116,7 +116,7 @@ Future<void> createIcons(Config config, String? flavor) async {
     }
   }
 
-  if (config.removeAlphaIOS && image.hasAlpha) {
+  if (config.iosConfig?.removeAlpha == true && image.hasAlpha) {
     final backgroundColor = _getBackgroundColor(config);
     final pixel = image.getPixel(0, 0);
     do {
@@ -127,7 +127,7 @@ Future<void> createIcons(Config config, String? flavor) async {
   }
   if (image.hasAlpha) {
     print(
-      '\nWARNING: Icons with alpha channel are not allowed in the Apple App Store.\nSet "remove_alpha_ios: true" to remove it.\n',
+      '\nWARNING: Icons with alpha channel are not allowed in the Apple App Store.\nSet "ios.remove_alpha: true" to remove it.\n',
     );
   }
   String iconName;
@@ -135,7 +135,7 @@ Future<void> createIcons(Config config, String? flavor) async {
   String? tintedIconName;
   final List<IosIconTemplate> generateIosIcons =
       (darkImage == null && tintedImage == null) ? legacyIosIcons : iosIcons;
-  final dynamic iosConfig = config.ios;
+  final String? customIconName = config.iosConfig?.iconName;
   final concurrentIconUpdates = <Future<void>>[];
   // The name of the icon catalog the generated icons are written to. The
   // liquid glass .icon bundle is created with the same name so Xcode
@@ -188,10 +188,10 @@ Future<void> createIcons(Config config, String? flavor) async {
     iconName = iosDefaultIconName;
     await changeIosLauncherIcon(catalogName, flavor);
     await modifyContentsFile(catalogName, darkIconName, tintedIconName);
-  } else if (iosConfig is String) {
-    // If the IOS configuration is a string then the user has specified a new icon to be created
+  } else if (customIconName != null) {
+    // If a custom icon_name is configured then the user has specified a new icon to be created
     // and for the old icon file to be kept
-    final String newIconName = iosConfig;
+    final String newIconName = customIconName;
     printStatus('Adding new iOS launcher icon');
     for (IosIconTemplate template in generateIosIcons) {
       concurrentIconUpdates.add(
@@ -907,9 +907,10 @@ List<Map<String, dynamic>> createImageList(
 }
 
 ColorUint8 _getBackgroundColor(Config config) {
-  final backgroundColorHex = config.backgroundColorIOS.startsWith('#')
-      ? config.backgroundColorIOS.substring(1)
-      : config.backgroundColorIOS;
+  final backgroundColor = config.iosConfig?.backgroundColor ?? '#ffffff';
+  final backgroundColorHex = backgroundColor.startsWith('#')
+      ? backgroundColor.substring(1)
+      : backgroundColor;
   if (backgroundColorHex.length != 6) {
     throw Exception('background_color_ios hex should be 6 characters long');
   }

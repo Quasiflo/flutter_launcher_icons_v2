@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter_launcher_icons/config/config.dart';
+import 'package:flutter_launcher_icons/config/ios_config.dart';
 import 'package:flutter_launcher_icons/constants.dart';
 import 'package:flutter_launcher_icons/custom_exceptions.dart';
 import 'package:flutter_launcher_icons/utils.dart';
@@ -15,16 +16,17 @@ Future<void> generateLiquidGlassIcon(Config config, String iconName) async {
     return;
   }
 
-  final String? liquidGlassImagePath = config.imagePathIOSLiquidGlassIcon;
+  final iosConfig = config.iosConfig!;
+  final String? liquidGlassImagePath = iosConfig.imagePathLiquidGlassIcon;
   if (liquidGlassImagePath == null) {
     return;
   }
 
   // Validate shadow kind
-  final shadowKind = config.liquidGlassShadowKindIOS.toLowerCase();
+  final shadowKind = iosConfig.liquidGlassShadowKind.toLowerCase();
   if (shadowKind != 'neutral' && shadowKind != 'chromatic') {
     throw InvalidConfigException(
-      'liquid_glass_shadow_kind_ios must be either "Neutral" or "Chromatic", got: ${config.liquidGlassShadowKindIOS}',
+      'ios.liquid_glass_shadow_kind must be either "Neutral" or "Chromatic", got: ${iosConfig.liquidGlassShadowKind}',
     );
   }
 
@@ -62,8 +64,10 @@ Future<void> generateLiquidGlassIcon(Config config, String iconName) async {
 /// Generate the icon.json configuration
 @visibleForTesting
 Map<String, dynamic> generateIconConfig(Config config, String imageFileName) {
+  // Fall back to defaults so direct callers don't need an ios block.
+  final iosConfig = config.iosConfig ?? const IOSConfig();
   // Convert background color to display P3 format
-  final displayP3Color = convertHexToDisplayP3(config.backgroundColorIOS);
+  final displayP3Color = convertHexToDisplayP3(iosConfig.backgroundColor);
 
   // Extract image name without extension for the layer name
   final imageName = path.basenameWithoutExtension(imageFileName);
@@ -74,32 +78,32 @@ Map<String, dynamic> generateIconConfig(Config config, String imageFileName) {
     },
     'groups': [
       {
-        'blur-material': config.liquidGlassBlurIOS,
+        'blur-material': iosConfig.liquidGlassBlur,
         'layers': [
           {
-            'glass': !config.removeLiquidGlassIOS,
+            'glass': !iosConfig.removeLiquidGlass,
             'hidden': false,
             'image-name': imageFileName,
             'name': imageName,
             'position': {
-              'scale': config.liquidGlassIconScaleIOS,
+              'scale': iosConfig.liquidGlassIconScale,
               'translation-in-points': [
-                config.liquidGlassOffsetXIOS ?? 0.0,
-                config.liquidGlassOffsetYIOS ?? 0.0,
+                iosConfig.liquidGlassOffsetX ?? 0.0,
+                iosConfig.liquidGlassOffsetY ?? 0.0,
               ],
             },
           },
         ],
         'shadow': {
-          'kind': config.liquidGlassShadowKindIOS.toLowerCase() == 'chromatic'
+          'kind': iosConfig.liquidGlassShadowKind.toLowerCase() == 'chromatic'
               ? 'layer-color'
-              : config.liquidGlassShadowKindIOS.toLowerCase(),
-          'opacity': config.liquidGlassShadowOpacityIOS,
+              : iosConfig.liquidGlassShadowKind.toLowerCase(),
+          'opacity': iosConfig.liquidGlassShadowOpacity,
         },
-        'specular': config.liquidGlassSpecularIOS,
+        'specular': iosConfig.liquidGlassSpecular,
         'translucency': {
-          'enabled': !config.removeLiquidGlassIOS,
-          'value': config.liquidGlassTranslucencyIOS ?? 0.5,
+          'enabled': !iosConfig.removeLiquidGlass,
+          'value': iosConfig.liquidGlassTranslucency ?? 0.5,
         },
       },
     ],

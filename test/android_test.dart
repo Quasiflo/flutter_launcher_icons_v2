@@ -92,9 +92,11 @@ void main() {
     test('jpg background generates background PNGs and @drawable mipmap',
         () async {
       final config = Config.fromJson(<String, dynamic>{
-        'android': true,
-        'adaptive_icon_background': 'background.jpg',
-        'adaptive_icon_foreground': 'app_icon.png',
+        'android': {
+          'generate': true,
+          'adaptive_icon_background': 'background.jpg',
+          'adaptive_icon_foreground': 'app_icon.png',
+        },
       });
 
       await android.createAdaptiveIcons(config, null);
@@ -122,9 +124,11 @@ void main() {
 
     test('webp background generates background PNGs', () async {
       final config = Config.fromJson(<String, dynamic>{
-        'android': true,
-        'adaptive_icon_background': 'background.webp',
-        'adaptive_icon_foreground': 'app_icon.png',
+        'android': {
+          'generate': true,
+          'adaptive_icon_background': 'background.webp',
+          'adaptive_icon_foreground': 'app_icon.png',
+        },
       });
 
       await android.createAdaptiveIcons(config, null);
@@ -140,9 +144,11 @@ void main() {
 
     test('hex color background writes colors.xml and @color mipmap', () async {
       final config = Config.fromJson(<String, dynamic>{
-        'android': true,
-        'adaptive_icon_background': '#ffffff',
-        'adaptive_icon_foreground': 'app_icon.png',
+        'android': {
+          'generate': true,
+          'adaptive_icon_background': '#ffffff',
+          'adaptive_icon_foreground': 'app_icon.png',
+        },
       });
 
       await android.createAdaptiveIcons(config, null);
@@ -177,8 +183,8 @@ void main() {
   test('Config contains string for generating new launcher icons', () {
     final Map<String, dynamic> flutterIconsConfig = <String, dynamic>{
       'image_path': 'assets/images/icon-710x599.png',
-      'android': true,
-      'ios': true,
+      'android': {'generate': true},
+      'ios': {'generate': true},
     };
     expect(
       Config.fromJson(flutterIconsConfig).isCustomAndroidFile,
@@ -187,8 +193,8 @@ void main() {
 
     final Map<String, dynamic> flutterIconsNewIconConfig = <String, dynamic>{
       'image_path': 'assets/images/icon-710x599.png',
-      'android': 'New Icon',
-      'ios': true,
+      'android': {'generate': true, 'icon_name': 'New Icon'},
+      'ios': {'generate': true},
     };
     expect(
       Config.fromJson(flutterIconsNewIconConfig).isCustomAndroidFile,
@@ -196,12 +202,15 @@ void main() {
     );
   });
 
-  test('Prioritise image_path_android over image_path', () {
+  test('Prioritise android.image_path over image_path', () {
     final Map<String, dynamic> flutterIconsNewIconConfig = <String, dynamic>{
       'image_path': 'assets/images/icon-710x599.png',
-      'image_path_android': 'assets/images/icon-android.png',
-      'android': 'New Icon',
-      'ios': true,
+      'android': {
+        'generate': true,
+        'icon_name': 'New Icon',
+        'image_path': 'assets/images/icon-android.png',
+      },
+      'ios': {'generate': true},
     };
     expect(
       Config.fromJson(flutterIconsNewIconConfig).getImagePathAndroid(),

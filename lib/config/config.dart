@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:checked_yaml/checked_yaml.dart' as yaml;
+import 'package:flutter_launcher_icons/config/android_config.dart';
+import 'package:flutter_launcher_icons/config/ios_config.dart';
 import 'package:flutter_launcher_icons/config/linux_config.dart';
 import 'package:flutter_launcher_icons/config/macos_config.dart';
 import 'package:flutter_launcher_icons/config/web_config.dart';
@@ -22,30 +24,8 @@ class Config {
   /// Creates an instance of [Config]
   const Config({
     this.imagePath,
-    this.android = false,
-    this.ios = false,
-    this.imagePathAndroid,
-    this.imagePathIOS,
-    this.imagePathIOSDarkTransparent,
-    this.imagePathIOSTintedGrayscale,
-    this.imagePathIOSLiquidGlassIcon,
-    this.adaptiveIconForeground,
-    this.adaptiveIconForegroundInset = 16,
-    this.adaptiveIconBackground,
-    this.adaptiveIconMonochrome,
-    this.minSdkAndroid = constants.androidDefaultAndroidMinSDK,
-    this.removeAlphaIOS = false,
-    this.removeLiquidGlassIOS = false,
-    this.desaturateTintedToGrayscaleIOS = false,
-    this.backgroundColorIOS = '#ffffff',
-    this.liquidGlassIconScaleIOS = 1,
-    this.liquidGlassTranslucencyIOS = 0.5,
-    this.liquidGlassSpecularIOS = true,
-    this.liquidGlassShadowKindIOS = 'Neutral',
-    this.liquidGlassShadowOpacityIOS = 0.5,
-    this.liquidGlassBlurIOS = 0.5,
-    this.liquidGlassOffsetXIOS = 0.0,
-    this.liquidGlassOffsetYIOS = 0.0,
+    this.androidConfig,
+    this.iosConfig,
     this.webConfig,
     this.windowsConfig,
     this.macOSConfig,
@@ -119,99 +99,13 @@ class Config {
   @JsonKey(name: 'image_path')
   final String? imagePath;
 
-  /// Returns true or path if android config is enabled
-  final dynamic android; // path or bool
+  /// Android platform config
+  @JsonKey(name: 'android')
+  final AndroidConfig? androidConfig;
 
-  /// Returns true or path if ios config is enabled
-  final dynamic ios; // path or bool
-
-  /// Image path specific to android
-  @JsonKey(name: 'image_path_android')
-  final String? imagePathAndroid;
-
-  /// Image path specific to ios
-  @JsonKey(name: 'image_path_ios')
-  final String? imagePathIOS;
-
-  /// IOS image_path_ios_dark_transparent
-  @JsonKey(name: 'image_path_ios_dark_transparent')
-  final String? imagePathIOSDarkTransparent;
-
-  /// IOS image_path_ios_tinted_grayscale
-  @JsonKey(name: 'image_path_ios_tinted_grayscale')
-  final String? imagePathIOSTintedGrayscale;
-
-  /// IOS image_path_ios_liquid_glass_icon
-  @JsonKey(name: 'image_path_ios_liquid_glass_icon')
-  final String? imagePathIOSLiquidGlassIcon;
-
-  /// android adaptive_icon_foreground image
-  @JsonKey(name: 'adaptive_icon_foreground')
-  final String? adaptiveIconForeground;
-
-  /// android adaptive_icon_foreground inset
-  @JsonKey(name: 'adaptive_icon_foreground_inset')
-  final int adaptiveIconForegroundInset;
-
-  /// android adaptive_icon_background image
-  @JsonKey(name: 'adaptive_icon_background')
-  final String? adaptiveIconBackground;
-
-  /// android adaptive_icon_background image
-  @JsonKey(name: 'adaptive_icon_monochrome')
-  final String? adaptiveIconMonochrome;
-
-  /// Android min_sdk_android
-  @JsonKey(name: 'min_sdk_android')
-  final int minSdkAndroid;
-
-  /// IOS remove_alpha_ios
-  @JsonKey(name: 'remove_alpha_ios')
-  final bool removeAlphaIOS;
-
-  /// IOS remove_liquid_glass_ios
-  @JsonKey(name: 'remove_liquid_glass_ios')
-  final bool removeLiquidGlassIOS;
-
-  /// IOS desaturate_tinted_to_grayscale
-  @JsonKey(name: 'desaturate_tinted_to_grayscale_ios')
-  final bool desaturateTintedToGrayscaleIOS;
-
-  /// IOS background_color_ios
-  @JsonKey(name: 'background_color_ios')
-  final String backgroundColorIOS;
-
-  /// IOS liquid_glass_icon_scale
-  @JsonKey(name: 'liquid_glass_icon_scale')
-  final double liquidGlassIconScaleIOS;
-
-  /// IOS liquid glass translucency
-  @JsonKey(name: 'liquid_glass_translucency_ios')
-  final double? liquidGlassTranslucencyIOS;
-
-  /// IOS liquid glass specular
-  @JsonKey(name: 'liquid_glass_specular_ios')
-  final bool liquidGlassSpecularIOS;
-
-  /// IOS liquid glass shadow kind
-  @JsonKey(name: 'liquid_glass_shadow_kind_ios')
-  final String liquidGlassShadowKindIOS;
-
-  /// IOS liquid glass shadow opacity
-  @JsonKey(name: 'liquid_glass_shadow_opacity_ios')
-  final double? liquidGlassShadowOpacityIOS;
-
-  /// IOS liquid glass blur
-  @JsonKey(name: 'liquid_glass_blur_ios')
-  final double? liquidGlassBlurIOS;
-
-  /// IOS liquid glass offset X
-  @JsonKey(name: 'liquid_glass_offset_x_ios')
-  final double? liquidGlassOffsetXIOS;
-
-  /// IOS liquid glass offset Y
-  @JsonKey(name: 'liquid_glass_offset_y_ios')
-  final double? liquidGlassOffsetYIOS;
+  /// iOS platform config
+  @JsonKey(name: 'ios')
+  final IOSConfig? iosConfig;
 
   /// Web platform config
   @JsonKey(name: 'web')
@@ -230,28 +124,51 @@ class Config {
   final LinuxConfig? linuxConfig;
 
   /// Creates [Config] icons from [json]
-  factory Config.fromJson(Map<dynamic, dynamic> json) => _$ConfigFromJson(json);
+  ///
+  /// The v2 (flat `android:`/`ios:`) schema was removed in v3. A legacy
+  /// boolean or string value produces a migration error instead of being
+  /// silently ignored.
+  factory Config.fromJson(Map<dynamic, dynamic> json) {
+    for (final key in ['android', 'ios']) {
+      final value = json[key];
+      if (value is bool || value is String) {
+        throw InvalidConfigException(
+          'Invalid `$key` value `$value`. Since v3, `$key` must be a map '
+          'with `generate: true` (e.g. `$key:\n    generate: true`). '
+          'See the README for the new schema.',
+        );
+      }
+    }
+    return _$ConfigFromJson(json);
+  }
 
   /// whether or not there is configuration for adaptive icons for android
   bool get hasAndroidAdaptiveConfig =>
       isNeedingNewAndroidIcon &&
-      adaptiveIconForeground != null &&
-      adaptiveIconBackground != null;
+      androidConfig?.adaptiveIconForeground != null &&
+      androidConfig?.adaptiveIconBackground != null;
 
   /// whether or not there is configuration for monochrome icons for android
   bool get hasAndroidAdaptiveMonochromeConfig {
-    return isNeedingNewAndroidIcon && adaptiveIconMonochrome != null;
+    return isNeedingNewAndroidIcon &&
+        androidConfig?.adaptiveIconMonochrome != null;
   }
 
   /// Checks if contains any platform config
   bool get hasPlatformConfig {
-    return ios != false ||
-        android != false ||
+    return androidConfig != null ||
+        iosConfig != null ||
         webConfig != null ||
         windowsConfig != null ||
         macOSConfig != null ||
         linuxConfig != null;
   }
+
+  /// Whether or not configuration for generating Android icons exist
+  bool get hasAndroidConfig => androidConfig != null;
+
+  /// Whether or not configuration for generating iOS icons exist
+  bool get hasIOSConfig => iosConfig != null;
 
   /// Whether or not configuration for generating Web icons exist
   bool get hasWebConfig => webConfig != null;
@@ -265,29 +182,28 @@ class Config {
   /// Whether or not configuration for generating Linux icons exists
   bool get hasLinuxConfig => linuxConfig != null;
 
-  /// Check to see if specified Android config is a string or bool
-  /// String - Generate new launcher icon with the string specified
-  /// bool - override the default flutter project icon
-  bool get isCustomAndroidFile => android is String;
+  /// Check to see if a custom Android icon name was specified via `icon_name`.
+  /// When set, a new launcher icon is generated without removing the old
+  /// default existing Flutter launcher icon.
+  bool get isCustomAndroidFile => androidConfig?.iconName != null;
 
   /// if we are needing a new Android icon
-  bool get isNeedingNewAndroidIcon => android != false;
+  bool get isNeedingNewAndroidIcon => androidConfig?.generate ?? false;
 
   /// if we are needing a new iOS icon
-  bool get isNeedingNewIOSIcon => ios != false;
+  bool get isNeedingNewIOSIcon => iosConfig?.generate ?? false;
 
   /// Whether or not configuration for generating liquid glass .icon exists
-  bool get hasLiquidGlassIconConfig => imagePathIOSLiquidGlassIcon != null;
+  bool get hasLiquidGlassIconConfig =>
+      iosConfig?.imagePathLiquidGlassIcon != null;
 
   /// Method for the retrieval of the Android icon path
-  /// If image_path_android is found, this will be prioritised over the image_path
+  /// If android.image_path is found, this will be prioritised over the image_path
   /// value.
-  String? getImagePathAndroid() => imagePathAndroid ?? imagePath;
+  String? getImagePathAndroid() => androidConfig?.imagePath ?? imagePath;
 
-  // TODO(RatakondalaArun): refactor after Android & iOS configs will be refactored to the new schema
-  // https://github.com/fluttercommunity/flutter_launcher_icons/issues/394
   /// get the image path for IOS
-  String? getImagePathIOS() => imagePathIOS ?? imagePath;
+  String? getImagePathIOS() => iosConfig?.imagePath ?? imagePath;
 
   /// Converts config to [Map]
   Map<String, dynamic> toJson() => _$ConfigToJson(this);

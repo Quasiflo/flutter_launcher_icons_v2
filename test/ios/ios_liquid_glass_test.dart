@@ -11,14 +11,17 @@ import 'package:test/test.dart';
 // Unit tests for ios_liquid_glass_icon_generator.dart
 void main() {
   group('hasLiquidGlassIconConfig', () {
-    test('is true when image_path_ios_liquid_glass_icon is set', () {
+    test('is true when ios.image_path_liquid_glass_icon is set', () {
       final config = Config.fromJson(<String, dynamic>{
-        'image_path_ios_liquid_glass_icon': 'assets/icon.png',
+        'ios': {
+          'generate': true,
+          'image_path_liquid_glass_icon': 'assets/icon.png',
+        },
       });
       expect(config.hasLiquidGlassIconConfig, isTrue);
     });
 
-    test('is false when image_path_ios_liquid_glass_icon is not set', () {
+    test('is false when ios.image_path_liquid_glass_icon is not set', () {
       final config = Config.fromJson(<String, dynamic>{});
       expect(config.hasLiquidGlassIconConfig, isFalse);
     });
@@ -27,40 +30,47 @@ void main() {
   group('Config liquid glass fields', () {
     test('liquid glass config fields are parsed', () {
       final config = Config.fromJson(<String, dynamic>{
-        'image_path_ios_liquid_glass_icon': 'assets/icon.png',
-        'remove_liquid_glass_ios': true,
-        'liquid_glass_icon_scale': 0.85,
-        'liquid_glass_translucency_ios': 0.3,
-        'liquid_glass_specular_ios': false,
-        'liquid_glass_shadow_kind_ios': 'Chromatic',
-        'liquid_glass_shadow_opacity_ios': 0.7,
-        'liquid_glass_blur_ios': 0.4,
-        'liquid_glass_offset_x_ios': 0.1,
-        'liquid_glass_offset_y_ios': -0.2,
+        'ios': {
+          'generate': true,
+          'image_path_liquid_glass_icon': 'assets/icon.png',
+          'remove_liquid_glass': true,
+          'liquid_glass_icon_scale': 0.85,
+          'liquid_glass_translucency': 0.3,
+          'liquid_glass_specular': false,
+          'liquid_glass_shadow_kind': 'Chromatic',
+          'liquid_glass_shadow_opacity': 0.7,
+          'liquid_glass_blur': 0.4,
+          'liquid_glass_offset_x': 0.1,
+          'liquid_glass_offset_y': -0.2,
+        },
       });
-      expect(config.imagePathIOSLiquidGlassIcon, 'assets/icon.png');
-      expect(config.removeLiquidGlassIOS, isTrue);
-      expect(config.liquidGlassIconScaleIOS, 0.85);
-      expect(config.liquidGlassTranslucencyIOS, 0.3);
-      expect(config.liquidGlassSpecularIOS, isFalse);
-      expect(config.liquidGlassShadowKindIOS, 'Chromatic');
-      expect(config.liquidGlassShadowOpacityIOS, 0.7);
-      expect(config.liquidGlassBlurIOS, 0.4);
-      expect(config.liquidGlassOffsetXIOS, 0.1);
-      expect(config.liquidGlassOffsetYIOS, -0.2);
+      final iosConfig = config.iosConfig!;
+      expect(iosConfig.imagePathLiquidGlassIcon, 'assets/icon.png');
+      expect(iosConfig.removeLiquidGlass, isTrue);
+      expect(iosConfig.liquidGlassIconScale, 0.85);
+      expect(iosConfig.liquidGlassTranslucency, 0.3);
+      expect(iosConfig.liquidGlassSpecular, isFalse);
+      expect(iosConfig.liquidGlassShadowKind, 'Chromatic');
+      expect(iosConfig.liquidGlassShadowOpacity, 0.7);
+      expect(iosConfig.liquidGlassBlur, 0.4);
+      expect(iosConfig.liquidGlassOffsetX, 0.1);
+      expect(iosConfig.liquidGlassOffsetY, -0.2);
     });
 
     test('liquid glass config fields have default values', () {
-      final config = Config.fromJson(<String, dynamic>{});
-      expect(config.removeLiquidGlassIOS, isFalse);
-      expect(config.liquidGlassIconScaleIOS, 1);
-      expect(config.liquidGlassTranslucencyIOS, 0.5);
-      expect(config.liquidGlassSpecularIOS, isTrue);
-      expect(config.liquidGlassShadowKindIOS, 'Neutral');
-      expect(config.liquidGlassShadowOpacityIOS, 0.5);
-      expect(config.liquidGlassBlurIOS, 0.5);
-      expect(config.liquidGlassOffsetXIOS, 0.0);
-      expect(config.liquidGlassOffsetYIOS, 0.0);
+      final config = Config.fromJson(<String, dynamic>{
+        'ios': {'generate': true},
+      });
+      final iosConfig = config.iosConfig!;
+      expect(iosConfig.removeLiquidGlass, isFalse);
+      expect(iosConfig.liquidGlassIconScale, 1);
+      expect(iosConfig.liquidGlassTranslucency, 0.5);
+      expect(iosConfig.liquidGlassSpecular, isTrue);
+      expect(iosConfig.liquidGlassShadowKind, 'Neutral');
+      expect(iosConfig.liquidGlassShadowOpacity, 0.5);
+      expect(iosConfig.liquidGlassBlur, 0.5);
+      expect(iosConfig.liquidGlassOffsetX, 0.0);
+      expect(iosConfig.liquidGlassOffsetY, 0.0);
     });
   });
 
@@ -103,15 +113,18 @@ void main() {
   group('generateIconConfig', () {
     test('generates the expected icon.json structure', () {
       final config = Config.fromJson(<String, dynamic>{
-        'image_path_ios_liquid_glass_icon': 'assets/icon.png',
-        'liquid_glass_icon_scale': 0.85,
-        'liquid_glass_translucency_ios': 0.3,
-        'liquid_glass_specular_ios': true,
-        'liquid_glass_shadow_kind_ios': 'Neutral',
-        'liquid_glass_shadow_opacity_ios': 0.7,
-        'liquid_glass_blur_ios': 0.4,
-        'liquid_glass_offset_x_ios': 0.1,
-        'liquid_glass_offset_y_ios': -0.2,
+        'ios': {
+          'generate': true,
+          'image_path_liquid_glass_icon': 'assets/icon.png',
+          'liquid_glass_icon_scale': 0.85,
+          'liquid_glass_translucency': 0.3,
+          'liquid_glass_specular': true,
+          'liquid_glass_shadow_kind': 'Neutral',
+          'liquid_glass_shadow_opacity': 0.7,
+          'liquid_glass_blur': 0.4,
+          'liquid_glass_offset_x': 0.1,
+          'liquid_glass_offset_y': -0.2,
+        },
       });
       expect(
         generateIconConfig(config, 'liquid_glass_icon.png'),
@@ -155,8 +168,11 @@ void main() {
 
     test('maps chromatic shadow kind to layer-color', () {
       final config = Config.fromJson(<String, dynamic>{
-        'image_path_ios_liquid_glass_icon': 'assets/icon.png',
-        'liquid_glass_shadow_kind_ios': 'Chromatic',
+        'ios': {
+          'generate': true,
+          'image_path_liquid_glass_icon': 'assets/icon.png',
+          'liquid_glass_shadow_kind': 'Chromatic',
+        },
       });
       final groups = generateIconConfig(config, 'icon.png')['groups'] as List;
       final shadow = (groups.first as Map<String, dynamic>)['shadow']
@@ -164,11 +180,14 @@ void main() {
       expect(shadow['kind'], 'layer-color');
     });
 
-    test('disables glass and translucency when remove_liquid_glass_ios is true',
+    test('disables glass and translucency when remove_liquid_glass is true',
         () {
       final config = Config.fromJson(<String, dynamic>{
-        'image_path_ios_liquid_glass_icon': 'assets/icon.png',
-        'remove_liquid_glass_ios': true,
+        'ios': {
+          'generate': true,
+          'image_path_liquid_glass_icon': 'assets/icon.png',
+          'remove_liquid_glass': true,
+        },
       });
       final groups = generateIconConfig(config, 'icon.png')['groups'] as List;
       final firstGroup = groups.first as Map<String, dynamic>;
@@ -183,8 +202,11 @@ void main() {
   group('generateLiquidGlassIcon', () {
     test('throws InvalidConfigException for invalid shadow kind', () {
       final config = Config.fromJson(<String, dynamic>{
-        'image_path_ios_liquid_glass_icon': 'missing-icon.png',
-        'liquid_glass_shadow_kind_ios': 'Invalid',
+        'ios': {
+          'generate': true,
+          'image_path_liquid_glass_icon': 'missing-icon.png',
+          'liquid_glass_shadow_kind': 'Invalid',
+        },
       });
       expect(
         () => generateLiquidGlassIcon(config, 'AppIcon'),
@@ -194,7 +216,10 @@ void main() {
 
     test('throws InvalidConfigException when source image is missing', () {
       final config = Config.fromJson(<String, dynamic>{
-        'image_path_ios_liquid_glass_icon': 'missing-icon.png',
+        'ios': {
+          'generate': true,
+          'image_path_liquid_glass_icon': 'missing-icon.png',
+        },
       });
       expect(
         () => generateLiquidGlassIcon(config, 'AppIcon'),
@@ -230,8 +255,11 @@ void main() {
 
       test('creates the .icon bundle structure and icon.json', () async {
         final config = Config.fromJson(<String, dynamic>{
-          'image_path_ios_liquid_glass_icon': 'app_icon.png',
-          'background_color_ios': '#FF0000',
+          'ios': {
+            'generate': true,
+            'image_path_liquid_glass_icon': 'app_icon.png',
+            'background_color': '#FF0000',
+          },
         });
 
         await generateLiquidGlassIcon(config, 'AppIcon');
