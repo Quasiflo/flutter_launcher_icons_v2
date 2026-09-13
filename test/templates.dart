@@ -24,6 +24,9 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "app_icon.png"
+  linux:
+    generate: true
+    image_path: "app_icon.png"
 ''';
 
 const flavorFLIConfigTemplate = fliConfigTemplate;
@@ -129,6 +132,9 @@ flutter_launcher_icons:
     image_path: "app_icon.png"
     icon_size: 48
   macos:
+    generate: true
+    image_path: "app_icon.png"
+  linux:
     generate: true
     image_path: "app_icon.png"
 ''';

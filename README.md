@@ -66,6 +66,9 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "path/to/image.png"
+  linux:
+    generate: true
+    image_path: "path/to/image.png"
 ```
 
 ### 2. Run the package
@@ -178,6 +181,18 @@ foreground of the Android 13+ themed icon. For more information see [Android Ada
 - `macos`: Add MacOS related configs
   - `generate`: Specifies whether to generate icons for MacOS platform or not
   - `image_path`: Path to macos icon.png file
+
+### Linux
+
+- `linux`: Add Linux related configs
+  - `generate`: Specifies whether to generate icons for Linux platform or not
+  - `image_path`: Path to linux icon.png file. Must live under `assets/` and
+  be declared in the `flutter.assets` section of your `pubspec.yaml` so it is
+  bundled with the app.
+
+*Note: Linux support edits `linux/runner/my_application.cc`, resolving the
+icon path relative to the running executable (`data/flutter_assets/`), so the
+window icon works both under `flutter run` and in packaged release bundles.*
 
 *Note: iOS icons should [fill the entire image](https://stackoverflow.com/questions/26014461/black-border-on-my-ios-icon) and not contain transparent borders.*
 

@@ -140,6 +140,12 @@ class MockConfig extends _i1.Mock implements _i3.Config {
       ) as bool);
 
   @override
+  bool get hasLinuxConfig => (super.noSuchMethod(
+        Invocation.getter(#hasLinuxConfig),
+        returnValue: false,
+      ) as bool);
+
+  @override
   bool get isCustomAndroidFile => (super.noSuchMethod(
         Invocation.getter(#isCustomAndroidFile),
         returnValue: false,
