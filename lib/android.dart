@@ -56,9 +56,11 @@ Future<void> createDefaultIcons(
     isAndroidIconNameCorrectFormat(iconName);
     final String iconPath = '$iconName.png';
     for (AndroidIconTemplate template in androidIcons) {
-      concurrentIconUpdates.add(_saveNewImages(template, image, iconPath, flavor));
+      concurrentIconUpdates
+          .add(_saveNewImages(template, image, iconPath, flavor));
     }
-    await overwriteAndroidManifestWithNewLauncherIcon(iconName, androidManifestFile);
+    await overwriteAndroidManifestWithNewLauncherIcon(
+        iconName, androidManifestFile);
   } else {
     utils.printStatus(
       'Overwriting the default Android launcher icon with a new icon',
@@ -104,7 +106,8 @@ Future<void> createAdaptiveIcons(
   if (backgroundConfig == null || foregroundImagePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
-  final Image? foregroundImage = await utils.decodeImageFile(foregroundImagePath);
+  final Image? foregroundImage =
+      await utils.decodeImageFile(foregroundImagePath);
   if (foregroundImage == null) {
     return;
   }
@@ -148,7 +151,8 @@ Future<void> createAdaptiveMonochromeIcons(
   if (monochromeImagePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
-  final Image? monochromeImage = await utils.decodeImageFile(monochromeImagePath);
+  final Image? monochromeImage =
+      await utils.decodeImageFile(monochromeImagePath);
   if (monochromeImage == null) {
     return;
   }
@@ -239,7 +243,8 @@ Future<void> createMipmapXmlFile(
 ///
 /// If not, the colors.xml file is created and a color item for the adaptive icon
 /// background is included in the new colors.xml file.
-Future<void> updateColorsXmlFile(String backgroundConfig, String? flavor) async {
+Future<void> updateColorsXmlFile(
+    String backgroundConfig, String? flavor) async {
   final File colorsXml = File(constants.androidColorsFile(flavor));
   // Using the sync method here due to `avoid_slow_async_io` lint suggestion.
   if (colorsXml.existsSync()) {
@@ -286,8 +291,8 @@ Future<void> _createAdaptiveBackgrounds(
 
 /// Creates a colors.xml file if it was missing from android/app/src/main/res/values/colors.xml
 Future<void> createNewColorsFile(String backgroundColor, String? flavor) async {
-  final colorsFile = await File(constants.androidColorsFile(flavor))
-      .create(recursive: true);
+  final colorsFile =
+      await File(constants.androidColorsFile(flavor)).create(recursive: true);
   await colorsFile.writeAsString(xml_template.colorsXml);
   await updateColorsFile(colorsFile, backgroundColor);
 }

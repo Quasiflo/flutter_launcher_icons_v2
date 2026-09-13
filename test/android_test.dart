@@ -22,10 +22,14 @@ void main() {
   });
 
   test('Adaptive icon background image paths are detected', () {
-    expect(android.isAdaptiveIconConfigImageFile('assets/background.png'), isTrue);
-    expect(android.isAdaptiveIconConfigImageFile('assets/background.PNG'), isTrue);
-    expect(android.isAdaptiveIconConfigImageFile('assets/background.jpg'), isTrue);
-    expect(android.isAdaptiveIconConfigImageFile('assets/background.JPG'), isTrue);
+    expect(
+        android.isAdaptiveIconConfigImageFile('assets/background.png'), isTrue);
+    expect(
+        android.isAdaptiveIconConfigImageFile('assets/background.PNG'), isTrue);
+    expect(
+        android.isAdaptiveIconConfigImageFile('assets/background.jpg'), isTrue);
+    expect(
+        android.isAdaptiveIconConfigImageFile('assets/background.JPG'), isTrue);
     expect(
       android.isAdaptiveIconConfigImageFile('assets/background.jpeg'),
       isTrue,

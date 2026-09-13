@@ -172,10 +172,9 @@ void main() {
       });
       final groups = generateIconConfig(config, 'icon.png')['groups'] as List;
       final firstGroup = groups.first as Map<String, dynamic>;
-      final layer = (firstGroup['layers'] as List).first
-          as Map<String, dynamic>;
-      final translucency = firstGroup['translucency']
-          as Map<String, dynamic>;
+      final layer =
+          (firstGroup['layers'] as List).first as Map<String, dynamic>;
+      final translucency = firstGroup['translucency'] as Map<String, dynamic>;
       expect(layer['glass'], isFalse);
       expect(translucency['enabled'], isFalse);
     });
