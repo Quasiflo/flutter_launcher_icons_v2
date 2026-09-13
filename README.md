@@ -156,6 +156,10 @@ foreground of the Android 13+ themed icon. For more information see [Android Ada
 
 *Note: iOS icons should [fill the entire image](https://stackoverflow.com/questions/26014461/black-border-on-my-ios-icon) and not contain transparent borders.*
 
+After running the icon generation you'll have to set the wished icon for your configuration in XCode project for your main target under `Build Settings` > `Asset Catalog App Icon Set Name`.
+
+[![XCode Build Settings Example](https://i.imgur.com/HxiAHlj.png)]()
+
 ## Flavor support
 
 Create a Flutter Launcher Icons configuration file for your flavor. The config file is called `flutter_launcher_icons-<flavor>.yaml` by replacing `<flavor>` by the name of your desired flavor.
