@@ -163,7 +163,7 @@ foreground of the Android 13+ themed icon. For more information see [Android Ada
 - `image_path_ios_dark_transparent`: The location of the dark mode icon image file specific for iOS 18+ platform. *Note: Apple recommends this icon to be transparent. For more information see [Apple Human Interface Guidelines for App Icons](https://developer.apple.com/design/human-interface-guidelines/app-icons#iOS-iPadOS)*
 - `image_path_ios_tinted_grayscale`: The location of the tinted mode icon image file specific for iOS 18+ platform. *Note: This icon should be an grayscale image. Use `desaturate_tinted_to_grayscale_ios: true` to automatically desaturate the image provided here.*
 - `desaturate_tinted_to_grayscale_ios`: Automatically desaturates tinted mode icon image to grayscale, *defaults to false*
-- `background_color_ios`: The color (in the format "#RRGGBB") to be used as the background when removing the alpha channel. It is used only when the `remove_alpha_ios` property is set to true. (optional - if not defined then `#ffffff` is used)
+- `background_color_ios`: The color (in the format "#RRGGBB") to be used as the background when removing the alpha channel. **Only takes effect when `remove_alpha_ios: true`** — it is the matte color blended under transparent pixels. Without `remove_alpha_ios`, this setting is ignored and transparent regions stay transparent (rendered black by some viewers). (optional - if not defined then `#ffffff` is used)
 
 **Liquid Glass Icon Settings (iOS)**
 *Liquid glass icons create modern, translucent app icons with customizable glass effects, shadows, and positioning. These settings generate .icon files compatible with Apple's Icon Composer.*
