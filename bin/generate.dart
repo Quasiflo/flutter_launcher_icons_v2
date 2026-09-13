@@ -101,6 +101,15 @@ flutter_launcher_icons:
   # image_path_ios_tinted_grayscale: "assets/icon/icon_tinted.png"
   # desaturate_tinted_to_grayscale_ios: true
   # background_color_ios: "#ffffff"
+  # image_path_ios_liquid_glass_icon: "assets/icon/liquid_glass_icon.png"
+  # liquid_glass_icon_scale: 1.0
+  # liquid_glass_translucency_ios: 0.5
+  # liquid_glass_specular_ios: true
+  # liquid_glass_shadow_kind_ios: "Neutral" # "Neutral" or "Chromatic"
+  # liquid_glass_shadow_opacity_ios: 0.5
+  # liquid_glass_blur_ios: 0.5
+  # liquid_glass_offset_x_ios: 0.0
+  # liquid_glass_offset_y_ios: 0.0
 
   web:
     generate: true
