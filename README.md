@@ -82,6 +82,18 @@ If you encounter any issues [please report them here](https://github.com/flutter
 In the above configuration, the package is setup to replace the existing launcher icons in both the Android and iOS project
 with the icon located in the image path specified above and given the name "launcher_icon" in the Android project and "Example-Icon" in the iOS project.
 
+### Command-line options
+
+Shown below is the full list of options supported by the `flutter_launcher_icons:generate` command.
+
+| Option                              | Description                                                                    |
+| ----------------------------------- | ------------------------------------------------------------------------------ |
+| `-f, --file <path>`                 | Path to the config file. Defaults to `flutter_launcher_icons.yaml`             |
+| `-o, --override`                    | Override an existing config file (only used by `flutter_launcher_icons:generate`) |
+| `-v, --verbose`                     | Verbose output                                                                 |
+| `-p, --prefix <path>`               | Generates icons in the given path. Only supports web platform                  |
+| `--flavor-path <path>`              | Path to search for flavor configuration files. Defaults to the current directory |
+
 ## :mag: Attributes
 
 Shown below is the full list of attributes which you can specify within your Flutter Launcher Icons configuration.
@@ -149,6 +161,14 @@ foreground of the Android 13+ themed icon. For more information see [Android Ada
 Create a Flutter Launcher Icons configuration file for your flavor. The config file is called `flutter_launcher_icons-<flavor>.yaml` by replacing `<flavor>` by the name of your desired flavor.
 
 The configuration file format is the same.
+
+Flavor configuration files are looked up recursively, so they may live in a subdirectory of your project. To search a directory other than the current directory, use the `--flavor-path` option:
+
+```shell
+flutter pub run flutter_launcher_icons --flavor-path=<directory>
+```
+
+*Note: `--flavor-path` only controls where flavor configuration files are searched for and the search is performed recursively. Each flavor's configuration file (`flutter_launcher_icons-<flavor>.yaml`) is still loaded from the directory you run the command from (the current working directory).*
 
 An example project with flavor support enabled [has been added to the examples](https://github.com/fluttercommunity/flutter_launcher_icons/tree/master/example/flavors).
 
