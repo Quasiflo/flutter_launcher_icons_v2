@@ -241,6 +241,17 @@ An example project with flavor support enabled [has been added to the examples](
 
 Listed a couple common issues with solutions for them
 
+### App still shows the old icon after regenerating
+
+The generated files are usually correct — the OS, Xcode/Gradle, or the Flutter
+build cache is serving the stale icon. Work through these steps:
+
+1. Run `flutter clean` to drop the build cache.
+2. Uninstall the app from the device/simulator/emulator (upgrades can keep the old icon).
+3. Rebuild and reinstall.
+4. iOS: check Xcode `Build Settings` > `Asset Catalog App Icon Set Name` points at the generated set (`AppIcon`, or `AppIcon-<flavor>` for flavors).
+5. Android flavors: make sure no leftover `mipmap-anydpi-v26/ic_launcher.xml` in `android/app/src/main/` is shadowing the flavor resources.
+
 ### Generated icon color is different from the original icon
 
 Caused by an update to the image dependency which is used by Flutter Launcher Icons.
