@@ -77,6 +77,18 @@ void main() {
             'image_path': 'app_icon.png',
           }),
         );
+        // linux
+        expect(configs.hasLinuxConfig, isTrue);
+        expect(configs.linuxConfig, isNotNull);
+        expect(configs.linuxConfig!.generate, isNotNull);
+        expect(configs.linuxConfig!.imagePath, isNotNull);
+        expect(
+          configs.linuxConfig!.toJson(),
+          equals(<String, dynamic>{
+            'generate': true,
+            'image_path': 'app_icon.png',
+          }),
+        );
       });
 
       test('should return null when invalid filePath is given', () {
@@ -122,6 +134,9 @@ void main() {
         expect(configs.windowsConfig, isNull);
         // macos
         expect(configs.macOSConfig, isNull);
+        // linux
+        expect(configs.hasLinuxConfig, isFalse);
+        expect(configs.linuxConfig, isNull);
       });
     });
     group('#loadConfigFromPubSpec', () {
@@ -181,6 +196,18 @@ void main() {
         expect(configs.macOSConfig!.imagePath, isNotNull);
         expect(
           configs.macOSConfig!.toJson(),
+          equals(<String, dynamic>{
+            'generate': true,
+            'image_path': 'app_icon.png',
+          }),
+        );
+        // linux
+        expect(configs.hasLinuxConfig, isTrue);
+        expect(configs.linuxConfig, isNotNull);
+        expect(configs.linuxConfig!.generate, isNotNull);
+        expect(configs.linuxConfig!.imagePath, isNotNull);
+        expect(
+          configs.linuxConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
             'image_path': 'app_icon.png',
@@ -265,6 +292,18 @@ void main() {
         expect(configs.macOSConfig!.imagePath, isNotNull);
         expect(
           configs.macOSConfig!.toJson(),
+          equals(<String, dynamic>{
+            'generate': true,
+            'image_path': 'app_icon.png',
+          }),
+        );
+        // linux
+        expect(configs.hasLinuxConfig, isTrue);
+        expect(configs.linuxConfig, isNotNull);
+        expect(configs.linuxConfig!.generate, isNotNull);
+        expect(configs.linuxConfig!.imagePath, isNotNull);
+        expect(
+          configs.linuxConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
             'image_path': 'app_icon.png',

@@ -126,4 +126,8 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "path/to/image.png"
+
+  linux:
+    generate: true
+    image_path: "path/to/image.png"
 ''';

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:checked_yaml/checked_yaml.dart' as yaml;
+import 'package:flutter_launcher_icons/config/linux_config.dart';
 import 'package:flutter_launcher_icons/config/macos_config.dart';
 import 'package:flutter_launcher_icons/config/web_config.dart';
 import 'package:flutter_launcher_icons/config/windows_config.dart';
@@ -48,6 +49,7 @@ class Config {
     this.webConfig,
     this.windowsConfig,
     this.macOSConfig,
+    this.linuxConfig,
   });
 
   /// Creates [Config] for given [flavor] and [prefixPath]
@@ -223,6 +225,10 @@ class Config {
   @JsonKey(name: 'macos')
   final MacOSConfig? macOSConfig;
 
+  /// Linux platform config
+  @JsonKey(name: 'linux')
+  final LinuxConfig? linuxConfig;
+
   /// Creates [Config] icons from [json]
   factory Config.fromJson(Map<dynamic, dynamic> json) => _$ConfigFromJson(json);
 
@@ -243,7 +249,8 @@ class Config {
         android != false ||
         webConfig != null ||
         windowsConfig != null ||
-        macOSConfig != null;
+        macOSConfig != null ||
+        linuxConfig != null;
   }
 
   /// Whether or not configuration for generating Web icons exist
@@ -254,6 +261,9 @@ class Config {
 
   /// Whether or not configuration for generating MacOS icons exists
   bool get hasMacOSConfig => macOSConfig != null;
+
+  /// Whether or not configuration for generating Linux icons exists
+  bool get hasLinuxConfig => linuxConfig != null;
 
   /// Check to see if specified Android config is a string or bool
   /// String - Generate new launcher icon with the string specified
