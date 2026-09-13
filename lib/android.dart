@@ -123,7 +123,7 @@ Future<void> createAdaptiveIcons(
   }
 
   // Create adaptive icon background
-  if (isAdaptiveIconConfigPngFile(backgroundConfig)) {
+  if (isAdaptiveIconConfigImageFile(backgroundConfig)) {
     concurrentImageUpdates.add(
       _createAdaptiveBackgrounds(
         config,
@@ -186,7 +186,7 @@ Future<void> createMipmapXmlFile(
   String xmlContent = '';
 
   if (config.hasAndroidAdaptiveConfig) {
-    if (isAdaptiveIconConfigPngFile(config.adaptiveIconBackground!)) {
+    if (isAdaptiveIconConfigImageFile(config.adaptiveIconBackground!)) {
       xmlContent +=
           '  <background android:drawable="@drawable/ic_launcher_background"/>\n';
     } else {
@@ -483,9 +483,13 @@ Future<int?> _getMinSdkFlutterGradle(File localPropertiesFile) async {
   return null;
 }
 
-/// Returns true if the adaptive icon configuration is a PNG image
-bool isAdaptiveIconConfigPngFile(String backgroundFile) {
-  return backgroundFile.endsWith('.png');
+/// Returns true if the adaptive icon configuration is an image file.
+bool isAdaptiveIconConfigImageFile(String backgroundFile) {
+  final normalizedPath = backgroundFile.toLowerCase();
+  return normalizedPath.endsWith('.png') ||
+      normalizedPath.endsWith('.jpg') ||
+      normalizedPath.endsWith('.jpeg') ||
+      normalizedPath.endsWith('.webp');
 }
 
 /// (NOTE THIS IS JUST USED FOR UNIT TEST)

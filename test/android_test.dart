@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_launcher_icons/android.dart' as android;
 import 'package:flutter_launcher_icons/config/config.dart';
 import 'package:flutter_launcher_icons/constants.dart';
+import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
 // unit tests for android.dart
@@ -18,6 +19,147 @@ void main() {
       ),
       true,
     );
+  });
+
+  test('Adaptive icon background image paths are detected', () {
+    expect(android.isAdaptiveIconConfigImageFile('assets/background.png'), isTrue);
+    expect(android.isAdaptiveIconConfigImageFile('assets/background.PNG'), isTrue);
+    expect(android.isAdaptiveIconConfigImageFile('assets/background.jpg'), isTrue);
+    expect(android.isAdaptiveIconConfigImageFile('assets/background.JPG'), isTrue);
+    expect(
+      android.isAdaptiveIconConfigImageFile('assets/background.jpeg'),
+      isTrue,
+    );
+    expect(
+      android.isAdaptiveIconConfigImageFile('assets/background.Jpeg'),
+      isTrue,
+    );
+    expect(
+      android.isAdaptiveIconConfigImageFile('assets/background.webp'),
+      isTrue,
+    );
+    expect(
+      android.isAdaptiveIconConfigImageFile('assets/background.WEBP'),
+      isTrue,
+    );
+    expect(android.isAdaptiveIconConfigImageFile('#ffffff'), isFalse);
+  });
+
+  group('adaptive icon background generation', () {
+    late String originalDir;
+    late String sandboxDir;
+
+    setUp(() {
+      originalDir = Directory.current.path;
+      sandboxDir = path.join(
+        '.dart_tool',
+        'flutter_launcher_icons',
+        'test',
+        'android_adaptive',
+      );
+      final sandbox = Directory(sandboxDir);
+      if (sandbox.existsSync()) {
+        sandbox.deleteSync(recursive: true);
+      }
+      sandbox.createSync(recursive: true);
+      File(path.join(originalDir, 'test', 'assets', 'app_icon.png'))
+          .copySync(path.join(sandboxDir, 'app_icon.png'));
+      File(path.join(originalDir, 'test', 'assets', 'background.jpg'))
+          .copySync(path.join(sandboxDir, 'background.jpg'));
+      File(path.join(originalDir, 'test', 'assets', 'background.webp'))
+          .copySync(path.join(sandboxDir, 'background.webp'));
+      Directory.current = sandboxDir;
+    });
+
+    tearDown(() {
+      Directory.current = originalDir;
+    });
+
+    String backgroundPngPath(android.AndroidIconTemplate template) => path.join(
+          'android',
+          'app',
+          'src',
+          'main',
+          'res',
+          template.directoryName,
+          androidAdaptiveBackgroundFileName,
+        );
+
+    test('jpg background generates background PNGs and @drawable mipmap',
+        () async {
+      final config = Config.fromJson(<String, dynamic>{
+        'android': true,
+        'adaptive_icon_background': 'background.jpg',
+        'adaptive_icon_foreground': 'app_icon.png',
+      });
+
+      await android.createAdaptiveIcons(config, null);
+
+      for (final template in android.adaptiveForegroundIcons) {
+        expect(
+          File(backgroundPngPath(template)).existsSync(),
+          isTrue,
+          reason: backgroundPngPath(template),
+        );
+      }
+      expect(
+        File(androidColorsFile(null)).existsSync(),
+        isFalse,
+        reason: 'colors.xml should not be written for an image background',
+      );
+
+      await android.createMipmapXmlFile(config, null);
+      final mipmapXml = File(
+        path.join(androidAdaptiveXmlFolder(null), androidDefaultIconName) +
+            '.xml',
+      ).readAsStringSync();
+      expect(mipmapXml, contains('@drawable/ic_launcher_background'));
+    });
+
+    test('webp background generates background PNGs', () async {
+      final config = Config.fromJson(<String, dynamic>{
+        'android': true,
+        'adaptive_icon_background': 'background.webp',
+        'adaptive_icon_foreground': 'app_icon.png',
+      });
+
+      await android.createAdaptiveIcons(config, null);
+
+      for (final template in android.adaptiveForegroundIcons) {
+        expect(
+          File(backgroundPngPath(template)).existsSync(),
+          isTrue,
+          reason: backgroundPngPath(template),
+        );
+      }
+    });
+
+    test('hex color background writes colors.xml and @color mipmap', () async {
+      final config = Config.fromJson(<String, dynamic>{
+        'android': true,
+        'adaptive_icon_background': '#ffffff',
+        'adaptive_icon_foreground': 'app_icon.png',
+      });
+
+      await android.createAdaptiveIcons(config, null);
+
+      final colorsFile = File(androidColorsFile(null));
+      expect(colorsFile.existsSync(), isTrue);
+      expect(colorsFile.readAsStringSync(), contains('#ffffff'));
+      expect(
+        File(backgroundPngPath(android.adaptiveForegroundIcons.first))
+            .existsSync(),
+        isFalse,
+        reason: 'colors should not produce background PNGs',
+      );
+
+      await android.createMipmapXmlFile(config, null);
+      final mipmapXml = File(
+        path.join(androidAdaptiveXmlFolder(null), androidDefaultIconName) +
+            '.xml',
+      ).readAsStringSync();
+      expect(mipmapXml, contains('@color/ic_launcher_background'));
+    });
   });
 
   test('Correct number of adaptive foreground icons', () {
