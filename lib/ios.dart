@@ -2,10 +2,11 @@
 
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:crypto/crypto.dart';
 import 'package:flutter_launcher_icons/config/config.dart';
 import 'package:flutter_launcher_icons/constants.dart';
 import 'package:flutter_launcher_icons/custom_exceptions.dart';
+import 'package:flutter_launcher_icons/ios_liquid_glass_icon_generator.dart';
 import 'package:flutter_launcher_icons/utils.dart';
 import 'package:image/image.dart';
 
@@ -136,8 +137,12 @@ Future<void> createIcons(Config config, String? flavor) async {
       (darkImage == null && tintedImage == null) ? legacyIosIcons : iosIcons;
   final dynamic iosConfig = config.ios;
   final concurrentIconUpdates = <Future<void>>[];
+  // The name of the icon catalog the generated icons are written to. The
+  // liquid glass .icon bundle is created with the same name so Xcode
+  // associates it with the catalog.
+  String catalogName = 'AppIcon';
   if (flavor != null) {
-    final String catalogName = 'AppIcon-$flavor';
+    catalogName = 'AppIcon-$flavor';
 
     printStatus('Building iOS launcher icon for $flavor');
     for (IosIconTemplate template in generateIosIcons) {
@@ -258,6 +263,13 @@ Future<void> createIcons(Config config, String? flavor) async {
     await modifyDefaultContentsFile(iconName, darkIconName, tintedIconName);
   }
   await Future.wait(concurrentIconUpdates);
+
+  // Generate liquid glass .icon if configured
+  if (config.hasLiquidGlassIconConfig) {
+    await generateLiquidGlassIcon(config, catalogName);
+    // Add .icon file reference to project.pbxproj
+    await addLiquidGlassIconToProject(catalogName);
+  }
 }
 
 /// Note: Do not change interpolation unless you end up with better results (see issue for result when using cubic
@@ -311,6 +323,189 @@ Image createResizedImage(IosIconTemplate template, Image image) {
       interpolation: Interpolation.linear,
     );
   }
+}
+
+/// Add liquid glass .icon file reference to project.pbxproj
+Future<void> addLiquidGlassIconToProject(String iconName) async {
+  final File iOSConfigFile = File(iosConfigFile);
+  if (!iOSConfigFile.existsSync()) {
+    printStatus(
+      'Warning: project.pbxproj not found, skipping .icon reference addition',
+    );
+    return;
+  }
+  final String wholeFile = await iOSConfigFile.readAsString();
+  final String changedFile = addLiquidGlassIconReference(wholeFile, iconName);
+  if (changedFile == wholeFile) {
+    printStatus(
+      'Liquid glass .icon reference already exists in project.pbxproj',
+    );
+    return;
+  }
+  await iOSConfigFile.writeAsString(changedFile);
+  printStatus('Added liquid glass .icon reference to project.pbxproj');
+}
+
+/// Adds the liquid glass `.icon` file references for [iconName] to the given
+/// [pbxprojContent] and returns the modified content. If the reference already
+/// exists, the original content is returned unchanged.
+String addLiquidGlassIconReference(String pbxprojContent, String iconName) {
+  final List<String> lines = const LineSplitter().convert(pbxprojContent);
+  final String iconPath = '$iconName.icon';
+
+  // Check if .icon reference already exists
+  final bool alreadyExists = lines.any((line) => line.contains(iconPath));
+  if (alreadyExists) {
+    return pbxprojContent;
+  }
+
+  // Generate unique IDs for the .icon file references
+  final String fileRefId = _generateUniqueId('fileRef$iconName', pbxprojContent);
+  final String buildFileId =
+      _generateUniqueId('buildRef$iconName', pbxprojContent);
+
+  // Find insertion points
+  int? fileRefInsertIndex;
+  int? buildFileInsertIndex;
+  int? resourcesBuildphaseInsertIndex;
+  int? resourcesPBXGroupInsertIndex;
+  for (int i = 0; i < lines.length; i++) {
+    final String line = lines[i];
+
+    // Find PBXFileReference section
+    if (line.contains('/* Begin PBXFileReference section */') &&
+        fileRefInsertIndex == null) {
+      // Insert after the first existing file reference
+      for (int j = i + 1; j < lines.length; j++) {
+        if (lines[j].trim().endsWith('};') &&
+            lines[j].contains('isa = PBXFileReference')) {
+          fileRefInsertIndex = j + 1;
+          break;
+        }
+      }
+    }
+
+    // Find PBXBuildFile section
+    if (line.contains('/* Begin PBXBuildFile section */') &&
+        buildFileInsertIndex == null) {
+      // Insert after the first existing build file
+      for (int j = i + 1; j < lines.length; j++) {
+        if (lines[j].trim().endsWith('};') &&
+            lines[j].contains('isa = PBXBuildFile')) {
+          buildFileInsertIndex = j + 1;
+          break;
+        }
+      }
+    }
+
+    // Find Resources section
+    if (line.contains('/* Begin PBXResourcesBuildPhase section */') &&
+        resourcesBuildphaseInsertIndex == null) {
+      for (int j = i + 1; j < lines.length; j++) {
+        if (lines[j].trim().contains('files = (')) {
+          resourcesBuildphaseInsertIndex = j + 1;
+          break;
+        }
+      }
+    }
+    if (line.contains('/* Begin PBXGroup section */') &&
+        resourcesPBXGroupInsertIndex == null) {
+      for (int j = i + 1; j < lines.length; j++) {
+        if (lines[j].trim().contains('/* Runner */ = {')) {
+          for (int h = j + 1; h < lines.length; h++) {
+            if (lines[h].trim().contains('children = (')) {
+              resourcesPBXGroupInsertIndex = h + 1;
+              break;
+            }
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  // Add PBXFileReference entry
+  if (fileRefInsertIndex != null) {
+    lines.insert(
+      fileRefInsertIndex,
+      '\t\t$fileRefId /* $iconPath */ = {isa = PBXFileReference; '
+      'lastKnownFileType = folder.iconcomposer.icon; path = $iconPath; '
+      'sourceTree = "<group>"; };',
+    );
+  }
+
+  // Add PBXBuildFile entry
+  if (buildFileInsertIndex != null) {
+    final adjustedIndex = buildFileInsertIndex +
+        (fileRefInsertIndex != null && buildFileInsertIndex > fileRefInsertIndex
+            ? 1
+            : 0);
+    lines.insert(
+      adjustedIndex,
+      '\t\t$buildFileId /* $iconPath in Resources */ = '
+      '{isa = PBXBuildFile; fileRef = $fileRefId /* $iconPath */; };',
+    );
+  }
+
+  // Add to Resources section
+  if (resourcesBuildphaseInsertIndex != null) {
+    final int adjustedIndex = resourcesBuildphaseInsertIndex +
+        (fileRefInsertIndex != null &&
+                resourcesBuildphaseInsertIndex > fileRefInsertIndex
+            ? 1
+            : 0) +
+        (buildFileInsertIndex != null &&
+                resourcesBuildphaseInsertIndex > buildFileInsertIndex
+            ? 1
+            : 0);
+    lines.insert(
+      adjustedIndex,
+      '\t\t\t\t$buildFileId /* $iconPath in Resources */,',
+    );
+  }
+  if (resourcesPBXGroupInsertIndex != null) {
+    final int adjustedIndex = resourcesPBXGroupInsertIndex +
+        (fileRefInsertIndex != null &&
+                resourcesPBXGroupInsertIndex > fileRefInsertIndex
+            ? 1
+            : 0) +
+        (buildFileInsertIndex != null &&
+                resourcesPBXGroupInsertIndex > buildFileInsertIndex
+            ? 1
+            : 0) +
+        (resourcesBuildphaseInsertIndex != null &&
+                resourcesPBXGroupInsertIndex > resourcesBuildphaseInsertIndex
+            ? 1
+            : 0);
+    lines.insert(
+      adjustedIndex,
+      '\t\t\t\t$fileRefId /* $iconPath */,',
+    );
+  }
+
+  return '${lines.join('\n')}\n';
+}
+
+/// Generate a unique ID for Xcode project file references
+/// Uses a format similar to existing Xcode IDs (24 character hex string)
+String _generateUniqueId(String fileName, String projectFile) {
+  String generateHash(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString().substring(0, 24).toUpperCase();
+  }
+
+  bool isIdUnique(String id, String file) {
+    return !file.contains(id);
+  }
+
+  String id = generateHash(fileName);
+  int attempt = 0;
+  while (!isIdUnique(id, projectFile)) {
+    attempt++;
+    id = generateHash('$fileName-$attempt');
+  }
+  return id;
 }
 
 /// Change the iOS launcher icon
