@@ -161,16 +161,6 @@ class Config {
         androidConfig?.adaptiveIconRound != null;
   }
 
-  /// Checks if contains any platform config
-  bool get hasPlatformConfig {
-    return androidConfig != null ||
-        iosConfig != null ||
-        webConfig != null ||
-        windowsConfig != null ||
-        macOSConfig != null ||
-        linuxConfig != null;
-  }
-
   /// Checks if at least one platform section has `generate: true`.
   /// Presence alone is not intent: an all-`generate: false` config must fail
   /// loudly instead of exiting successfully with no work done.

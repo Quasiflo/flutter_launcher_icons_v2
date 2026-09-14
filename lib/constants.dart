@@ -97,8 +97,6 @@ String linuxMyApplicationFile =
 
 const String errorMissingImagePath =
     'Missing "image_path" or "image_path_android" + "image_path_ios" within configuration';
-const String errorMissingPlatform =
-    'No platform specified within config to generate icons for.';
 const String errorNoPlatformEnabled =
     'No platform enabled within config to generate icons for. '
     'Set "generate: true" for at least one platform.';
