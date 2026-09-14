@@ -65,9 +65,7 @@ Future<void> createIcons(Config config, String? flavor,
 
   // decodeImageFile throws on missing/undecodable files, so a specified
   // but bad path is a hard error rather than a silent skip.
-  Image image = await decodeImageFile(withPrefix(prefixPath, filePath));
-
-  // Single-size mode generates only the 1024px marketing icon (#592):
+  Image image = await decodeImageFile(withPrefix(prefixPath, filePath));  // Single-size mode generates only the 1024px marketing icon (#592):
   // dark/tinted variants are skipped entirely (no decode, no I/O).
   final bool singleSize = config.iosConfig?.singleSize == true;
   if (singleSize &&
@@ -128,6 +126,12 @@ Future<void> createIcons(Config config, String? flavor,
     printStatus(
       '\nWARNING: Icons with alpha channel are not allowed in the Apple App Store.\nSet "ios.remove_alpha: true" to remove it.\n',
       logger,
+    );
+  }
+  final flavorMode = config.iosConfig?.flavorMode ?? 'pbxproj';
+  if (flavorMode != 'pbxproj' && flavorMode != 'xcconfig') {
+    throw InvalidConfigException(
+      'Invalid `ios.flavor_mode` "$flavorMode": must be "pbxproj" or "xcconfig".',
     );
   }
   String iconName;
@@ -193,13 +197,28 @@ Future<void> createIcons(Config config, String? flavor,
       }
     }
     iconName = iosDefaultIconName;
-    await changeIosLauncherIcon(
-      catalogName,
-      flavor,
-      config.iosConfig?.xcodeprojPath,
-      prefixPath,
-      logger,
-    );
+    if (flavorMode == 'xcconfig') {
+      await clearIosFlavorAppIconLines(
+        flavor,
+        config.iosConfig?.xcodeprojPath,
+        prefixPath,
+        logger,
+      );
+      await writeIosFlavorXcconfigs(
+        flavor,
+        catalogName,
+        prefixPath: prefixPath,
+        logger: logger,
+      );
+    } else {
+      await changeIosLauncherIcon(
+        catalogName,
+        flavor,
+        config.iosConfig?.xcodeprojPath,
+        prefixPath,
+        logger,
+      );
+    }
     await modifyContentsFile(
       catalogName,
       darkIconName,
@@ -632,10 +651,17 @@ Future<void> changeIosLauncherIcon(
       }
 
       if (currentConfig != null &&
-          (flavor == null || currentConfig.contains('-$flavor')) &&
+          (flavor == null ||
+              currentConfig == flavor ||
+              currentConfig.endsWith('-$flavor')) &&
           line.contains('ASSETCATALOG') &&
           line.contains('APPICON_NAME')) {
-        lines[x] = line.replaceAll(RegExp('\=(.*);'), '= $iconName;');
+        // Targeted replacement: only the APPICON_NAME pair, leaving any
+        // other settings on the line untouched.
+        lines[x] = line.replaceFirst(
+          RegExp('ASSETCATALOG_COMPILER_APPICON_NAME\\s*=\\s*[^;]*;'),
+          'ASSETCATALOG_COMPILER_APPICON_NAME = $iconName;',
+        );
         replacedAny = true;
       }
     }
@@ -661,6 +687,109 @@ Future<void> changeIosLauncherIcon(
   final tmpFile = File('${iOSConfigFile.path}.tmp');
   await tmpFile.writeAsString(entireFile);
   await tmpFile.rename(iOSConfigFile.path);
+}
+
+/// Whether [configName] (e.g. `Debug-staging`) belongs to [flavor]:
+/// the name itself or a `-<flavor>` suffix. Substring matching collides
+/// (`tag` must not match `Debug-staging`).
+bool _isFlavorConfig(String configName, String flavor) {
+  return configName == flavor || configName.endsWith('-$flavor');
+}
+
+/// Removes flavor-matching `ASSETCATALOG_COMPILER_APPICON_NAME` lines from
+/// project.pbxproj so `xcconfig` overrides take effect (pbxproj values
+/// shadow xcconfig base values — verified with `xcodebuild
+/// -showBuildSettings`). Returns the number of removed lines.
+Future<int> clearIosFlavorAppIconLines(
+  String flavor, [
+  String? xcodeprojPath,
+  String prefixPath = '.',
+  LILogger? logger,
+]) async {
+  // Falls back to the standard location so a missing project still fails
+  // with the historical PathNotFoundException.
+  final resolvedPath = resolveIosPbxprojPath(xcodeprojPath, prefixPath) ??
+      withPrefix(prefixPath, iosConfigFile);
+  final File iOSConfigFile = File(resolvedPath);
+  final List<String> lines = await iOSConfigFile.readAsLines();
+
+  bool onConfigurationSection = false;
+  String? currentConfig;
+  final kept = <String>[];
+  var removed = 0;
+  for (final line in lines) {
+    if (line.contains('/* Begin XCBuildConfiguration section */')) {
+      onConfigurationSection = true;
+    }
+    if (line.contains('/* End XCBuildConfiguration section */')) {
+      onConfigurationSection = false;
+    }
+    if (onConfigurationSection) {
+      final match = RegExp('.*/\\* (.*)\.xcconfig \\*/;').firstMatch(line);
+      if (match != null) {
+        currentConfig = match.group(1);
+      }
+      if (currentConfig != null &&
+          _isFlavorConfig(currentConfig, flavor) &&
+          line.contains('ASSETCATALOG') &&
+          line.contains('APPICON_NAME')) {
+        removed++;
+        continue;
+      }
+    }
+    kept.add(line);
+  }
+
+  if (removed > 0) {
+    final tmpFile = File('${iOSConfigFile.path}.tmp');
+    await tmpFile.writeAsString('${kept.join('\n')}\n');
+    await tmpFile.rename(iOSConfigFile.path);
+    printStatus(
+      'Removed $removed ASSETCATALOG_COMPILER_APPICON_NAME '
+      'entries for "$flavor" from project.pbxproj so the xcconfig '
+      'overrides take effect',
+      logger,
+    );
+  }
+  return removed;
+}
+
+/// Writes per-mode `ios/Flutter/<flavor>-<Mode>.xcconfig` overrides pointing
+/// `ASSETCATALOG_COMPILER_APPICON_NAME` at [catalogName], creating missing
+/// files seeded with the Generated include. Assign the files as the base
+/// configuration files in Xcode once; the tool keeps the setting in place
+/// after that.
+Future<void> writeIosFlavorXcconfigs(
+  String flavor,
+  String catalogName, {
+  String prefixPath = '.',
+  LILogger? logger,
+}) async {
+  const setting = 'ASSETCATALOG_COMPILER_APPICON_NAME';
+  for (final mode in ['Debug', 'Profile', 'Release']) {
+    final relativePath = 'ios/Flutter/$flavor-$mode.xcconfig';
+    final file = File(withPrefix(prefixPath, relativePath));
+    final existed = file.existsSync();
+    final target = existed ? file : await file.create(recursive: true);
+    var xcconfigLines =
+        existed ? await target.readAsLines() : ['#include "Generated.xcconfig"'];
+    var replaced = false;
+    for (var i = 0; i < xcconfigLines.length; i++) {
+      if (xcconfigLines[i].split('=').first.trim() == setting) {
+        xcconfigLines[i] = '$setting = $catalogName';
+        replaced = true;
+      }
+    }
+    if (!replaced) {
+      xcconfigLines = [...xcconfigLines, '$setting = $catalogName'];
+    }
+    await target.writeAsString('${xcconfigLines.join('\n')}\n');
+  }
+  printStatus(
+    'Wrote $setting = $catalogName to ios/Flutter/$flavor-{Debug,Profile,Release}.xcconfig; '
+    'assign them as the base configuration files in Xcode',
+    logger,
+  );
 }
 
 /// Create the Contents.json file
