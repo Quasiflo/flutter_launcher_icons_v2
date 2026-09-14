@@ -123,7 +123,11 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
   }
 
   final flavors = await getFlavors(searchPath: argResults['flavor-path']);
-  final hasFlavors = flavors.isNotEmpty;
+  // An explicit `-f` for a non-flavor file is honored as-is instead of
+  // looping over discovered flavors (#426). (An explicit flavor file is
+  // already handled by the onlyFlavor branch above.)
+  final hasFlavors =
+      flavors.isNotEmpty && !isFileOptionExplicit(arguments);
 
   // Create icons
   if (!hasFlavors) {
