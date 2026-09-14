@@ -23,30 +23,10 @@ class IosIconTemplate {
 }
 
 /// details of the ios icons which need to be generated
-List<IosIconTemplate> legacyIosIcons = <IosIconTemplate>[
-  IosIconTemplate(name: '-20x20@1x', size: 20),
-  IosIconTemplate(name: '-20x20@2x', size: 40),
-  IosIconTemplate(name: '-20x20@3x', size: 60),
-  IosIconTemplate(name: '-29x29@1x', size: 29),
-  IosIconTemplate(name: '-29x29@2x', size: 58),
-  IosIconTemplate(name: '-29x29@3x', size: 87),
-  IosIconTemplate(name: '-40x40@1x', size: 40),
-  IosIconTemplate(name: '-40x40@2x', size: 80),
-  IosIconTemplate(name: '-40x40@3x', size: 120),
-  IosIconTemplate(name: '-50x50@1x', size: 50),
-  IosIconTemplate(name: '-50x50@2x', size: 100),
-  IosIconTemplate(name: '-57x57@1x', size: 57),
-  IosIconTemplate(name: '-57x57@2x', size: 114),
-  IosIconTemplate(name: '-60x60@2x', size: 120),
-  IosIconTemplate(name: '-60x60@3x', size: 180),
-  IosIconTemplate(name: '-72x72@1x', size: 72),
-  IosIconTemplate(name: '-72x72@2x', size: 144),
-  IosIconTemplate(name: '-76x76@1x', size: 76),
-  IosIconTemplate(name: '-76x76@2x', size: 152),
-  IosIconTemplate(name: '-83.5x83.5@2x', size: 167),
-  IosIconTemplate(name: '-1024x1024@1x', size: 1024),
-];
-
+///
+/// Covers the modern (Xcode 14+) universal set, including the 1x switcher
+/// sizes. The legacy iphone/ipad list was removed in v3 (#528): it emitted
+/// obsolete sizes (57x57, 50x50, 72x72) that Xcode no longer references.
 List<IosIconTemplate> iosIcons = <IosIconTemplate>[
   IosIconTemplate(name: '-20x20@1x', size: 20),
   IosIconTemplate(name: '-20x20@2x', size: 40),
@@ -137,8 +117,7 @@ Future<void> createIcons(Config config, String? flavor) async {
   String iconName;
   String? darkIconName;
   String? tintedIconName;
-  final List<IosIconTemplate> generateIosIcons =
-      (darkImage == null && tintedImage == null) ? legacyIosIcons : iosIcons;
+  final List<IosIconTemplate> generateIosIcons = iosIcons;
   final String? customIconName = config.iosConfig?.iconName;
   final concurrentIconUpdates = <Future<void>>[];
   // The name of the icon catalog the generated icons are written to. The
@@ -584,12 +563,7 @@ String generateContentsFileAsString(
   String? darkIconName,
   String? tintedIconName,
 ) {
-  final List<Map<String, dynamic>> imageList;
-  if (darkIconName == null && tintedIconName == null) {
-    imageList = createLegacyImageList(newIconName);
-  } else {
-    imageList = createImageList(newIconName, darkIconName, tintedIconName);
-  }
+  final imageList = createImageList(newIconName, darkIconName, tintedIconName);
   final Map<String, dynamic> contentJson = <String, dynamic>{
     'images': imageList,
     'info': ContentsInfoObject(version: 1, author: 'xcode').toJson(),
@@ -656,99 +630,6 @@ class ContentsInfoObject {
       'author': author,
     };
   }
-}
-
-/// Create the image list for the Contents.json file for Xcode versions below Xcode 14
-List<Map<String, dynamic>> createLegacyImageList(String fileNamePrefix) {
-  const List<Map<String, dynamic>> imageConfigurations = [
-    {
-      'size': '20x20',
-      'idiom': 'iphone',
-      'scales': ['2x', '3x'],
-    },
-    {
-      'size': '29x29',
-      'idiom': 'iphone',
-      'scales': ['1x', '2x', '3x'],
-    },
-    {
-      'size': '40x40',
-      'idiom': 'iphone',
-      'scales': ['2x', '3x'],
-    },
-    {
-      'size': '57x57',
-      'idiom': 'iphone',
-      'scales': ['1x', '2x'],
-    },
-    {
-      'size': '60x60',
-      'idiom': 'iphone',
-      'scales': ['2x', '3x'],
-    },
-    {
-      'size': '20x20',
-      'idiom': 'ipad',
-      'scales': ['1x', '2x'],
-    },
-    {
-      'size': '29x29',
-      'idiom': 'ipad',
-      'scales': ['1x', '2x'],
-    },
-    {
-      'size': '40x40',
-      'idiom': 'ipad',
-      'scales': ['1x', '2x'],
-    },
-    {
-      'size': '50x50',
-      'idiom': 'ipad',
-      'scales': ['1x', '2x'],
-    },
-    {
-      'size': '72x72',
-      'idiom': 'ipad',
-      'scales': ['1x', '2x'],
-    },
-    {
-      'size': '76x76',
-      'idiom': 'ipad',
-      'scales': ['1x', '2x'],
-    },
-    {
-      'size': '83.5x83.5',
-      'idiom': 'ipad',
-      'scales': ['2x'],
-    },
-    {
-      'size': '1024x1024',
-      'idiom': 'ios-marketing',
-      'scales': ['1x'],
-    },
-  ];
-
-  final List<Map<String, dynamic>> imageList = <Map<String, dynamic>>[];
-
-  for (final config in imageConfigurations) {
-    final size = config['size']!;
-    final idiom = config['idiom']!;
-    final List<String> scales = config['scales'];
-
-    for (final scale in scales) {
-      final filename = '$fileNamePrefix-$size@$scale.png';
-      imageList.add(
-        ContentsImageObject(
-          size: size,
-          idiom: idiom,
-          filename: filename,
-          scale: scale,
-        ).toJson(),
-      );
-    }
-  }
-
-  return imageList;
 }
 
 /// Create the image list for the Contents.json file for Xcode versions Xcode 14 and above
