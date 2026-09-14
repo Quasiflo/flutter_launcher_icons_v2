@@ -7,6 +7,7 @@ import 'package:flutter_launcher_icons/config/config.dart';
 import 'package:flutter_launcher_icons/constants.dart';
 import 'package:flutter_launcher_icons/custom_exceptions.dart';
 import 'package:flutter_launcher_icons/ios_liquid_glass_icon_generator.dart';
+import 'package:flutter_launcher_icons/logger.dart';
 import 'package:flutter_launcher_icons/utils.dart';
 import 'package:image/image.dart';
 
@@ -51,7 +52,7 @@ List<IosIconTemplate> iosIcons = <IosIconTemplate>[
 ];
 
 /// create the ios icons
-Future<void> createIcons(Config config, String? flavor) async {
+Future<void> createIcons(Config config, String? flavor, {FLILogger? logger}) async {
   // TODO(p-mazhnik): support prefixPath
   final String? filePath = config.getImagePathIOS();
   final String? darkFilePath = config.iosConfig?.imagePathDarkTransparent;
@@ -84,7 +85,7 @@ Future<void> createIcons(Config config, String? flavor) async {
       return;
     }
     if (config.iosConfig!.desaturateTintedToGrayscale) {
-      printStatus('Desaturating iOS tinted image to grayscale');
+      printStatus('Desaturating iOS tinted image to grayscale', logger);
       tintedImage = grayscale(tintedImage);
     } else {
       // Check if the image is already grayscale
@@ -133,7 +134,7 @@ Future<void> createIcons(Config config, String? flavor) async {
   if (flavor != null) {
     catalogName = 'AppIcon-$flavor';
 
-    printStatus('Building iOS launcher icon for $flavor');
+    printStatus('Building iOS launcher icon for $flavor', logger);
     for (IosIconTemplate template in generateIosIcons) {
       concurrentIconUpdates.add(
         saveNewIcons(
@@ -148,7 +149,7 @@ Future<void> createIcons(Config config, String? flavor) async {
 
     if (darkImage != null) {
       darkIconName = 'AppIcon-$flavor-Dark';
-      printStatus('Building iOS dark launcher icon for $flavor');
+      printStatus('Building iOS dark launcher icon for $flavor', logger);
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates.add(
           saveNewIcons(
@@ -162,7 +163,7 @@ Future<void> createIcons(Config config, String? flavor) async {
     }
     if (tintedImage != null) {
       tintedIconName = 'AppIcon-$flavor-Tinted';
-      printStatus('Building iOS tinted launcher icon for $flavor');
+      printStatus('Building iOS tinted launcher icon for $flavor', logger);
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates.add(
           saveNewIcons(
@@ -190,7 +191,7 @@ Future<void> createIcons(Config config, String? flavor) async {
     // If a custom icon_name is configured then the user has specified a new icon to be created
     // and for the old icon file to be kept
     final String newIconName = customIconName;
-    printStatus('Adding new iOS launcher icon');
+    printStatus('Adding new iOS launcher icon', logger);
     for (IosIconTemplate template in generateIosIcons) {
       concurrentIconUpdates.add(
         saveNewIcons(
@@ -203,7 +204,7 @@ Future<void> createIcons(Config config, String? flavor) async {
     }
     if (darkImage != null) {
       darkIconName = newIconName + '-Dark';
-      printStatus('Adding new iOS dark launcher icon');
+      printStatus('Adding new iOS dark launcher icon', logger);
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates.add(
           saveNewIcons(
@@ -217,7 +218,7 @@ Future<void> createIcons(Config config, String? flavor) async {
     }
     if (tintedImage != null) {
       tintedIconName = newIconName + '-Tinted';
-      printStatus('Adding new iOS tinted launcher icon');
+      printStatus('Adding new iOS tinted launcher icon', logger);
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates.add(
           saveNewIcons(
@@ -245,12 +246,15 @@ Future<void> createIcons(Config config, String? flavor) async {
   // Otherwise the user wants the new icon to use the default icons name and
   // update config file to use it
   else {
-    printStatus('Overwriting default iOS launcher icon with new icon');
+    printStatus('Overwriting default iOS launcher icon with new icon', logger);
     for (IosIconTemplate template in generateIosIcons) {
       concurrentIconUpdates.add(overwriteDefaultIcons(template, image));
     }
     if (darkImage != null) {
-      printStatus('Overwriting default iOS dark launcher icon with new icon');
+      printStatus(
+        'Overwriting default iOS dark launcher icon with new icon',
+        logger,
+      );
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates
             .add(overwriteDefaultIcons(template, darkImage, '-Dark'));
@@ -258,7 +262,10 @@ Future<void> createIcons(Config config, String? flavor) async {
       darkIconName = iosDefaultIconName + '-Dark';
     }
     if (tintedImage != null) {
-      printStatus('Overwriting default iOS tinted launcher icon with new icon');
+      printStatus(
+        'Overwriting default iOS tinted launcher icon with new icon',
+        logger,
+      );
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates
             .add(overwriteDefaultIcons(template, tintedImage, '-Tinted'));
@@ -284,11 +291,12 @@ Future<void> createIcons(Config config, String? flavor) async {
 
   // Generate liquid glass .icon if configured
   if (config.hasLiquidGlassIconConfig) {
-    await generateLiquidGlassIcon(config, catalogName);
+    await generateLiquidGlassIcon(config, catalogName, logger: logger);
     // Add .icon file reference to project.pbxproj
     await addLiquidGlassIconToProject(
       catalogName,
       config.iosConfig?.xcodeprojPath,
+      logger,
     );
   }
 }
@@ -350,12 +358,14 @@ Image createResizedImage(IosIconTemplate template, Image image) {
 Future<void> addLiquidGlassIconToProject(
   String iconName, [
   String? xcodeprojPath,
+  FLILogger? logger,
 ]) async {
   final resolvedPath = resolveIosPbxprojPath(xcodeprojPath) ?? iosConfigFile;
   final File iOSConfigFile = File(resolvedPath);
   if (!iOSConfigFile.existsSync()) {
     printStatus(
       'Warning: project.pbxproj not found, skipping .icon reference addition',
+      logger,
     );
     return;
   }
@@ -364,11 +374,15 @@ Future<void> addLiquidGlassIconToProject(
   if (changedFile == wholeFile) {
     printStatus(
       'Liquid glass .icon reference already exists in project.pbxproj',
+      logger,
     );
     return;
   }
   await iOSConfigFile.writeAsString(changedFile);
-  printStatus('Added liquid glass .icon reference to project.pbxproj');
+  printStatus(
+    'Added liquid glass .icon reference to project.pbxproj',
+    logger,
+  );
 }
 
 /// Adds the liquid glass `.icon` file references for [iconName] to the given
