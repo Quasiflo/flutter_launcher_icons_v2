@@ -82,7 +82,8 @@ void main() {
       );
     });
 
-    test('warns instead of silently skipping a missing flavor key (fluttercommunity/flutter_launcher_icons#341)',
+    test(
+        'warns instead of silently skipping a missing flavor key (fluttercommunity/flutter_launcher_icons#341)',
         () async {
       await ios.changeIosLauncherIcon('AppIcon-staging', 'staging');
       // File content (modulo trailing newline handling) is unchanged.
@@ -139,7 +140,9 @@ void main() {
       );
     });
 
-    test('falls back to a renamed project (fluttercommunity/flutter_launcher_icons#543)', () async {
+    test(
+        'falls back to a renamed project (fluttercommunity/flutter_launcher_icons#543)',
+        () async {
       await writePbxproj('Renamed.xcodeproj');
       expect(
         ios.resolveIosPbxprojPath(),
@@ -160,7 +163,9 @@ void main() {
       );
     });
 
-    test('changeIosLauncherIcon works in a renamed project (fluttercommunity/flutter_launcher_icons#543)', () async {
+    test(
+        'changeIosLauncherIcon works in a renamed project (fluttercommunity/flutter_launcher_icons#543)',
+        () async {
       final renamed = File(
         path.join('ios', 'Renamed.xcodeproj', 'project.pbxproj'),
       );
@@ -176,7 +181,9 @@ void main() {
       );
     });
 
-    test('explicit xcodeproj path wins over the default (fluttercommunity/flutter_launcher_icons#637)', () async {
+    test(
+        'explicit xcodeproj path wins over the default (fluttercommunity/flutter_launcher_icons#637)',
+        () async {
       await writePbxproj('Runner.xcodeproj');
       final custom =
           File(path.join('ios', 'Custom.xcodeproj', 'project.pbxproj'));

@@ -13,14 +13,18 @@ import 'package:test_descriptor/test_descriptor.dart' as d;
 
 // Unit tests for main.dart
 void main() {
-  test('iOS single-size list contains one 1024 entry (fluttercommunity/flutter_launcher_icons#592)', () {
+  test(
+      'iOS single-size list contains one 1024 entry (fluttercommunity/flutter_launcher_icons#592)',
+      () {
     final list = ios.createSingleSizeImageList('AppIcon');
     expect(list.length, equals(1));
     expect(list.single['size'], equals('1024x1024'));
     expect(list.single['filename'], equals('AppIcon-1024x1024@1x.png'));
   });
 
-  test('generateContentsFileAsString honors single-size (fluttercommunity/flutter_launcher_icons#592)', () {
+  test(
+      'generateContentsFileAsString honors single-size (fluttercommunity/flutter_launcher_icons#592)',
+      () {
     final decoded = jsonDecode(
       ios.generateContentsFileAsString('AppIcon', 'AppIcon-Dark', null, true),
     ) as Map<String, dynamic>;
@@ -31,7 +35,9 @@ void main() {
     expect(ios.iosIcons.length, 20);
   });
 
-  test('iOS icon list includes 1x switcher sizes (fluttercommunity/flutter_launcher_icons#661)', () {
+  test(
+      'iOS icon list includes 1x switcher sizes (fluttercommunity/flutter_launcher_icons#661)',
+      () {
     for (final name in ['-20x20@1x', '-29x29@1x', '-40x40@1x', '-76x76@1x']) {
       expect(
         ios.iosIcons.map((template) => template.name),
@@ -145,7 +151,9 @@ launcher_icons:
       expect(main_dart.loadConfigFileFromArgResults(argResults), isNotNull);
     });
 
-    group('stale template shadowing (fluttercommunity/flutter_launcher_icons#628)', () {
+    group(
+        'stale template shadowing (fluttercommunity/flutter_launcher_icons#628)',
+        () {
       Future<String> writeStaleYamlAndRealPubspec(String name) async {
         return createCase(name, [
           d.file('launcher_icons.yaml', '''

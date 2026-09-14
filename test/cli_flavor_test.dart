@@ -82,7 +82,9 @@ launcher_icons:
       );
     });
 
-    test('explicit -f flavor file runs only that flavor (fluttercommunity/flutter_launcher_icons#215)', () async {
+    test(
+        'explicit -f flavor file runs only that flavor (fluttercommunity/flutter_launcher_icons#215)',
+        () async {
       final printed = await runCli(['-f', 'launcher_icons-staging.yaml']);
       expect(printed.any((line) => line.contains('Flavor: staging')), isTrue);
       expect(
@@ -91,7 +93,9 @@ launcher_icons:
       );
     });
 
-    test('explicit -f custom file bypasses the flavor loop (fluttercommunity/flutter_launcher_icons#426)', () async {
+    test(
+        'explicit -f custom file bypasses the flavor loop (fluttercommunity/flutter_launcher_icons#426)',
+        () async {
       final printed = await runCli(['-f', 'custom.yaml']);
       expect(
         printed.any((line) => line.contains('Flavor:')),
