@@ -237,13 +237,21 @@ Future<void> createMipmapXmlFile(
   }
 
   if (config.hasAndroidAdaptiveMonochromeConfig) {
-    xmlContent += '''
+    final int monochromeInset = androidConfig.adaptiveIconForegroundInset;
+    if (monochromeInset == 0) {
+      // Canonical form per developer.android.com: a direct drawable
+      // attribute with no <inset> wrapper.
+      xmlContent +=
+          '  <monochrome android:drawable="@drawable/ic_launcher_monochrome" />\n';
+    } else {
+      xmlContent += '''
   <monochrome>
       <inset
           android:drawable="@drawable/ic_launcher_monochrome"
-          android:inset="${androidConfig.adaptiveIconForegroundInset}%" />
+          android:inset="$monochromeInset%" />
   </monochrome>
 ''';
+    }
   }
 
   late File mipmapXmlFile;

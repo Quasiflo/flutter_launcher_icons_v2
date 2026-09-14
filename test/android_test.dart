@@ -317,6 +317,77 @@ void main() {
     });
   });
 
+  group('adaptive monochrome mipmap', () {
+    late String originalDir;
+    late String sandboxDir;
+
+    setUp(() {
+      originalDir = Directory.current.path;
+      sandboxDir = path.join(
+        '.dart_tool',
+        'launcher_icons',
+        'test',
+        'android_monochrome',
+      );
+      final sandbox = Directory(sandboxDir);
+      if (sandbox.existsSync()) {
+        sandbox.deleteSync(recursive: true);
+      }
+      sandbox.createSync(recursive: true);
+      File(path.join(originalDir, 'test', 'assets', 'app_icon.png'))
+          .copySync(path.join(sandboxDir, 'app_icon.png'));
+      Directory.current = sandboxDir;
+    });
+
+    tearDown(() {
+      Directory.current = originalDir;
+    });
+
+    String mipmapXmlPath() =>
+        path.join(androidAdaptiveXmlFolder(null), androidDefaultIconName) +
+        '.xml';
+
+    Future<String> mipmapXmlFor(Map<String, dynamic> androidSection) async {
+      final config = Config.fromJson(<String, dynamic>{
+        'android': androidSection,
+      });
+      await android.createAdaptiveMonochromeIcons(config, null);
+      await android.createMipmapXmlFile(config, null);
+      return File(mipmapXmlPath()).readAsStringSync();
+    }
+
+    test('zero inset emits the canonical plain monochrome form', () async {
+      final mipmapXml = await mipmapXmlFor(<String, dynamic>{
+        'generate': true,
+        'adaptive_icon_monochrome': 'app_icon.png',
+        'adaptive_icon_foreground_inset': 0,
+      });
+      expect(
+        mipmapXml,
+        contains(
+          '<monochrome android:drawable="@drawable/ic_launcher_monochrome" />',
+        ),
+      );
+      expect(mipmapXml, isNot(contains('<inset')));
+    });
+
+    test('nonzero inset wraps monochrome in an inset block', () async {
+      final mipmapXml = await mipmapXmlFor(<String, dynamic>{
+        'generate': true,
+        'adaptive_icon_monochrome': 'app_icon.png',
+      });
+      expect(mipmapXml, contains('<monochrome>'));
+      expect(
+        mipmapXml,
+        contains(
+          '<inset\n'
+          '          android:drawable="@drawable/ic_launcher_monochrome"\n'
+          '          android:inset="16%" />',
+        ),
+      );
+    });
+  });
+
   test('Correct number of adaptive foreground icons', () {
     expect(android.adaptiveForegroundIcons.length, 5);
   });
