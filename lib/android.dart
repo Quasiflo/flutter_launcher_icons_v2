@@ -58,8 +58,7 @@ Future<void> createDefaultIcons(
     isAndroidIconNameCorrectFormat(iconName);
     final String iconPath = '$iconName.png';
     for (AndroidIconTemplate template in androidIcons) {
-      concurrentIconUpdates
-          .add(_saveNewImages(template, image, iconPath, flavor));
+      concurrentIconUpdates.add(writeResizedPng(template, image, iconPath, flavor));
     }
     await overwriteAndroidManifestWithNewLauncherIcon(
         iconName, androidManifestFile,);
@@ -70,7 +69,7 @@ Future<void> createDefaultIcons(
     );
     for (AndroidIconTemplate template in androidIcons) {
       concurrentIconUpdates.add(
-        overwriteExistingIcons(
+        writeResizedPng(
           template,
           image,
           constants.androidFileName,
@@ -121,7 +120,7 @@ Future<void> createAdaptiveIcons(
   // Create adaptive icon foreground images
   for (AndroidIconTemplate androidIcon in adaptiveForegroundIcons) {
     concurrentImageUpdates.add(
-      overwriteExistingIcons(
+      writeResizedPng(
         androidIcon,
         foregroundImage,
         constants.androidAdaptiveForegroundFileName,
@@ -173,7 +172,7 @@ Future<void> createAdaptiveMonochromeIcons(
   // Create adaptive icon monochrome images
   for (AndroidIconTemplate androidIcon in adaptiveForegroundIcons) {
     concurrentIconUpdates.add(
-      overwriteExistingIcons(
+      writeResizedPng(
         androidIcon,
         monochromeImage,
         constants.androidAdaptiveMonochromeFileName,
@@ -349,7 +348,7 @@ Future<void> _createAdaptiveBackgrounds(
   // it is required
   for (AndroidIconTemplate androidIcon in adaptiveForegroundIcons) {
     concurrentImageUpdates.add(
-      _saveNewImages(
+      writeResizedPng(
         androidIcon,
         image,
         constants.androidAdaptiveBackgroundFileName,
@@ -402,43 +401,23 @@ Future<void> updateColorsFile(File colorsFile, String backgroundColor) async {
   await colorsFile.writeAsString(lines.join('\n'));
 }
 
-/// Overrides the existing launcher icons in the project
-/// Note: Do not change interpolation unless you end up with better results (see issue for result when using cubic
-/// interpolation)
-/// https://github.com/Quasiflo/launcher_icons/issues/101#issuecomment-495528733
-Future<void> overwriteExistingIcons(
+/// Writes [image] resized to [template.size] as a PNG file named [filename]
+/// inside [template.directoryName] (see [utils.createResizedImage] for the
+/// interpolation policy).
+Future<void> writeResizedPng(
   AndroidIconTemplate template,
   Image image,
   String filename,
   String? flavor,
 ) async {
-  final Image newFile = utils.createResizedImage(template.size, image);
+  final Image resizedImage = utils.createResizedImage(template.size, image);
   final pngFile = await File(
     constants.androidResFolder(flavor) +
         template.directoryName +
         '/' +
         filename,
   ).create(recursive: true);
-  await pngFile.writeAsBytes(encodePng(newFile));
-}
-
-/// Saves new launcher icons to the project, keeping the old launcher icons.
-/// Note: Do not change interpolation unless you end up with better results
-/// https://github.com/Quasiflo/launcher_icons/issues/101#issuecomment-495528733
-Future<void> _saveNewImages(
-  AndroidIconTemplate template,
-  Image image,
-  String iconFilePath,
-  String? flavor,
-) async {
-  final Image newImage = utils.createResizedImage(template.size, image);
-  final newFile = await File(
-    constants.androidResFolder(flavor) +
-        template.directoryName +
-        '/' +
-        iconFilePath,
-  ).create(recursive: true);
-  await newFile.writeAsBytes(encodePng(newImage));
+  await pngFile.writeAsBytes(encodePng(resizedImage));
 }
 
 /// Updates the line which specifies the launcher icon within the AndroidManifest.xml
