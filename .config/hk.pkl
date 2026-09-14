@@ -14,6 +14,21 @@ steps {
     check = "dart fix --dry-run"
     fix = "dart fix --apply"
   }
+  ["dart_codegen"] {
+    // Regenerates .g.dart / .mocks.dart. Check-only; there is no read-only
+    // freshness probe, so this runs in fix mode (pre-commit, hk fix) and is
+    // skipped by hk check. Plain `build` on purpose: never
+    // --delete-conflicting-outputs (it deletes the hand-maintained
+    // lib/src/version.dart).
+    glob = List(
+      "lib/**/*.dart",
+      "bin/**/*.dart",
+      "test/**/*.dart",
+      "pubspec.yaml",
+      "build.yaml",
+    )
+    fix = "dart run build_runner build"
+  }
   ["dart_format"] {
     glob = List("**/*.dart")
     check = "dart format --output=none --set-exit-if-changed {{files}}"
