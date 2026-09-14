@@ -59,6 +59,12 @@ class MockConfig extends _i1.Mock implements _i3.Config {
       ) as bool);
 
   @override
+  bool get hasAndroidAdaptiveRoundConfig => (super.noSuchMethod(
+        Invocation.getter(#hasAndroidAdaptiveRoundConfig),
+        returnValue: false,
+      ) as bool);
+
+  @override
   bool get hasPlatformConfig => (super.noSuchMethod(
         Invocation.getter(#hasPlatformConfig),
         returnValue: false,
