@@ -105,6 +105,9 @@ const String errorMissingImagePath =
     'Missing "image_path" or "image_path_android" + "image_path_ios" within configuration';
 const String errorMissingPlatform =
     'No platform specified within config to generate icons for.';
+const String errorNoPlatformEnabled =
+    'No platform enabled within config to generate icons for. '
+    'Set "generate: true" for at least one platform.';
 const String errorMissingRegularAndroid =
     'Adaptive icon config found but no regular Android config. '
     'Below API 26 the regular Android config is required';

@@ -368,6 +368,40 @@ launcher_icons:
     expect(config.hasPlatformConfig, isFalse);
   });
 
+  test('At least one platform enabled in config file', () {
+    final Map<String, dynamic> flutterIconsConfig = <String, dynamic>{
+      'image_path': 'assets/images/icon-710x599.png',
+      'android': {'generate': false},
+      'ios': {'generate': true},
+    };
+    final config = Config.fromJson(flutterIconsConfig);
+    expect(config.hasEnabledPlatform, isTrue);
+  });
+
+  test('No platform enabled when all generate flags are false', () {
+    final Map<String, dynamic> flutterIconsConfig = <String, dynamic>{
+      'image_path': 'assets/images/icon-710x599.png',
+      'android': {'generate': false},
+      'ios': {'generate': false},
+      'web': {'generate': false},
+      'windows': {'generate': false},
+      'macos': {'generate': false},
+      'linux': {'generate': false},
+    };
+    final config = Config.fromJson(flutterIconsConfig);
+    // Sections are present but nothing is enabled: presence is not intent.
+    expect(config.hasPlatformConfig, isTrue);
+    expect(config.hasEnabledPlatform, isFalse);
+  });
+
+  test('No platform enabled when no sections exist', () {
+    final Map<String, dynamic> flutterIconsConfig = <String, dynamic>{
+      'image_path': 'assets/images/icon-710x599.png',
+    };
+    final config = Config.fromJson(flutterIconsConfig);
+    expect(config.hasEnabledPlatform, isFalse);
+  });
+
   test('No new Android icon needed - android.generate: false', () {
     final Map<String, dynamic> flutterIconsConfig = <String, dynamic>{
       'image_path': 'assets/images/icon-710x599.png',
