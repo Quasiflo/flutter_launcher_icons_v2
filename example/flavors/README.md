@@ -53,7 +53,9 @@ catalog is always `AppIcon-<flavor>` (iOS/macOS) / `src/<flavor>/res`
   switch in `my_application.cc`.
 - **Windows**: `Runner.rc.in` / `main.cpp.in` templates configured with the
   per-flavor title and icon name. Matches
-  `docs.flutter.dev/deployment/flavors-windows`.
+  `docs.flutter.dev/deployment/flavors-windows`. (`Runner.rc` / `main.cpp`
+  are generated at build time — the checked-in copies reflect the last
+  flavor run.)
 - **Web**: no native flavors upstream; separation is via per-flavor
   `output_path`. Serve that directory when building
   (`flutter build web` serves `web/` unless reconfigured).
