@@ -53,8 +53,8 @@ List<IosIconTemplate> iosIcons = <IosIconTemplate>[
 ];
 
 /// create the ios icons
-Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) async {
-  // TODO(p-mazhnik): support prefixPath
+Future<void> createIcons(Config config, String? flavor,
+    {LILogger? logger, String prefixPath = '.',}) async {
   final String? filePath = config.getImagePathIOS();
   final String? darkFilePath = config.iosConfig?.imagePathDarkTransparent;
   final String? tintedFilePath = config.iosConfig?.imagePathTintedGrayscale;
@@ -65,16 +65,17 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
 
   // decodeImageFile throws on missing/undecodable files, so a specified
   // but bad path is a hard error rather than a silent skip.
-  Image image = await decodeImageFile(filePath);
+  Image image = await decodeImageFile(withPrefix(prefixPath, filePath));
 
   Image? darkImage;
   if (darkFilePath != null) {
-    darkImage = await decodeImageFile(darkFilePath);
+    darkImage = await decodeImageFile(withPrefix(prefixPath, darkFilePath));
   }
 
   Image? tintedImage;
   if (tintedFilePath != null) {
-    tintedImage = await decodeImageFile(tintedFilePath);
+    tintedImage =
+        await decodeImageFile(withPrefix(prefixPath, tintedFilePath));
     if (config.iosConfig!.desaturateTintedToGrayscale) {
       printStatus('Desaturating iOS tinted image to grayscale', logger);
       tintedImage = grayscale(tintedImage);
@@ -134,6 +135,7 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
           catalogName: catalogName,
           // Since this is the base icon name we are using the same name for the icon as the catalog name
           iconName: catalogName,
+          prefixPath: prefixPath,
         ),
       );
     }
@@ -148,6 +150,7 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
             image: darkImage,
             catalogName: catalogName,
             iconName: darkIconName,
+            prefixPath: prefixPath,
           ),
         );
       }
@@ -162,6 +165,7 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
             image: tintedImage,
             catalogName: catalogName,
             iconName: tintedIconName,
+            prefixPath: prefixPath,
           ),
         );
       }
@@ -171,12 +175,14 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
       catalogName,
       flavor,
       config.iosConfig?.xcodeprojPath,
+      prefixPath,
     );
     await modifyContentsFile(
       catalogName,
       darkIconName,
       tintedIconName,
       config.iosConfig?.singleSize ?? false,
+      prefixPath,
     );
   } else if (customIconName != null) {
     // If a custom icon_name is configured then the user has specified a new icon to be created
@@ -190,6 +196,7 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
           image: image,
           catalogName: 'AppIcon',
           iconName: newIconName,
+          prefixPath: prefixPath,
         ),
       );
     }
@@ -203,6 +210,7 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
             image: darkImage,
             catalogName: 'AppIcon',
             iconName: darkIconName,
+            prefixPath: prefixPath,
           ),
         );
       }
@@ -217,6 +225,7 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
             image: tintedImage,
             catalogName: 'AppIcon',
             iconName: tintedIconName,
+            prefixPath: prefixPath,
           ),
         );
       }
@@ -226,12 +235,14 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
       iconName,
       flavor,
       config.iosConfig?.xcodeprojPath,
+      prefixPath,
     );
     await modifyContentsFile(
       iconName,
       darkIconName,
       tintedIconName,
       config.iosConfig?.singleSize ?? false,
+      prefixPath,
     );
   }
   // Otherwise the user wants the new icon to use the default icons name and
@@ -239,7 +250,8 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
   else {
     printStatus('Overwriting default iOS launcher icon with new icon', logger);
     for (IosIconTemplate template in generateIosIcons) {
-      concurrentIconUpdates.add(overwriteDefaultIcons(template, image));
+      concurrentIconUpdates
+          .add(overwriteDefaultIcons(template, image, '', prefixPath));
     }
     if (darkImage != null) {
       printStatus(
@@ -247,8 +259,8 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
         logger,
       );
       for (IosIconTemplate template in generateIosIcons) {
-        concurrentIconUpdates
-            .add(overwriteDefaultIcons(template, darkImage, '-Dark'));
+        concurrentIconUpdates.add(
+            overwriteDefaultIcons(template, darkImage, '-Dark', prefixPath),);
       }
       darkIconName = iosDefaultIconName + '-Dark';
     }
@@ -258,8 +270,8 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
         logger,
       );
       for (IosIconTemplate template in generateIosIcons) {
-        concurrentIconUpdates
-            .add(overwriteDefaultIcons(template, tintedImage, '-Tinted'));
+        concurrentIconUpdates.add(
+            overwriteDefaultIcons(template, tintedImage, '-Tinted', prefixPath),);
       }
       tintedIconName = iosDefaultIconName + '-Tinted';
     }
@@ -268,6 +280,7 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
       'AppIcon',
       flavor,
       config.iosConfig?.xcodeprojPath,
+      prefixPath,
     );
     // Still need to modify the Contents.json file
     // since the user could have added dark and tinted icons
@@ -276,18 +289,21 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
       darkIconName,
       tintedIconName,
       config.iosConfig?.singleSize ?? false,
+      prefixPath,
     );
   }
   await Future.wait(concurrentIconUpdates);
 
   // Generate liquid glass .icon if configured
   if (config.hasLiquidGlassIconConfig) {
-    await generateLiquidGlassIcon(config, catalogName, logger: logger);
+    await generateLiquidGlassIcon(config, catalogName,
+        logger: logger, prefixPath: prefixPath,);
     // Add .icon file reference to project.pbxproj
     await addLiquidGlassIconToProject(
       catalogName,
       config.iosConfig?.xcodeprojPath,
       logger,
+      prefixPath,
     );
   }
 }
@@ -296,14 +312,18 @@ Future<void> overwriteDefaultIcons(
   IosIconTemplate template,
   Image image, [
   String iconNameSuffix = '',
+  String prefixPath = '.',
 ]) async {
   final Image newImage = createResizedImage(template.size, image);
   await File(
-    iosDefaultIconFolder +
-        iosDefaultIconName +
-        iconNameSuffix +
-        template.name +
-        '.png',
+    withPrefix(
+      prefixPath,
+      iosDefaultIconFolder +
+          iosDefaultIconName +
+          iconNameSuffix +
+          template.name +
+          '.png',
+    ),
   ).writeAsBytes(encodePng(newImage));
 }
 
@@ -312,11 +332,12 @@ Future<void> saveNewIcons({
   required Image image,
   required String catalogName,
   required String iconName,
+  String prefixPath = '.',
 }) async {
   final String newIconFolder = iosAssetFolder + catalogName + '.appiconset/';
   final Image newImage = createResizedImage(template.size, image);
   final newFile = await createFileIfNotExist(
-    newIconFolder + iconName + template.name + '.png',
+    withPrefix(prefixPath, newIconFolder + iconName + template.name + '.png'),
   );
   await newFile.writeAsBytes(encodePng(newImage));
 }
@@ -326,8 +347,10 @@ Future<void> addLiquidGlassIconToProject(
   String iconName, [
   String? xcodeprojPath,
   LILogger? logger,
+  String prefixPath = '.',
 ]) async {
-  final resolvedPath = resolveIosPbxprojPath(xcodeprojPath) ?? iosConfigFile;
+  final resolvedPath =
+      resolveIosPbxprojPath(xcodeprojPath, prefixPath) ?? withPrefix(prefixPath, iosConfigFile);
   final File iOSConfigFile = File(resolvedPath);
   if (!iOSConfigFile.existsSync()) {
     printStatus(
@@ -521,14 +544,15 @@ String _generateUniqueId(String fileName, String projectFile) {
 /// `ios/Runner.xcodeproj` location, then the first `*.xcodeproj` found under
 /// `ios/` so renamed Runner projects keep working (#543). Returns `null`
 /// when no project file exists.
-String? resolveIosPbxprojPath([String? xcodeprojPath]) {
+String? resolveIosPbxprojPath([String? xcodeprojPath, String prefixPath = '.']) {
   if (xcodeprojPath != null) {
     return '$xcodeprojPath/project.pbxproj';
   }
-  if (File(iosConfigFile).existsSync()) {
-    return iosConfigFile;
+  final standardPath = withPrefix(prefixPath, iosConfigFile);
+  if (File(standardPath).existsSync()) {
+    return standardPath;
   }
-  final iosDir = Directory('ios');
+  final iosDir = Directory(withPrefix(prefixPath, 'ios'));
   if (iosDir.existsSync()) {
     final candidates = iosDir
         .listSync()
@@ -551,10 +575,12 @@ Future<void> changeIosLauncherIcon(
   String iconName,
   String? flavor, [
   String? xcodeprojPath,
+  String prefixPath = '.',
 ]) async {
   // Falls back to the standard location so a missing project still fails
   // with the historical PathNotFoundException.
-  final resolvedPath = resolveIosPbxprojPath(xcodeprojPath) ?? iosConfigFile;
+  final resolvedPath = resolveIosPbxprojPath(xcodeprojPath, prefixPath) ??
+      withPrefix(prefixPath, iosConfigFile);
   final File iOSConfigFile = File(resolvedPath);
   final List<String> lines = await iOSConfigFile.readAsLines();
 
@@ -613,9 +639,12 @@ Future<void> modifyContentsFile(
   String? darkIconName,
   String? tintedIconName, [
   bool singleSize = false,
+  String prefixPath = '.',
 ]) async {
-  final String newContentsFilename =
-      iosAssetFolder + newIconName + '.appiconset/Contents.json';
+  final String newContentsFilename = withPrefix(
+    prefixPath,
+    iosAssetFolder + newIconName + '.appiconset/Contents.json',
+  );
   final contentsJsonFile = await createFileIfNotExist(newContentsFilename);
   final String contentsFileContent = generateContentsFileAsString(
     newIconName,
@@ -632,9 +661,12 @@ Future<void> modifyDefaultContentsFile(
   String? darkIconName,
   String? tintedIconName, [
   bool singleSize = false,
+  String prefixPath = '.',
 ]) async {
-  const String newIconFolder =
-      iosAssetFolder + 'AppIcon.appiconset/Contents.json';
+  final String newIconFolder = withPrefix(
+    prefixPath,
+    iosAssetFolder + 'AppIcon.appiconset/Contents.json',
+  );
   final contentsJsonFile = await createFileIfNotExist(newIconFolder);
   final String contentsFileContent = generateContentsFileAsString(
     newIconName,

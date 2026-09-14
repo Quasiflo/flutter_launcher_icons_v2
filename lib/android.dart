@@ -39,15 +39,17 @@ Future<void> createDefaultIcons(
   Config config,
   String? flavor, {
   LILogger? logger,
+  String prefixPath = '.',
 }) async {
   utils.printStatus('Creating default icons Android', logger);
-  // TODO(p-mazhnik): support prefixPath
   final String? filePath = config.getImagePathAndroid();
   if (filePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
-  final Image image = await utils.decodeImageFile(filePath);
-  final File androidManifestFile = File(constants.androidManifestFile);
+  final Image image =
+      await utils.decodeImageFile(utils.withPrefix(prefixPath, filePath));
+  final File androidManifestFile =
+      File(utils.withPrefix(prefixPath, constants.androidManifestFile));
   final concurrentIconUpdates = <Future<void>>[];
   if (config.isCustomAndroidFile) {
     utils.printStatus('Adding a new Android launcher icon', logger);
@@ -55,7 +57,8 @@ Future<void> createDefaultIcons(
     isAndroidIconNameCorrectFormat(iconName);
     final String iconPath = '$iconName.png';
     for (AndroidIconTemplate template in androidIcons) {
-      concurrentIconUpdates.add(writeResizedPng(template, image, iconPath, flavor));
+      concurrentIconUpdates.add(
+          writeResizedPng(template, image, iconPath, flavor, prefixPath: prefixPath),);
     }
     await overwriteAndroidManifestWithNewLauncherIcon(
         iconName, androidManifestFile,);
@@ -71,6 +74,7 @@ Future<void> createDefaultIcons(
           image,
           constants.androidFileName,
           flavor,
+          prefixPath: prefixPath,
         ),
       );
     }
@@ -97,6 +101,7 @@ Future<void> createAdaptiveIcons(
   Config config,
   String? flavor, {
   LILogger? logger,
+  String prefixPath = '.',
 }) async {
   utils.printStatus('Creating adaptive icons Android', logger);
 
@@ -107,8 +112,8 @@ Future<void> createAdaptiveIcons(
   if (backgroundConfig == null || foregroundImagePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
-  final Image foregroundImage =
-      await utils.decodeImageFile(foregroundImagePath);
+  final Image foregroundImage = await utils.decodeImageFile(
+      utils.withPrefix(prefixPath, foregroundImagePath),);
 
   final concurrentImageUpdates = <Future<void>>[];
   // Create adaptive icon foreground images
@@ -119,6 +124,7 @@ Future<void> createAdaptiveIcons(
         foregroundImage,
         constants.androidAdaptiveForegroundFileName,
         flavor,
+        prefixPath: prefixPath,
       ),
     );
   }
@@ -135,10 +141,12 @@ Future<void> createAdaptiveIcons(
         config,
         backgroundConfig,
         flavor,
+        prefixPath: prefixPath,
       ),
     );
   } else {
-    await updateColorsXmlFile(backgroundConfig, flavor, logger: logger);
+    await updateColorsXmlFile(backgroundConfig, flavor,
+        logger: logger, prefixPath: prefixPath,);
   }
   await Future.wait(concurrentImageUpdates);
 }
@@ -147,6 +155,7 @@ Future<void> createAdaptiveMonochromeIcons(
   Config config,
   String? flavor, {
   LILogger? logger,
+  String prefixPath = '.',
 }) async {
   utils.printStatus('Creating adaptive monochrome icons Android', logger);
 
@@ -156,8 +165,8 @@ Future<void> createAdaptiveMonochromeIcons(
   if (monochromeImagePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
-  final Image monochromeImage =
-      await utils.decodeImageFile(monochromeImagePath);
+  final Image monochromeImage = await utils.decodeImageFile(
+      utils.withPrefix(prefixPath, monochromeImagePath),);
 
   final concurrentIconUpdates = <Future<void>>[];
   // Create adaptive icon monochrome images
@@ -168,6 +177,7 @@ Future<void> createAdaptiveMonochromeIcons(
         monochromeImage,
         constants.androidAdaptiveMonochromeFileName,
         flavor,
+        prefixPath: prefixPath,
       ),
     );
   }
@@ -178,6 +188,7 @@ Future<void> createMipmapXmlFile(
   Config config,
   String? flavor, {
   LILogger? logger,
+  String prefixPath = '.',
 }) async {
   // Note: Adaptive Icons will only be used when both
   // `adaptive_icon_background` and `adaptive_icon_foreground` or
@@ -187,7 +198,8 @@ Future<void> createMipmapXmlFile(
       !config.hasAndroidAdaptiveMonochromeConfig) {
     // No adaptive icons requested: clear leftovers from a previous adaptive
     // configuration so they cannot shadow the fresh icons (#328).
-    await _removeStaleAdaptiveIcons(config, flavor, logger: logger);
+    await _removeStaleAdaptiveIcons(config, flavor,
+        logger: logger, prefixPath: prefixPath,);
     return;
   }
 
@@ -231,15 +243,21 @@ Future<void> createMipmapXmlFile(
   late File mipmapXmlFile;
   if (config.isCustomAndroidFile) {
     mipmapXmlFile = await utils.createFileIfNotExist(
-      constants.androidAdaptiveXmlFolder(flavor) +
-          androidConfig.iconName! +
-          '.xml',
+      utils.withPrefix(
+        prefixPath,
+        constants.androidAdaptiveXmlFolder(flavor) +
+            androidConfig.iconName! +
+            '.xml',
+      ),
     );
   } else {
     mipmapXmlFile = await utils.createFileIfNotExist(
-      constants.androidAdaptiveXmlFolder(flavor) +
-          constants.androidDefaultIconName +
-          '.xml',
+      utils.withPrefix(
+        prefixPath,
+        constants.androidAdaptiveXmlFolder(flavor) +
+            constants.androidDefaultIconName +
+            '.xml',
+      ),
     );
   }
 
@@ -258,6 +276,7 @@ Future<void> _removeStaleAdaptiveIcons(
   Config config,
   String? flavor, {
   LILogger? logger,
+  String prefixPath = '.',
 }) async {
   final xmlNames = <String>{constants.androidDefaultIconName};
   final customName = config.androidConfig?.iconName;
@@ -266,17 +285,23 @@ Future<void> _removeStaleAdaptiveIcons(
   }
   final stalePaths = <String>[
     for (final name in xmlNames)
-      constants.androidAdaptiveXmlFolder(flavor) + name + '.xml',
+      utils.withPrefix(
+        prefixPath,
+        constants.androidAdaptiveXmlFolder(flavor) + name + '.xml',
+      ),
     for (final template in adaptiveForegroundIcons)
       for (final fileName in [
         constants.androidAdaptiveForegroundFileName,
         constants.androidAdaptiveBackgroundFileName,
         constants.androidAdaptiveMonochromeFileName,
       ])
-        constants.androidResFolder(flavor) +
-            template.directoryName +
-            '/' +
-            fileName,
+        utils.withPrefix(
+          prefixPath,
+          constants.androidResFolder(flavor) +
+              template.directoryName +
+              '/' +
+              fileName,
+        ),
   ];
   for (final filePath in stalePaths) {
     final file = File(filePath);
@@ -299,8 +324,10 @@ Future<void> updateColorsXmlFile(
   String backgroundConfig,
   String? flavor, {
   LILogger? logger,
+  String prefixPath = '.',
 }) async {
-  final File colorsXml = File(constants.androidColorsFile(flavor));
+  final File colorsXml =
+      File(utils.withPrefix(prefixPath, constants.androidColorsFile(flavor)));
   // Using the sync method here due to `avoid_slow_async_io` lint suggestion.
   if (colorsXml.existsSync()) {
     utils.printStatus(
@@ -317,7 +344,8 @@ Future<void> updateColorsXmlFile(
       'Creating colors.xml file and adding it to your Android project',
       logger,
     );
-    await createNewColorsFile(backgroundConfig, flavor);
+    await createNewColorsFile(backgroundConfig, flavor,
+        prefixPath: prefixPath,);
   }
 }
 
@@ -325,10 +353,12 @@ Future<void> updateColorsXmlFile(
 Future<void> _createAdaptiveBackgrounds(
   Config config,
   String adaptiveIconBackgroundImagePath,
-  String? flavor,
-) async {
+  String? flavor, {
+  String prefixPath = '.',
+}) async {
   final String filePath = adaptiveIconBackgroundImagePath;
-  final Image image = await utils.decodeImageFile(filePath);
+  final Image image =
+      await utils.decodeImageFile(utils.withPrefix(prefixPath, filePath));
 
   final concurrentImageUpdates = <Future<void>>[];
   // creates a png image (ic_adaptive_background.png) for the adaptive icon background in each of the locations
@@ -340,6 +370,7 @@ Future<void> _createAdaptiveBackgrounds(
         image,
         constants.androidAdaptiveBackgroundFileName,
         flavor,
+        prefixPath: prefixPath,
       ),
     );
   }
@@ -347,9 +378,10 @@ Future<void> _createAdaptiveBackgrounds(
 }
 
 /// Creates a colors.xml file if it was missing from android/app/src/main/res/values/colors.xml
-Future<void> createNewColorsFile(String backgroundColor, String? flavor) async {
+Future<void> createNewColorsFile(String backgroundColor, String? flavor,
+    {String prefixPath = '.',}) async {
   final colorsFile = await utils.createFileIfNotExist(
-    constants.androidColorsFile(flavor),
+    utils.withPrefix(prefixPath, constants.androidColorsFile(flavor)),
   );
   await colorsFile.writeAsString(xml_template.colorsXml);
   await updateColorsFile(colorsFile, backgroundColor);
@@ -396,14 +428,18 @@ Future<void> writeResizedPng(
   AndroidIconTemplate template,
   Image image,
   String filename,
-  String? flavor,
-) async {
+  String? flavor, {
+  String prefixPath = '.',
+}) async {
   final Image resizedImage = utils.createResizedImage(template.size, image);
   final pngFile = await utils.createFileIfNotExist(
-    constants.androidResFolder(flavor) +
-        template.directoryName +
-        '/' +
-        filename,
+    utils.withPrefix(
+      prefixPath,
+      constants.androidResFolder(flavor) +
+          template.directoryName +
+          '/' +
+          filename,
+    ),
   );
   await pngFile.writeAsBytes(encodePng(resizedImage));
 }
