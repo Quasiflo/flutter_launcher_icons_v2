@@ -164,6 +164,20 @@ class MockMacOSConfig extends _i1.Mock implements _i4.MacOSConfig {
       ) as bool);
 
   @override
+  int get padding => (super.noSuchMethod(
+        Invocation.getter(#padding),
+        returnValue: 0,
+        returnValueForMissingStub: 0,
+      ) as int);
+
+  @override
+  bool get roundedCorners => (super.noSuchMethod(
+        Invocation.getter(#roundedCorners),
+        returnValue: false,
+        returnValueForMissingStub: false,
+      ) as bool);
+
+  @override
   Map<String, dynamic> toJson() => (super.noSuchMethod(
         Invocation.method(
           #toJson,

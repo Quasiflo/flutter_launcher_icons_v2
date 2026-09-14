@@ -125,6 +125,8 @@ void main() {
           equals(<String, dynamic>{
             'generate': true,
             'image_path': 'app_icon.png',
+            'padding': 0,
+            'rounded_corners': false,
           }),
         );
         // linux
@@ -301,6 +303,8 @@ void main() {
           equals(<String, dynamic>{
             'generate': true,
             'image_path': 'app_icon.png',
+            'padding': 0,
+            'rounded_corners': false,
           }),
         );
         // linux
@@ -399,6 +403,8 @@ void main() {
           equals(<String, dynamic>{
             'generate': true,
             'image_path': 'app_icon.png',
+            'padding': 0,
+            'rounded_corners': false,
           }),
         );
         // linux

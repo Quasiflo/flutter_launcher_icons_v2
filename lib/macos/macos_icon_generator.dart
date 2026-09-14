@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter_launcher_icons/abs/icon_generator.dart';
 import 'package:flutter_launcher_icons/constants.dart' as constants;
 import 'package:flutter_launcher_icons/custom_exceptions.dart';
+import 'package:flutter_launcher_icons/macos/macos_icon_effects.dart'
+    as effects;
 import 'package:flutter_launcher_icons/macos/macos_icon_template.dart';
 import 'package:flutter_launcher_icons/utils.dart' as utils;
 import 'package:image/image.dart';
@@ -118,9 +120,16 @@ class MacOSIconGenerator extends IconGenerator {
     final iconsDir = await utils.createDirIfNotExist(
       path.join(context.prefixPath, _iconsDirPath()),
     );
+    final padding = context.macOSConfig?.padding ?? 0;
+    final roundedCorners = context.macOSConfig?.roundedCorners ?? false;
 
     for (final template in _iconSizeTemplates) {
-      final resizedImg = utils.createResizedImage(template.scaledSize, image);
+      final resizedImg = effects.buildMacOSIconImage(
+        image,
+        template.scaledSize,
+        paddingPercent: padding,
+        roundedCorners: roundedCorners,
+      );
       final iconFile = await utils.createFileIfNotExist(
         path.join(context.prefixPath, iconsDir.path, template.iconFile),
       );

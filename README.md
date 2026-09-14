@@ -214,6 +214,8 @@ foreground of the Android 13+ themed icon. For more information see [Android Ada
 - `macos`: Add MacOS related configs
   - `generate`: Specifies whether to generate icons for MacOS platform or not
   - `image_path`: Path to macos icon.png file
+  - `padding`: Safe-area margin as a percent of the icon size on every side (artwork is scaled into the inner area and centered on a transparent canvas). `0` disables it. Prefer a `1024x1024` source so upscaling doesn't soften edges.
+  - `rounded_corners`: Mask the icon corners with an Apple-like rounded shape, *defaults to false*
   - Flavors: a flavor run writes `AppIcon-<flavor>.appiconset`; select it in Xcode under `Build Settings` > `Asset Catalog App Icon Set Name`.
 
 *Note: macOS icons are resized copies of your source image — transparency is preserved, not filled (unlike iOS `remove_alpha`). Prefer an opaque source image: transparent regions can render unpredictably under system themes (e.g. macOS Tahoe), and macOS will not round the artwork for you.*
