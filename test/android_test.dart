@@ -216,6 +216,28 @@ android {
       ).readAsStringSync();
       expect(mipmapXml, contains('@color/ic_launcher_background'));
     });
+
+    test('bare hex background gains a # prefix in colors.xml (#673)',
+        () async {
+      final config = Config.fromJson(<String, dynamic>{
+        'android': {
+          'generate': true,
+          'adaptive_icon_background': 'ffffff',
+          'adaptive_icon_foreground': 'app_icon.png',
+        },
+      });
+
+      await android.createAdaptiveIcons(config, null);
+
+      final colorsFile = File(androidColorsFile(null));
+      expect(colorsFile.existsSync(), isTrue);
+      expect(
+        colorsFile.readAsStringSync(),
+        contains(
+          '<color name="ic_launcher_background">#ffffff</color>',
+        ),
+      );
+    });
   });
 
   test('Correct number of adaptive foreground icons', () {
