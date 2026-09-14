@@ -20,6 +20,15 @@ class WebConfig {
   @JsonKey(name: 'image_path_favicon')
   final String? imagePathFavicon;
 
+  /// Dedicated maskable-icon source (opaque, full-bleed, safe-zone aware).
+  ///
+  /// When omitted, the maskable files are derived from the base image:
+  /// the logo is scaled to ~80% and centered on the opaque
+  /// `background_color` (white fallback) so the outer edge survives
+  /// maskable cropping.
+  @JsonKey(name: 'image_path_maskable')
+  final String? imagePathMaskable;
+
   /// Output directory for web icons (default `web`).
   ///
   /// Lets flavors (or custom setups) target different web roots, e.g.
@@ -44,6 +53,7 @@ class WebConfig {
     this.generate = false,
     this.imagePath,
     this.imagePathFavicon,
+    this.imagePathMaskable,
     this.faviconSize = constants.kFaviconSize,
     this.outputPath = 'web',
     this.backgroundColor,
