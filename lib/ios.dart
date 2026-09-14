@@ -88,18 +88,17 @@ Future<void> createIcons(Config config, String? flavor,
     if (config.iosConfig!.desaturateTintedToGrayscale) {
       printStatus('Desaturating iOS tinted image to grayscale', logger);
       tintedImage = grayscale(tintedImage);
-    } else {
-      // Check if the image is already grayscale
-      final pixel = tintedImage.getPixel(0, 0);
-      do {
-        if (pixel.r != pixel.g || pixel.g != pixel.b) {
-          printStatus(
-            '\nWARNING: Tinted iOS image is not grayscale.\nSet "ios.desaturate_tinted_to_grayscale: true" to desaturate it.\n',
-            logger,
-          );
-          break;
-        }
-      } while (pixel.moveNext());
+    } else if (!isGrayscaleImage(tintedImage)) {
+      // Apple's guidance (HIG > App icons,
+      // https://developer.apple.com/design/human-interface-guidelines/app-icons):
+      // the dark variant is a transparent-background design the system
+      // background shows through, while the tinted variant must read as a
+      // single-color silhouette — i.e. grayscale. Never validate dark
+      // transparency away; warn on tinted color instead.
+      printStatus(
+        '\nWARNING: Tinted iOS image is not grayscale.\nSet "ios.desaturate_tinted_to_grayscale: true" to desaturate it.\n',
+        logger,
+      );
     }
   }
 
@@ -353,6 +352,43 @@ Future<void> createIcons(Config config, String? flavor,
       prefixPath,
     );
   }
+}
+
+/// Whether [image] reads as grayscale, sampled on an 8x8 grid (64 reads
+/// regardless of image size) instead of a full O(n) pixel walk.
+///
+/// A sample counts as colored when its channel spread exceeds 8 levels,
+/// tolerating JPEG-style compression noise around true gray. Checking one
+/// pixel (or every pixel) is the wrong trade-off: a single origin sample
+/// misses off-center color, while a full scan costs millions of reads on a
+/// 1024px source to answer a boolean.
+bool isGrayscaleImage(Image image, {int gridDivisions = 8}) {
+  assert(gridDivisions > 0, 'gridDivisions must be positive');
+  for (var row = 0; row < gridDivisions; row++) {
+    final y = ((row + 0.5) * image.height / gridDivisions).floor().clamp(
+          0,
+          image.height - 1,
+        );
+    for (var col = 0; col < gridDivisions; col++) {
+      final x = ((col + 0.5) * image.width / gridDivisions).floor().clamp(
+            0,
+            image.width - 1,
+          );
+      final pixel = image.getPixel(x, y);
+      final r = pixel.r.toInt();
+      final g = pixel.g.toInt();
+      final b = pixel.b.toInt();
+      final spread = [
+        (r - g).abs(),
+        (g - b).abs(),
+        (r - b).abs(),
+      ].reduce((a, c) => a > c ? a : c);
+      if (spread > 8) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 Future<void> overwriteDefaultIcons(
