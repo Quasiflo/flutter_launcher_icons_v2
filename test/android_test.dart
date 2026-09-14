@@ -265,6 +265,38 @@ android {
       );
       expect(mipmapXml, isNot(contains('@color/ic_launcher_background')));
     });
+
+    test('removes stale adaptive artifacts without adaptive config (#328)',
+        () async {
+      final staleXml = File(
+        path.join(androidAdaptiveXmlFolder(null), androidDefaultIconName) +
+            '.xml',
+      );
+      await staleXml.create(recursive: true);
+      await staleXml.writeAsString('<stale/>');
+      final staleForeground = File(
+        path.join(
+          'android',
+          'app',
+          'src',
+          'main',
+          'res',
+          'drawable-mdpi',
+          androidAdaptiveForegroundFileName,
+        ),
+      );
+      await staleForeground.create(recursive: true);
+      await staleForeground.writeAsBytes([0]);
+
+      final config = Config.fromJson(<String, dynamic>{
+        'android': {'generate': true},
+      });
+
+      await android.createMipmapXmlFile(config, null);
+
+      expect(staleXml.existsSync(), isFalse);
+      expect(staleForeground.existsSync(), isFalse);
+    });
   });
 
   test('Correct number of adaptive foreground icons', () {
