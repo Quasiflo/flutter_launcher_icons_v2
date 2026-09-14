@@ -15,21 +15,10 @@ class WindowsConfig {
   @JsonKey(name: 'image_path')
   final String? imagePath;
 
-  /// DEPRECATED: kept only for backward-compat. Ignored by the generator.
-  @Deprecated(
-    'Ignored. Windows .ico is generated with multiple sizes by default.',
-  )
-  @JsonKey(name: 'icon_size')
-  final int? iconSize;
-
   /// Creates a instance of [WindowsConfig]
   const WindowsConfig({
     this.generate = false,
     this.imagePath,
-    @Deprecated(
-      'Ignored. Windows .ico is generated with multiple sizes by default.',
-    )
-    this.iconSize,
   });
 
   /// Creates [WindowsConfig] from [json]

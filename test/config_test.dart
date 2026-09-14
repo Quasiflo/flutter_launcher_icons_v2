@@ -108,14 +108,12 @@ void main() {
         // windows
         expect(configs.windowsConfig, isNotNull);
         expect(configs.windowsConfig!.generate, isNotNull);
-        expect(configs.windowsConfig!.iconSize, isNotNull);
         expect(configs.windowsConfig!.imagePath, isNotNull);
         expect(
           configs.windowsConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
             'image_path': 'app_icon.png',
-            'icon_size': 48,
           }),
         );
         // macos
@@ -288,14 +286,12 @@ void main() {
         // windows
         expect(configs.windowsConfig, isNotNull);
         expect(configs.windowsConfig!.generate, isNotNull);
-        expect(configs.windowsConfig!.iconSize, isNotNull);
         expect(configs.windowsConfig!.imagePath, isNotNull);
         expect(
           configs.windowsConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
             'image_path': 'app_icon.png',
-            'icon_size': 48,
           }),
         );
         // macos
@@ -390,14 +386,12 @@ void main() {
         // windows
         expect(configs.windowsConfig, isNotNull);
         expect(configs.windowsConfig!.generate, isNotNull);
-        expect(configs.windowsConfig!.iconSize, isNotNull);
         expect(configs.windowsConfig!.imagePath, isNotNull);
         expect(
           configs.windowsConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
             'image_path': 'app_icon.png',
-            'icon_size': 48,
           }),
         );
         // macos

@@ -57,14 +57,6 @@ class WindowsIconGenerator extends IconGenerator {
       return false;
     }
 
-    // DEPRECATED: read only to warn, then ignored.
-    // ignore: deprecated_member_use_from_same_package
-    if (windowsConfig.iconSize != null) {
-      context.logger.info(
-        'DEPRECATED: `windows.icon_size` is ignored. The generator now '
-        'produces a multi-size .ico (${_icoSizes.join(', ')}).',
-      );
-    }
     final entitesToCheck = [
       path.join(context.prefixPath, constants.windowsDirPath),
       path.join(
