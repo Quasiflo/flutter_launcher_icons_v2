@@ -157,4 +157,19 @@ launcher_icons:
   linux:
     generate: true
     image_path: "path/to/image.png"
+
+  # Per-flavor variants can live in this file (or pubspec.yaml) as
+  # launcher_icons-<flavor> sections instead of one
+  # launcher_icons-<flavor>.yaml file per flavor. Each section has the same
+  # shape as launcher_icons: above and stands alone. Run all flavors with
+  # `dart run launcher_icons`, or one with
+  # `dart run launcher_icons --flavor <name>`.
+  # launcher_icons-development:
+  #   image_path: "assets/icon/icon-dev.png"
+  #   android:
+  #     generate: true
+  # launcher_icons-production:
+  #   image_path: "assets/icon/icon-prod.png"
+  #   android:
+  #     generate: true
 ''';
