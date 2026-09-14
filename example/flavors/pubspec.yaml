@@ -127,30 +127,30 @@ flutter:
 # catalog is always `AppIcon-<flavor>` (iOS/macOS) / `src/<flavor>/res`
 # (Android), so a custom name would be ignored.
 launcher_icons-development:
-    image_path: "assets/icon/icon-dev.png"
+    image_path: "assets/icon/icon-dev.svg"
 
     android:
       generate: true
-      image_path: "assets/icon/icon-dev.png"
+      image_path: "assets/icon/icon-dev.svg"
       adaptive_icon_background: "transparent" # keyword: no colors.xml entry
-      adaptive_icon_foreground: "assets/icon/icon-dev-foreground.png"
+      adaptive_icon_foreground: "assets/icon/icon-dev-foreground.svg"
       adaptive_icon_foreground_inset: 16
-      adaptive_icon_monochrome: "assets/icon/icon-dev-monochrome.png"
-      adaptive_icon_round: "assets/icon/icon-dev-round.png"
+      adaptive_icon_monochrome: "assets/icon/icon-dev-monochrome.svg"
+      adaptive_icon_round: "assets/icon/icon-dev-round.svg"
       play_store_icon: true
 
     ios:
       generate: true
       single_size: false
-      image_path: "assets/icon/icon-dev.png"
+      image_path: "assets/icon/icon-dev.svg"
       xcodeproj_path: "ios/Runner.xcodeproj"
       flavor_mode: "pbxproj" # rewrites ASSETCATALOG_COMPILER_APPICON_NAME
       remove_alpha: true # matte below blended onto background_color
       background_color: "#123456"
-      image_path_dark_transparent: "assets/icon/icon-dev-dark.png"
-      image_path_tinted_grayscale: "assets/icon/icon-dev-tinted.png"
+      image_path_dark_transparent: "assets/icon/icon-dev-dark.svg"
+      image_path_tinted_grayscale: "assets/icon/icon-dev-tinted.svg"
       desaturate_tinted_to_grayscale: true
-      image_path_liquid_glass_icon: "assets/icon/icon-dev.png"
+      image_path_liquid_glass_icon: "assets/icon/icon-dev.svg"
       remove_liquid_glass: false
       liquid_glass_icon_scale: 1.0
       liquid_glass_translucency: 0.5
@@ -163,9 +163,9 @@ launcher_icons-development:
 
     web:
       generate: true
-      image_path: "assets/icon/icon-dev.png"
-      image_path_favicon: "assets/icon/icon-dev-favicon.png"
-      image_path_maskable: "assets/icon/icon-dev-maskable.png"
+      image_path: "assets/icon/icon-dev.svg"
+      image_path_favicon: "assets/icon/icon-dev-favicon.svg"
+      image_path_maskable: "assets/icon/icon-dev-maskable.svg"
       favicon_size: 16
       favicon_ico: true
       output_path: "web_development"
@@ -174,18 +174,18 @@ launcher_icons-development:
 
     windows:
       generate: true
-      image_path: "assets/icon/icon-dev.png"
+      image_path: "assets/icon/icon-dev.svg"
       icon_filename: "app_icon_development.ico"
 
     macos:
       generate: true
-      image_path: "assets/icon/icon-dev.png"
+      image_path: "assets/icon/icon-dev.svg"
       padding: 10
       rounded_corners: true
 
     linux:
       generate: true
-      image_path: "assets/icon/icon-dev.png"
+      image_path: "assets/icon/icon-dev.svg"
 
 # Production flavor — the opaque full-bleed + liquid-glass showcase.
 #
@@ -196,32 +196,32 @@ launcher_icons-development:
 # catalog is always `AppIcon-<flavor>` (iOS/macOS) / `src/<flavor>/res`
 # (Android), so a custom name would be ignored.
 launcher_icons-production:
-    image_path: "assets/icon/icon-prod.png"
+    image_path: "assets/icon/icon-prod.svg"
 
     android:
       generate: true
-      image_path: "assets/icon/icon-prod.png"
-      adaptive_icon_background: "assets/icon/icon-prod-background.png"
-      adaptive_icon_foreground: "assets/icon/icon-prod-foreground.png"
+      image_path: "assets/icon/icon-prod.svg"
+      adaptive_icon_background: "assets/icon/icon-prod-background.svg"
+      adaptive_icon_foreground: "assets/icon/icon-prod-foreground.svg"
       adaptive_icon_foreground_inset: 10
-      adaptive_icon_monochrome: "assets/icon/icon-prod-monochrome.png"
-      adaptive_icon_round: "assets/icon/icon-prod-round.png"
+      adaptive_icon_monochrome: "assets/icon/icon-prod-monochrome.svg"
+      adaptive_icon_round: "assets/icon/icon-prod-round.svg"
       play_store_icon: false
 
     ios:
       generate: true
       single_size: false
-      image_path: "assets/icon/icon-prod.png"
+      image_path: "assets/icon/icon-prod.svg"
       xcodeproj_path: "ios/Runner.xcodeproj"
       flavor_mode: "xcconfig" # writes ios/Flutter/<flavor>-<Mode>.xcconfig
       remove_alpha: false # art is already opaque; nothing to blend
       background_color: "#ffffff"
-      image_path_dark_transparent: "assets/icon/icon-prod-dark.png"
-      image_path_tinted_grayscale: "assets/icon/icon-prod-tinted.png"
+      image_path_dark_transparent: "assets/icon/icon-prod-dark.svg"
+      image_path_tinted_grayscale: "assets/icon/icon-prod-tinted.svg"
       desaturate_tinted_to_grayscale: false
-      image_path_liquid_glass_icon: "assets/icon/icon-prod-glass.png"
-      image_path_liquid_glass_icon_dark: "assets/icon/icon-prod-glass-dark.png"
-      image_path_liquid_glass_icon_tinted: "assets/icon/icon-prod-glass-tinted.png"
+      image_path_liquid_glass_icon: "assets/icon/icon-prod-glass.svg"
+      image_path_liquid_glass_icon_dark: "assets/icon/icon-prod-glass-dark.svg"
+      image_path_liquid_glass_icon_tinted: "assets/icon/icon-prod-glass-tinted.svg"
       remove_liquid_glass: false
       liquid_glass_icon_scale: 0.9
       liquid_glass_translucency: 0.7
@@ -239,8 +239,8 @@ launcher_icons-production:
 
     web:
       generate: true
-      image_path: "assets/icon/icon-prod.png"
-      image_path_favicon: "assets/icon/icon-prod-favicon.png"
+      image_path: "assets/icon/icon-prod.svg"
+      image_path_favicon: "assets/icon/icon-prod-favicon.svg"
       # no image_path_maskable: derives a padded fallback from the logo (warns)
       favicon_size: 32
       favicon_ico: false # ship the PNG only
@@ -250,15 +250,15 @@ launcher_icons-production:
 
     windows:
       generate: true
-      image_path: "assets/icon/icon-prod.png"
+      image_path: "assets/icon/icon-prod.svg"
       icon_filename: "app_icon.ico"
 
     macos:
       generate: true
-      image_path: "assets/icon/icon-prod.png"
+      image_path: "assets/icon/icon-prod.svg"
       padding: 0
       rounded_corners: false
 
     linux:
       generate: true
-      image_path: "assets/icon/icon-prod.png"
+      image_path: "assets/icon/icon-prod.svg"

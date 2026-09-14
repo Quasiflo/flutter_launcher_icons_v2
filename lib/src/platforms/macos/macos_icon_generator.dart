@@ -59,10 +59,14 @@ class MacOSIconGenerator extends IconGenerator {
 
     context.logger
         .verbose('Decoding and loading image file at $imgFilePath...');
-    final imgFile = await utils.decodeImageFile(imgFilePath);
+    final loadArtwork = await utils.sizeImageLoaderFor(
+      imgFilePath,
+      perSize: context.config.svgRasterizePerSize,
+      logger: context.logger,
+    );
 
     context.logger.verbose('Generating icons $imgFilePath...');
-    await _generateIcons(imgFile);
+    await _generateIcons(loadArtwork);
     context.logger.verbose('Updating contents.json');
     _updateContentsFile();
 
@@ -161,7 +165,9 @@ class MacOSIconGenerator extends IconGenerator {
     return true;
   }
 
-  Future<void> _generateIcons(Image image) async {
+  Future<void> _generateIcons(
+    Future<Image> Function(int) loadArtwork,
+  ) async {
     final iconsDir = await utils.createDirIfNotExist(
       path.join(context.prefixPath, _iconsDirPath()),
     );
@@ -169,8 +175,8 @@ class MacOSIconGenerator extends IconGenerator {
     final roundedCorners = context.macOSConfig?.roundedCorners ?? false;
 
     for (final template in _iconSizeTemplates) {
-      final resizedImg = effects.buildMacOSIconImage(
-        image,
+      final resizedImg = await effects.buildMacOSIconImage(
+        loadArtwork,
         template.scaledSize,
         paddingPercent: padding,
         roundedCorners: roundedCorners,

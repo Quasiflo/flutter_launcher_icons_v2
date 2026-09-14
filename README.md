@@ -69,7 +69,9 @@ backgrounds. All outputs are PNG, except the Windows `.ico`.
 ## Configuration
 
 Top-level `image_path` is the default for every platform; any platform-level
-`image_path` overrides it. Paths must be local files.
+`image_path` overrides it. Paths must be local files (PNG, JPG/JPEG/WebP where
+noted, or SVG). Top-level `svg_rasterize_per_size` (`false` by default, see
+Source Image) applies to every SVG source.
 
 ### Android
 

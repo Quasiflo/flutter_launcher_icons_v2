@@ -32,7 +32,7 @@ flutter run --flavor production -t lib/main_production.dart
 
 | Area | development (transparency showcase) | production (opaque + glass showcase) |
 | --- | --- | --- |
-| Source art | Transparent PNG: alpha-gradient disc + translucent stripe | Opaque full-bleed RGB gradient (no alpha channel) |
+| Source art | Transparent SVG: alpha-gradient disc + translucent stripe | Opaque full-bleed RGB SVG gradient (no alpha channel) |
 | Android | `transparent` adaptive background keyword (no `colors.xml` entry), foreground inset, monochrome, **round icon** (`android:roundIcon` wiring), **Play Store sidecar** (`play_store_icon.png` at the root) | Image adaptive background, tighter inset, round icon, no sidecar |
 | iOS | `remove_alpha` matte blended onto `#123456`, transparent dark variant (system bg shows through), desaturated tinted variant, `flavor_mode: pbxproj` (rewrites `ASSETCATALOG_COMPILER_APPICON_NAME`) | Opaque art, `remove_alpha: false`, per-appearance glass layers + refractivity/lighting/specular placement, `flavor_mode: xcconfig` (`ios/Flutter/production-*.xcconfig` — assign as base configuration files in Xcode once) |
 | Web | Dedicated maskable source, `favicon.ico` (16+32+48) + PNG, separate `web_development/` root | No maskable source → padded fallback derivation (watch for the warning), PNG-only favicon, separate `web_production/` root |
@@ -68,6 +68,8 @@ catalog is always `AppIcon-<flavor>` (iOS/macOS) / `src/<flavor>/res`
 ## Regenerating from Scratch
 
 Delete the generated outputs (or run the two commands above — every writer
-is idempotent) and re-run. The per-platform sources live under
-`assets/icon/` (`*-dev*` transparent set, `*-prod*` opaque set +
-`*-glass*` liquid-glass layers).
+is idempotent) and re-run. All per-platform sources live under
+`assets/icon/` as SVGs (`*-dev*` transparent set, `*-prod*` opaque set +
+`*-glass*` liquid-glass layers), so this demo also exercises the vector
+pipeline end to end: alpha recovery, the `remove_alpha` matte, dark/tinted
+variants, and native SVG glass layers.

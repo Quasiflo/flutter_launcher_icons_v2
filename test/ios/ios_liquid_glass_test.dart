@@ -287,6 +287,33 @@ void main() {
           },
         );
       });
+
+      test('sweeps layers orphaned by source switches', () async {
+        final config = Config.fromJson(<String, dynamic>{
+          'ios': {
+            'generate': true,
+            'image_path_liquid_glass_icon': 'app_icon.png',
+            'background_color': '#FF0000',
+          },
+        });
+
+        await generateLiquidGlassIcon(config, 'AppIcon');
+
+        // Simulate a PNG -> SVG source switch: the stale copy must go.
+        final stale = File(
+          iosLiquidGlassAssetsPath('AppIcon') + 'stale-layer.png',
+        );
+        await stale.writeAsBytes([1, 2, 3]);
+
+        await generateLiquidGlassIcon(config, 'AppIcon');
+
+        expect(stale.existsSync(), isFalse);
+        expect(
+          File(iosLiquidGlassAssetsPath('AppIcon') + 'app_icon.png')
+              .existsSync(),
+          isTrue,
+        );
+      });
     });
   });
 }

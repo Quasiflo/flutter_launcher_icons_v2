@@ -134,6 +134,64 @@ Future<void> createIcons(
       logger,
     );
   }
+  // Per-size artwork loaders. SVG sources rasterize at each output size
+  // when `svg_rasterize_per_size` (replaying the master pixel transforms
+  // below); everything else resizes the decoded master.
+  Future<Image> Function(int) sizeLoaderFor({
+    required String? sourcePath,
+    required Image master,
+    required Image Function(Image) transform,
+  }) {
+    return (int size) async {
+      if (config.svgRasterizePerSize &&
+          sourcePath != null &&
+          isSvgPath(sourcePath)) {
+        return transform(
+          await rasterizeSvgFile(
+            withPrefix(prefixPath, sourcePath),
+            width: size,
+            height: size,
+          ),
+        );
+      }
+      return createResizedImage(size, master);
+    };
+  }
+
+  Image matteBase(Image rendered) =>
+      config.iosConfig?.removeAlpha == true && rendered.hasAlpha
+          ? _removeAlphaChannel(rendered, config)
+          : rendered;
+
+  Image transformTinted(Image rendered) {
+    var out = rendered;
+    if (config.iosConfig!.desaturateTintedToGrayscale) {
+      out = grayscale(out);
+    }
+    return matteBase(out);
+  }
+
+  final loadBase = sizeLoaderFor(
+    sourcePath: filePath,
+    master: image,
+    transform: matteBase,
+  );
+  // Null exactly when the matching master is null (unset source or
+  // single-size mode); call sites only run under the same guards.
+  final loadDark = darkImage == null
+      ? null
+      : sizeLoaderFor(
+          sourcePath: darkFilePath,
+          master: darkImage,
+          transform: (rendered) => rendered,
+        );
+  final loadTinted = tintedImage == null
+      ? null
+      : sizeLoaderFor(
+          sourcePath: tintedFilePath,
+          master: tintedImage,
+          transform: transformTinted,
+        );
   final flavorMode = config.iosConfig?.flavorMode ?? 'pbxproj';
   if (flavorMode != 'pbxproj' && flavorMode != 'xcconfig') {
     throw InvalidConfigException(
@@ -161,43 +219,51 @@ Future<void> createIcons(
     printStatus('Building iOS launcher icon for $flavor', logger);
     for (IosIconTemplate template in generateIosIcons) {
       concurrentIconUpdates.add(
-        saveNewIcons(
-          template: template,
-          image: image,
-          catalogName: catalogName,
-          // Since this is the base icon name we are using the same name for the icon as the catalog name
-          iconName: catalogName,
-          prefixPath: prefixPath,
+        loadBase(template.size).then(
+          (sized) => saveNewIcons(
+            template: template,
+            image: sized,
+            catalogName: catalogName,
+            // Since this is the base icon name we are using the same name for the icon as the catalog name
+            iconName: catalogName,
+            prefixPath: prefixPath,
+          ),
         ),
       );
     }
 
     if (darkImage != null) {
-      darkIconName = 'AppIcon-$flavor-Dark';
+      final String darkName = 'AppIcon-$flavor-Dark';
+      darkIconName = darkName;
       printStatus('Building iOS dark launcher icon for $flavor', logger);
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates.add(
-          saveNewIcons(
-            template: template,
-            image: darkImage,
-            catalogName: catalogName,
-            iconName: darkIconName,
-            prefixPath: prefixPath,
+          loadDark!(template.size).then(
+            (sized) => saveNewIcons(
+              template: template,
+              image: sized,
+              catalogName: catalogName,
+              iconName: darkName,
+              prefixPath: prefixPath,
+            ),
           ),
         );
       }
     }
     if (tintedImage != null) {
-      tintedIconName = 'AppIcon-$flavor-Tinted';
+      final String tintedName = 'AppIcon-$flavor-Tinted';
+      tintedIconName = tintedName;
       printStatus('Building iOS tinted launcher icon for $flavor', logger);
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates.add(
-          saveNewIcons(
-            template: template,
-            image: tintedImage,
-            catalogName: catalogName,
-            iconName: tintedIconName,
-            prefixPath: prefixPath,
+          loadTinted!(template.size).then(
+            (sized) => saveNewIcons(
+              template: template,
+              image: sized,
+              catalogName: catalogName,
+              iconName: tintedName,
+              prefixPath: prefixPath,
+            ),
           ),
         );
       }
@@ -242,41 +308,49 @@ Future<void> createIcons(
     printStatus('Adding new iOS launcher icon', logger);
     for (IosIconTemplate template in generateIosIcons) {
       concurrentIconUpdates.add(
-        saveNewIcons(
-          template: template,
-          image: image,
-          catalogName: catalogName,
-          iconName: newIconName,
-          prefixPath: prefixPath,
+        loadBase(template.size).then(
+          (sized) => saveNewIcons(
+            template: template,
+            image: sized,
+            catalogName: catalogName,
+            iconName: newIconName,
+            prefixPath: prefixPath,
+          ),
         ),
       );
     }
     if (darkImage != null) {
-      darkIconName = newIconName + '-Dark';
+      final String darkName = newIconName + '-Dark';
+      darkIconName = darkName;
       printStatus('Adding new iOS dark launcher icon', logger);
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates.add(
-          saveNewIcons(
-            template: template,
-            image: darkImage,
-            catalogName: catalogName,
-            iconName: darkIconName,
-            prefixPath: prefixPath,
+          loadDark!(template.size).then(
+            (sized) => saveNewIcons(
+              template: template,
+              image: sized,
+              catalogName: catalogName,
+              iconName: darkName,
+              prefixPath: prefixPath,
+            ),
           ),
         );
       }
     }
     if (tintedImage != null) {
-      tintedIconName = newIconName + '-Tinted';
+      final String tintedName = newIconName + '-Tinted';
+      tintedIconName = tintedName;
       printStatus('Adding new iOS tinted launcher icon', logger);
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates.add(
-          saveNewIcons(
-            template: template,
-            image: tintedImage,
-            catalogName: catalogName,
-            iconName: tintedIconName,
-            prefixPath: prefixPath,
+          loadTinted!(template.size).then(
+            (sized) => saveNewIcons(
+              template: template,
+              image: sized,
+              catalogName: catalogName,
+              iconName: tintedName,
+              prefixPath: prefixPath,
+            ),
           ),
         );
       }
@@ -302,8 +376,11 @@ Future<void> createIcons(
   else {
     printStatus('Overwriting default iOS launcher icon with new icon', logger);
     for (IosIconTemplate template in generateIosIcons) {
-      concurrentIconUpdates
-          .add(overwriteDefaultIcons(template, image, '', prefixPath));
+      concurrentIconUpdates.add(
+        loadBase(template.size).then(
+          (sized) => overwriteDefaultIcons(template, sized, '', prefixPath),
+        ),
+      );
     }
     if (darkImage != null) {
       printStatus(
@@ -312,7 +389,10 @@ Future<void> createIcons(
       );
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates.add(
-          overwriteDefaultIcons(template, darkImage, '-Dark', prefixPath),
+          loadDark!(template.size).then(
+            (sized) =>
+                overwriteDefaultIcons(template, sized, '-Dark', prefixPath),
+          ),
         );
       }
       darkIconName = iosDefaultIconName + '-Dark';
@@ -324,7 +404,10 @@ Future<void> createIcons(
       );
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates.add(
-          overwriteDefaultIcons(template, tintedImage, '-Tinted', prefixPath),
+          loadTinted!(template.size).then(
+            (sized) =>
+                overwriteDefaultIcons(template, sized, '-Tinted', prefixPath),
+          ),
         );
       }
       tintedIconName = iosDefaultIconName + '-Tinted';
