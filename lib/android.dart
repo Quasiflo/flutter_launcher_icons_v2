@@ -59,6 +59,13 @@ Future<void> createDefaultIcons(
       concurrentIconUpdates.add(
           writeResizedPng(template, image, iconPath, flavor, prefixPath: prefixPath),);
     }
+    await removeStaleLegacyIconsForSwitch(
+      androidManifestFile,
+      iconName,
+      flavor,
+      logger: logger,
+      prefixPath: prefixPath,
+    );
     await overwriteAndroidManifestWithNewLauncherIcon(
       iconName,
       androidManifestFile,
@@ -83,6 +90,13 @@ Future<void> createDefaultIcons(
         ),
       );
     }
+    await removeStaleLegacyIconsForSwitch(
+      androidManifestFile,
+      constants.androidDefaultIconName,
+      flavor,
+      logger: logger,
+      prefixPath: prefixPath,
+    );
     await overwriteAndroidManifestWithNewLauncherIcon(
       constants.androidDefaultIconName,
       androidManifestFile,
@@ -93,6 +107,49 @@ Future<void> createDefaultIcons(
     );
   }
   await Future.wait(concurrentIconUpdates);
+}
+
+/// Deletes legacy `<old>.png` files after an icon-name switch.
+///
+/// The manifest's previous icon name proves tool ownership: only the tool
+/// writes custom names there. `ic_launcher` (possibly Flutter's originals)
+/// and the incoming name are never touched.
+Future<void> removeStaleLegacyIconsForSwitch(
+  File androidManifestFile,
+  String newIconName,
+  String? flavor, {
+  LILogger? logger,
+  String prefixPath = '.',
+}) async {
+  if (!androidManifestFile.existsSync()) {
+    return;
+  }
+  final content = await androidManifestFile.readAsString();
+  final match = RegExp(r'android:icon="@mipmap/([^"]+)"').firstMatch(content);
+  final oldIconName = match?.group(1);
+  if (oldIconName == null ||
+      oldIconName == newIconName ||
+      oldIconName == constants.androidDefaultIconName) {
+    return;
+  }
+  for (final template in androidIcons) {
+    final file = File(
+      utils.withPrefix(
+        prefixPath,
+        constants.androidResFolder(flavor) +
+            template.directoryName +
+            '/' +
+            '$oldIconName.png',
+      ),
+    );
+    if (file.existsSync()) {
+      utils.printStatus(
+        'Removing stale legacy icon file $oldIconName.png after switch to $newIconName',
+        logger,
+      );
+      await file.delete();
+    }
+  }
 }
 
 /// Ensures that the Android icon name is in the correct format

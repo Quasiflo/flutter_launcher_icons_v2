@@ -11,6 +11,7 @@ import 'package:launcher_icons/custom_exceptions.dart';
 import 'package:launcher_icons/ios_liquid_glass_icon_generator.dart';
 import 'package:launcher_icons/logger.dart';
 import 'package:launcher_icons/utils.dart';
+import 'package:path/path.dart' as path;
 
 /// File to handle the creation of icons for iOS platform
 class IosIconTemplate {
@@ -339,6 +340,19 @@ Future<void> createIcons(Config config, String? flavor,
     );
   }
   await Future.wait(concurrentIconUpdates);
+
+  // Sweep catalogs orphaned by flavor renames. Reference-checked so the
+  // build cannot break; the default set is always kept.
+  await removeOrphanedCatalogs(
+    assetFolderRelative: iosAssetFolder,
+    currentCatalog: catalogName,
+    referenceTexts: await iosCatalogReferenceTexts(
+      config.iosConfig?.xcodeprojPath,
+      prefixPath,
+    ),
+    prefixPath: prefixPath,
+    logger: logger,
+  );
 
   // Generate liquid glass .icon if configured
   if (config.hasLiquidGlassIconConfig) {
@@ -826,6 +840,66 @@ Future<void> writeIosFlavorXcconfigs(
     'assign them as the base configuration files in Xcode',
     logger,
   );
+}
+
+/// Deletes `AppIcon-<flavor>` catalogs nothing references anymore (e.g.
+/// after a flavor rename), keeping [currentCatalog] and the default set.
+///
+/// A catalog is orphaned when its name appears in none of
+/// [referenceTexts] (project.pbxproj / xcconfig contents). Every deletion
+/// is logged loudly; a still-referenced catalog is always kept so the
+/// build cannot break.
+Future<void> removeOrphanedCatalogs({
+  required String assetFolderRelative,
+  required String currentCatalog,
+  required List<String> referenceTexts,
+  String prefixPath = '.',
+  LILogger? logger,
+}) async {
+  final dir = Directory(withPrefix(prefixPath, assetFolderRelative));
+  if (!dir.existsSync()) {
+    return;
+  }
+  for (final entity in dir.listSync().whereType<Directory>()) {
+    final dirname = path.basename(entity.path);
+    if (!dirname.endsWith('.appiconset')) {
+      continue;
+    }
+    final name = dirname.substring(0, dirname.length - '.appiconset'.length);
+    if (name == currentCatalog || name == 'AppIcon') {
+      continue;
+    }
+    if (referenceTexts.any((text) => text.contains(name))) {
+      continue;
+    }
+    printStatus(
+      'Removing orphaned icon catalog $dirname (no project or xcconfig references it)',
+      logger,
+    );
+    await entity.delete(recursive: true);
+  }
+}
+
+/// Reads the reference texts for iOS catalog orphan detection: the
+/// resolved project.pbxproj plus every `ios/Flutter/*.xcconfig`.
+Future<List<String>> iosCatalogReferenceTexts([
+  String? xcodeprojPath,
+  String prefixPath = '.',
+]) async {
+  final references = <String>[];
+  final pbxprojPath = resolveIosPbxprojPath(xcodeprojPath, prefixPath);
+  if (pbxprojPath != null && File(pbxprojPath).existsSync()) {
+    references.add(await File(pbxprojPath).readAsString());
+  }
+  final flutterDir = Directory(withPrefix(prefixPath, 'ios/Flutter'));
+  if (flutterDir.existsSync()) {
+    for (final entity in flutterDir.listSync().whereType<File>()) {
+      if (entity.path.endsWith('.xcconfig')) {
+        references.add(await entity.readAsString());
+      }
+    }
+  }
+  return references;
 }
 
 /// Create the Contents.json file

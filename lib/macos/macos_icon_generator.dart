@@ -66,6 +66,32 @@ class MacOSIconGenerator extends IconGenerator {
     context.logger.verbose('Updating contents.json');
     _updateContentsFile();
 
+    // Sweep catalogs orphaned by flavor renames (reference-checked against
+    // the macOS project so the build cannot break).
+    final pbxprojFile = File(
+      path.join(
+        context.prefixPath,
+        'macos',
+        'Runner.xcodeproj',
+        'project.pbxproj',
+      ),
+    );
+    await ios.removeOrphanedCatalogs(
+      assetFolderRelative: path.join(
+        constants.macOSDirPath,
+        'Runner',
+        'Assets.xcassets',
+      ),
+      currentCatalog: context.flavor == null
+          ? 'AppIcon'
+          : 'AppIcon-${context.flavor}',
+      referenceTexts: [
+        if (pbxprojFile.existsSync()) await pbxprojFile.readAsString(),
+      ],
+      prefixPath: context.prefixPath,
+      logger: context.logger,
+    );
+
     // Flavor runs write AppIcon-<flavor>.appiconset/ but Xcode keeps
     // pointing at AppIcon until ASSETCATALOG_COMPILER_APPICON_NAME is
     // updated — the same wiring the iOS generator performs. Default runs
