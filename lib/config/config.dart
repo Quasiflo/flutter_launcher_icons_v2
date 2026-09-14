@@ -15,6 +15,10 @@ import 'package:path/path.dart' as path;
 
 part 'config.g.dart';
 
+/// Top-level key pattern for per-flavor sections
+/// (`launcher_icons-<flavor>`) inside a config file or pubspec.yaml.
+const flavorConfigKeyPattern = r'^launcher_icons-(.+)$';
+
 /// A model representing the launcher_icons configuration
 @JsonSerializable(
   anyMap: true,
@@ -57,6 +61,54 @@ class Config {
       prefix: prefix,
       pathToPubspecYamlFile: constants.pubspecFilePath,
     );
+  }
+
+  /// Loads every `launcher_icons-<flavor>` section from [filePath], keyed by
+  /// flavor name. Each section has the same shape as the plain
+  /// `launcher_icons:` config and stands alone (no merging with it).
+  /// Returns an empty map when the file does not exist or declares no
+  /// flavor sections.
+  static Map<String, Config> loadFlavorConfigsFromPath(
+    String filePath,
+    String prefix,
+  ) {
+    final configFile = File(path.join(prefix, filePath));
+    if (!configFile.existsSync()) {
+      return {};
+    }
+    final configContent = configFile.readAsStringSync();
+    if (configContent.trim().isEmpty) {
+      return {};
+    }
+    try {
+      return yaml.checkedYamlDecode<Map<String, Config>>(
+        configContent,
+        (Map<dynamic, dynamic>? json) {
+          final flavors = <String, Config>{};
+          json?.forEach((key, value) {
+            final match =
+                RegExp(flavorConfigKeyPattern).firstMatch(key.toString());
+            if (match != null) {
+              final name = match.group(1)!;
+              if (value is! Map) {
+                throw InvalidConfigException(
+                  'Invalid `launcher_icons-$name` value `$value`: '
+                  'each flavor section must be a map with the same shape '
+                  'as the `launcher_icons:` config.',
+                );
+              }
+              flavors[name] = Config.fromJson(value);
+            }
+          });
+          return flavors;
+        },
+        allowNull: true,
+      );
+    } on yaml.ParsedYamlException catch (e) {
+      throw InvalidConfigException(e.formattedMessage);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   static Config? _getConfigFromPubspecYaml({

@@ -10,11 +10,16 @@ checked in, so you can inspect exactly what each key produces.
 ```shell
 cd example/flavors
 dart pub get
-dart run launcher_icons -f launcher_icons-development.yaml
-dart run launcher_icons -f launcher_icons-production.yaml
+dart run launcher_icons
 ```
 
-The flavor is discovered from the file name (`launcher_icons-<flavor>.yaml`).
+Both flavors live as `launcher_icons-development:` /
+`launcher_icons-production:` sections in `pubspec.yaml` — no per-flavor files
+needed. The plain run loops over every flavor; `--flavor` runs one:
+
+```shell
+dart run launcher_icons --flavor development
+```
 
 ## Run the App
 

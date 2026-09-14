@@ -143,6 +143,7 @@ Shown below is the full list of options supported by the `launcher_icons:generat
 | `-v, --verbose`        | Verbose output |
 | `-p, --prefix <path>`  | Generates icons in the given path (project root by default) |
 | `--flavor-path <path>` | Path to search for flavor configuration files. Defaults to the current directory |
+| `--flavor <name>`      | Run a single flavor (from a `launcher_icons-<flavor>` section or file) |
 
 <!-- rumdl-disable-next-line MD063 -->
 ## :mag: Attributes
@@ -281,9 +282,22 @@ After running the icon generation you'll have to set the wished icon for your co
 
 ## Flavor Support
 
-Create a Flutter Launcher Icons configuration file for your flavor. The config file is called `launcher_icons-<flavor>.yaml` by replacing `<flavor>` by the name of your desired flavor.
+Declare each flavor variant as a `launcher_icons-<flavor>` section in your config file or `pubspec.yaml`, replacing `<flavor>` by the name of your desired flavor. Each section has the same format as the plain `launcher_icons:` config and stands alone:
 
-The configuration file format is the same.
+```yaml
+launcher_icons-dev:
+  image_path: "assets/icon/icon-dev.png"
+  android:
+    generate: true
+launcher_icons-prod:
+  image_path: "assets/icon/icon-prod.png"
+  android:
+    generate: true
+```
+
+Run all flavors with `dart run launcher_icons`, or a single one with `dart run launcher_icons --flavor <name>`.
+
+Alternatively, keep one `launcher_icons-<flavor>.yaml` file per flavor — the format is the same, and a file wins over a section with the same name. `icon_name` is ignored inside flavor configs: the catalog is always `AppIcon-<flavor>` (iOS/macOS) / `src/<flavor>/res` (Android).
 
 Flavor configuration files are looked up recursively, so they may live in a subdirectory of your project. To search a directory other than the current directory, use the `--flavor-path` option:
 
