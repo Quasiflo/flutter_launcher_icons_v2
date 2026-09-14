@@ -99,4 +99,81 @@ void main() {
       );
     });
   });
+
+  group('resolveIosPbxprojPath', () {
+    late String originalDir;
+    late String sandboxDir;
+
+    setUp(() async {
+      originalDir = Directory.current.path;
+      sandboxDir = path.join(
+        '.dart_tool',
+        'flutter_launcher_icons',
+        'test',
+        'ios_resolve_pbxproj',
+      );
+      final sandbox = Directory(sandboxDir);
+      if (sandbox.existsSync()) {
+        sandbox.deleteSync(recursive: true);
+      }
+      sandbox.createSync(recursive: true);
+      Directory.current = sandboxDir;
+    });
+
+    tearDown(() {
+      Directory.current = originalDir;
+    });
+
+    Future<void> writePbxproj(String projectDir) async {
+      final file = File(path.join('ios', projectDir, 'project.pbxproj'));
+      await file.parent.create(recursive: true);
+      await file.writeAsString('// !\$*UTF8*\$!\n{}\n');
+    }
+
+    test('prefers the standard Runner location', () async {
+      await writePbxproj('Runner.xcodeproj');
+      await writePbxproj('Renamed.xcodeproj');
+      expect(
+        ios.resolveIosPbxprojPath(),
+        equals('ios/Runner.xcodeproj/project.pbxproj'),
+      );
+    });
+
+    test('falls back to a renamed project (#543)', () async {
+      await writePbxproj('Renamed.xcodeproj');
+      expect(
+        ios.resolveIosPbxprojPath(),
+        equals(
+          path.join('ios', 'Renamed.xcodeproj', 'project.pbxproj'),
+        ),
+      );
+    });
+
+    test('returns null when no project exists', () async {
+      expect(ios.resolveIosPbxprojPath(), isNull);
+    });
+
+    test('honors an explicit path without touching the disk', () async {
+      expect(
+        ios.resolveIosPbxprojPath('ios/Custom.xcodeproj'),
+        equals('ios/Custom.xcodeproj/project.pbxproj'),
+      );
+    });
+
+    test('changeIosLauncherIcon works in a renamed project (#543)', () async {
+      final renamed = File(
+        path.join('ios', 'Renamed.xcodeproj', 'project.pbxproj'),
+      );
+      await renamed.parent.create(recursive: true);
+      await renamed.writeAsString(_fixture);
+      await ios.changeIosLauncherIcon('AppIcon-production', 'production');
+      final content = await File(
+        path.join('ios', 'Renamed.xcodeproj', 'project.pbxproj'),
+      ).readAsString();
+      expect(
+        content,
+        contains('ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-production;'),
+      );
+    });
+  });
 }
