@@ -601,6 +601,11 @@ Future<void> updateColorsFile(File colorsFile, String backgroundColor) async {
   bool foundExisting = false;
   for (int x = 0; x < lines.length; x++) {
     String line = lines[x];
+    // Never touch XML comments: a commented-out entry is documentation,
+    // not configuration.
+    if (line.trimLeft().startsWith('<!--')) {
+      continue;
+    }
     if (line.contains('name="ic_launcher_background"')) {
       foundExisting = true;
       // replace anything between tags which does not contain another tag
@@ -684,7 +689,10 @@ List<String> _transformAndroidManifestWithNewLauncherIcon(
 ]) {
   return oldManifestLines.map((String line) {
     var result = line;
-    if (result.contains('android:icon')) {
+    // Never touch XML comments: a commented-out attribute is documentation,
+    // not configuration.
+    final isComment = result.trimLeft().startsWith('<!--');
+    if (result.contains('android:icon') && !isComment) {
       // Using RegExp replace the value of android:icon to point to the new icon
       // anything but a quote of any length: [^"]*
       // an escaped quote: \\" (escape slash, because it exists regex)
