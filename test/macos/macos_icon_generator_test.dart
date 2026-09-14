@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/abs/icon_generator.dart';
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/config/macos_config.dart';
-import 'package:flutter_launcher_icons/logger.dart';
-import 'package:flutter_launcher_icons/macos/macos_icon_generator.dart';
 import 'package:image/image.dart';
+import 'package:launcher_icons/abs/icon_generator.dart';
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/config/macos_config.dart';
+import 'package:launcher_icons/logger.dart';
+import 'package:launcher_icons/macos/macos_icon_generator.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:path/path.dart' as path;
@@ -13,11 +13,10 @@ import 'package:test/test.dart';
 import 'package:test_descriptor/test_descriptor.dart' as d;
 
 import '../templates.dart' as templates;
-
 @GenerateNiceMocks([
   MockSpec<Config>(),
   MockSpec<MacOSConfig>(),
-  MockSpec<FLILogger>(),
+  MockSpec<LILogger>(),
 ])
 import 'macos_icon_generator_test.mocks.dart';
 
@@ -29,7 +28,7 @@ void main() {
     late MacOSConfig mockMacOSConfig;
     late String prefixPath;
     late File testImageFile;
-    late MockFLILogger mockLogger;
+    late MockLILogger mockLogger;
     final assetPath = path.join(Directory.current.path, 'test', 'assets');
 
     group('#validateRequirments', () {
@@ -41,7 +40,7 @@ void main() {
         prefixPath = path.join(d.sandbox, 'fli_test');
         mockConfig = MockConfig();
         mockMacOSConfig = MockMacOSConfig();
-        mockLogger = MockFLILogger();
+        mockLogger = MockLILogger();
         context = IconGeneratorContext(
           config: mockConfig,
           prefixPath: prefixPath,
@@ -127,18 +126,18 @@ void main() {
         d.dir('macos/Runner/Assets.xcassets/AppIcon.appiconset', [
           d.file('Contents.json', templates.macOSContentsJsonFile),
         ]),
-        d.file('flutter_launcher_icons.yaml', templates.fliConfigTemplate),
+        d.file('launcher_icons.yaml', templates.liConfigTemplate),
         d.file('app_icon.png', imageFile.readAsBytesSync()),
       ]).create();
       prefixPath = path.join(d.sandbox, 'fli_test');
       config = Config.loadConfigFromPath(
-        'flutter_launcher_icons.yaml',
+        'launcher_icons.yaml',
         prefixPath,
       )!;
       context = IconGeneratorContext(
         config: config,
         prefixPath: prefixPath,
-        logger: FLILogger(false),
+        logger: LILogger(false),
       );
       generator = MacOSIconGenerator(context);
     });
@@ -181,18 +180,18 @@ void main() {
         d.dir('macos/Runner/Assets.xcassets/AppIcon-staging.appiconset', [
           d.file('Contents.json', templates.macOSContentsJsonFile),
         ]),
-        d.file('flutter_launcher_icons.yaml', templates.fliConfigTemplate),
+        d.file('launcher_icons.yaml', templates.liConfigTemplate),
         d.file('app_icon.png', imageFile.readAsBytesSync()),
       ]).create();
       final flavorPrefix = path.join(d.sandbox, 'fli_test_flavor');
       final flavorConfig = Config.loadConfigFromPath(
-        'flutter_launcher_icons.yaml',
+        'launcher_icons.yaml',
         flavorPrefix,
       )!;
       final flavorContext = IconGeneratorContext(
         config: flavorConfig,
         prefixPath: flavorPrefix,
-        logger: FLILogger(false),
+        logger: LILogger(false),
         flavor: 'staging',
       );
       final flavorGenerator = MacOSIconGenerator(flavorContext);
@@ -241,7 +240,7 @@ void main() {
       final roundedContext = IconGeneratorContext(
         config: roundedConfig,
         prefixPath: roundedPrefix,
-        logger: FLILogger(false),
+        logger: LILogger(false),
       );
       final roundedGenerator = MacOSIconGenerator(roundedContext);
 

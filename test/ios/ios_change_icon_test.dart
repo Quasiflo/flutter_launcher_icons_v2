@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/ios.dart' as ios;
+import 'package:launcher_icons/ios.dart' as ios;
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
@@ -28,7 +28,7 @@ void main() {
       originalDir = Directory.current.path;
       sandboxDir = path.join(
         '.dart_tool',
-        'flutter_launcher_icons',
+        'launcher_icons',
         'test',
         'ios_change_icon',
       );
@@ -108,7 +108,7 @@ void main() {
       originalDir = Directory.current.path;
       sandboxDir = path.join(
         '.dart_tool',
-        'flutter_launcher_icons',
+        'launcher_icons',
         'test',
         'ios_resolve_pbxproj',
       );

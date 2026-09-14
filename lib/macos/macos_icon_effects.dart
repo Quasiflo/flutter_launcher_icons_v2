@@ -1,5 +1,5 @@
-import 'package:flutter_launcher_icons/utils.dart' as utils;
 import 'package:image/image.dart';
+import 'package:launcher_icons/utils.dart' as utils;
 
 /// Apple-like corner radius as a fraction of the icon size.
 ///

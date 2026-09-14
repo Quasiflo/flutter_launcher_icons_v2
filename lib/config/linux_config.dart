@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'linux_config.g.dart';
 
-/// The flutter_launcher_icons configuration set for Linux
+/// The launcher_icons configuration set for Linux
 @JsonSerializable(
   anyMap: true,
   checked: true,

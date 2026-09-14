@@ -1,14 +1,14 @@
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/pubspec_parser.dart';
-import 'package:flutter_launcher_icons/src/version.dart';
+import 'package:launcher_icons/pubspec_parser.dart';
+import 'package:launcher_icons/src/version.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
 void main() {
   /// This helps avoid an issue where the pubspec version has been increased but
   /// build runner has not been run to up the version which is displayed
-  /// when flutter_launcher_icons is run.
+  /// when launcher_icons is run.
   ///
   /// Note: We locate `pubspec.yaml` robustly (CWD can vary in CI/Windows).
   test('package version is correct', () {

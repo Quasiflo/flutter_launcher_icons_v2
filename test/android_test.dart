@@ -1,14 +1,14 @@
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/android.dart' as android;
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/constants.dart';
-import 'package:flutter_launcher_icons/logger.dart';
+import 'package:launcher_icons/android.dart' as android;
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/constants.dart';
+import 'package:launcher_icons/logger.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
 /// Captures `info` output so logger routing can be asserted.
-class _RecordingLogger extends FLILogger {
+class _RecordingLogger extends LILogger {
   final List<String> messages = <String>[];
 
   _RecordingLogger() : super(false);
@@ -36,7 +36,7 @@ void main() {
       // Reuse the adaptive sandbox layout: android/ + icon file.
       final sandboxDir = path.join(
         '.dart_tool',
-        'flutter_launcher_icons',
+        'launcher_icons',
         'test',
         'android_logger',
       );
@@ -80,7 +80,7 @@ void main() {
       originalDir = Directory.current.path;
       sandboxDir = path.join(
         '.dart_tool',
-        'flutter_launcher_icons',
+        'launcher_icons',
         'test',
         'android_minsdk',
       );
@@ -133,13 +133,13 @@ android {
 
   test('Adaptive icon background image paths are detected', () {
     expect(
-        android.isAdaptiveIconConfigImageFile('assets/background.png'), isTrue);
+        android.isAdaptiveIconConfigImageFile('assets/background.png'), isTrue,);
     expect(
-        android.isAdaptiveIconConfigImageFile('assets/background.PNG'), isTrue);
+        android.isAdaptiveIconConfigImageFile('assets/background.PNG'), isTrue,);
     expect(
-        android.isAdaptiveIconConfigImageFile('assets/background.jpg'), isTrue);
+        android.isAdaptiveIconConfigImageFile('assets/background.jpg'), isTrue,);
     expect(
-        android.isAdaptiveIconConfigImageFile('assets/background.JPG'), isTrue);
+        android.isAdaptiveIconConfigImageFile('assets/background.JPG'), isTrue,);
     expect(
       android.isAdaptiveIconConfigImageFile('assets/background.jpeg'),
       isTrue,
@@ -167,7 +167,7 @@ android {
       originalDir = Directory.current.path;
       sandboxDir = path.join(
         '.dart_tool',
-        'flutter_launcher_icons',
+        'launcher_icons',
         'test',
         'android_adaptive',
       );

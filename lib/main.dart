@@ -3,26 +3,26 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:flutter_launcher_icons/abs/icon_generator.dart';
-import 'package:flutter_launcher_icons/android.dart' as android_launcher_icons;
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/constants.dart' as constants;
-import 'package:flutter_launcher_icons/constants.dart';
-import 'package:flutter_launcher_icons/custom_exceptions.dart';
-import 'package:flutter_launcher_icons/ios.dart' as ios_launcher_icons;
-import 'package:flutter_launcher_icons/linux/linux_icon_generator.dart';
-import 'package:flutter_launcher_icons/logger.dart';
-import 'package:flutter_launcher_icons/macos/macos_icon_generator.dart';
-import 'package:flutter_launcher_icons/web/web_icon_generator.dart';
-import 'package:flutter_launcher_icons/windows/windows_icon_generator.dart';
+import 'package:launcher_icons/abs/icon_generator.dart';
+import 'package:launcher_icons/android.dart' as android_launcher_icons;
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/constants.dart' as constants;
+import 'package:launcher_icons/constants.dart';
+import 'package:launcher_icons/custom_exceptions.dart';
+import 'package:launcher_icons/ios.dart' as ios_launcher_icons;
+import 'package:launcher_icons/linux/linux_icon_generator.dart';
+import 'package:launcher_icons/logger.dart';
+import 'package:launcher_icons/macos/macos_icon_generator.dart';
+import 'package:launcher_icons/web/web_icon_generator.dart';
+import 'package:launcher_icons/windows/windows_icon_generator.dart';
 import 'package:path/path.dart' as path;
 
 const String fileOption = 'file';
 const String helpFlag = 'help';
 const String verboseFlag = 'verbose';
 const String prefixOption = 'prefix';
-const String defaultConfigFile = 'flutter_launcher_icons.yaml';
-const String flavorConfigFilePattern = r'^flutter_launcher_icons-(.*).yaml$';
+const String defaultConfigFile = 'launcher_icons.yaml';
+const String flavorConfigFilePattern = r'^launcher_icons-(.*).yaml$';
 
 Future<List<String>> getFlavors({String searchPath = '.'}) async {
   final List<String> flavors = [];
@@ -40,7 +40,7 @@ Future<List<String>> getFlavors({String searchPath = '.'}) async {
   return flavors;
 }
 
-/// Returns the flavor named by an explicit `-f flutter_launcher_icons-<flavor>.yaml`
+/// Returns the flavor named by an explicit `-f launcher_icons-<flavor>.yaml`
 /// argument, or `null` when `-f` does not point at a flavor config file.
 String? explicitFlavorFromArgs(ArgResults argResults) {
   final String filePath = argResults[fileOption] as String;
@@ -75,7 +75,7 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
 
   final ArgResults argResults = parser.parse(arguments);
   // creating logger based on -v flag
-  final logger = FLILogger(argResults[verboseFlag]);
+  final logger = LILogger(argResults[verboseFlag]);
 
   logger.verbose('Received args ${argResults.arguments}');
 
@@ -88,7 +88,7 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
   // Flavors management
   final String prefixPath = argResults[prefixOption];
 
-  // An explicit `-f flutter_launcher_icons-<flavor>.yaml` runs only that
+  // An explicit `-f launcher_icons-<flavor>.yaml` runs only that
   // flavor instead of looping over every discovered flavor (#215).
   // The file is loaded from the given path directly, so flavor configs in
   // subdirectories work too.
@@ -131,7 +131,7 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
 
   // Create icons
   if (!hasFlavors) {
-    // Load configs from given file(defaults to ./flutter_launcher_icons.yaml) or from ./pubspec.yaml
+    // Load configs from given file(defaults to ./launcher_icons.yaml) or from ./pubspec.yaml
 
     final flutterLauncherIconsConfigs = loadConfigFileFromArgResults(
       argResults,
@@ -184,7 +184,7 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
 
 Future<void> createIconsFromConfig(
   Config flutterConfigs,
-  FLILogger logger,
+  LILogger logger,
   String prefixPath, [
   String? flavor,
 ]) async {

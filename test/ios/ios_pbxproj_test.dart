@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
-import 'package:flutter_launcher_icons/ios.dart';
+import 'package:launcher_icons/ios.dart';
 import 'package:test/test.dart';
 
 const String _pbxProjFixture = r'''

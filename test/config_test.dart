@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use_from_same_package
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/custom_exceptions.dart';
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/custom_exceptions.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 import 'package:test_descriptor/test_descriptor.dart' as d;
@@ -16,13 +16,13 @@ void main() {
     group('#loadConfigFromPath', () {
       setUpAll(() async {
         await d.dir('fli_test', [
-          d.file('flutter_launcher_icons.yaml', templates.fliConfigTemplate),
-          d.file('invalid_fli_config.yaml', templates.invalidfliConfigTemplate),
+          d.file('launcher_icons.yaml', templates.liConfigTemplate),
+          d.file('invalid_fli_config.yaml', templates.invalidliConfigTemplate),
         ]).create();
       });
       test('should return valid configs', () {
         final configs = Config.loadConfigFromPath(
-          'flutter_launcher_icons.yaml',
+          'launcher_icons.yaml',
           prefixPath,
         );
         expect(configs, isNotNull);
@@ -197,8 +197,8 @@ void main() {
       setUpAll(() async {
         await d.dir('fli_test', [
           d.file('pubspec.yaml', templates.pubspecTemplate),
-          d.file('flutter_launcher_icons.yaml', templates.fliConfigTemplate),
-          d.file('invalid_fli_config.yaml', templates.invalidfliConfigTemplate),
+          d.file('launcher_icons.yaml', templates.liConfigTemplate),
+          d.file('invalid_fli_config.yaml', templates.invalidliConfigTemplate),
         ]).create();
       });
       test('should return valid configs', () {
@@ -325,10 +325,10 @@ void main() {
         setUp(() async {
           await d.dir('fli_test', [
             d.file('pubspec.yaml', templates.invalidPubspecTemplate),
-            d.file('flutter_launcher_icons.yaml', templates.fliConfigTemplate),
+            d.file('launcher_icons.yaml', templates.liConfigTemplate),
             d.file(
               'invalid_fli_config.yaml',
-              templates.invalidfliConfigTemplate,
+              templates.invalidliConfigTemplate,
             ),
           ]).create();
         });
@@ -344,8 +344,8 @@ void main() {
       setUpAll(() async {
         await d.dir('fli_test', [
           d.file(
-            'flutter_launcher_icons-development.yaml',
-            templates.flavorFLIConfigTemplate,
+            'launcher_icons-development.yaml',
+            templates.flavorLIConfigTemplate,
           ),
         ]).create();
       });

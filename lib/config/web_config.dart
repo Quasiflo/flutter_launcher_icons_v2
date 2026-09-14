@@ -1,9 +1,9 @@
-import 'package:flutter_launcher_icons/constants.dart' as constants;
 import 'package:json_annotation/json_annotation.dart';
+import 'package:launcher_icons/constants.dart' as constants;
 
 part 'web_config.g.dart';
 
-/// The flutter_launcher_icons configuration set for Web
+/// The launcher_icons configuration set for Web
 @JsonSerializable(
   anyMap: true,
   checked: true,

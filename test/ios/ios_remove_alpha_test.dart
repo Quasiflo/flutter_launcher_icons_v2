@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/ios.dart' as ios;
 import 'package:image/image.dart';
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/ios.dart' as ios;
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
@@ -17,7 +17,7 @@ void main() {
       originalDir = Directory.current.path;
       sandboxDir = path.join(
         '.dart_tool',
-        'flutter_launcher_icons',
+        'launcher_icons',
         'test',
         'ios_remove_alpha',
       );

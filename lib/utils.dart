@@ -29,7 +29,7 @@ Image createResizedImage(int iconSize, Image image) {
 }
 
 /// Prints a status bullet, routed through [logger] when provided (#552).
-void printStatus(String message, [FLILogger? logger]) {
+void printStatus(String message, [LILogger? logger]) {
   if (logger != null) {
     logger.info('• $message');
   } else {
@@ -117,4 +117,4 @@ String? areFSEntiesExist(List<String> paths) {
   return null;
 }
 
-String flavorConfigFile(String flavor) => 'flutter_launcher_icons-$flavor.yaml';
+String flavorConfigFile(String flavor) => 'launcher_icons-$flavor.yaml';

@@ -2,14 +2,14 @@
 
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/constants.dart' as constants;
-import 'package:flutter_launcher_icons/constants.dart';
-import 'package:flutter_launcher_icons/custom_exceptions.dart';
-import 'package:flutter_launcher_icons/logger.dart';
-import 'package:flutter_launcher_icons/utils.dart' as utils;
-import 'package:flutter_launcher_icons/xml_templates.dart' as xml_template;
 import 'package:image/image.dart';
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/constants.dart' as constants;
+import 'package:launcher_icons/constants.dart';
+import 'package:launcher_icons/custom_exceptions.dart';
+import 'package:launcher_icons/logger.dart';
+import 'package:launcher_icons/utils.dart' as utils;
+import 'package:launcher_icons/xml_templates.dart' as xml_template;
 import 'package:path/path.dart' as path;
 
 class AndroidIconTemplate {
@@ -38,7 +38,7 @@ List<AndroidIconTemplate> androidIcons = <AndroidIconTemplate>[
 Future<void> createDefaultIcons(
   Config config,
   String? flavor, {
-  FLILogger? logger,
+  LILogger? logger,
 }) async {
   utils.printStatus('Creating default icons Android', logger);
   // TODO(p-mazhnik): support prefixPath
@@ -62,7 +62,7 @@ Future<void> createDefaultIcons(
           .add(_saveNewImages(template, image, iconPath, flavor));
     }
     await overwriteAndroidManifestWithNewLauncherIcon(
-        iconName, androidManifestFile);
+        iconName, androidManifestFile,);
   } else {
     utils.printStatus(
       'Overwriting the default Android launcher icon with a new icon',
@@ -100,7 +100,7 @@ bool isAndroidIconNameCorrectFormat(String iconName) {
 Future<void> createAdaptiveIcons(
   Config config,
   String? flavor, {
-  FLILogger? logger,
+  LILogger? logger,
 }) async {
   utils.printStatus('Creating adaptive icons Android', logger);
 
@@ -153,7 +153,7 @@ Future<void> createAdaptiveIcons(
 Future<void> createAdaptiveMonochromeIcons(
   Config config,
   String? flavor, {
-  FLILogger? logger,
+  LILogger? logger,
 }) async {
   utils.printStatus('Creating adaptive monochrome icons Android', logger);
 
@@ -187,7 +187,7 @@ Future<void> createAdaptiveMonochromeIcons(
 Future<void> createMipmapXmlFile(
   Config config,
   String? flavor, {
-  FLILogger? logger,
+  LILogger? logger,
 }) async {
   // Note: Adaptive Icons will only be used when both
   // `adaptive_icon_background` and `adaptive_icon_foreground` or
@@ -268,7 +268,7 @@ Future<void> createMipmapXmlFile(
 Future<void> _removeStaleAdaptiveIcons(
   Config config,
   String? flavor, {
-  FLILogger? logger,
+  LILogger? logger,
 }) async {
   final xmlNames = <String>{constants.androidDefaultIconName};
   final customName = config.androidConfig?.iconName;
@@ -309,7 +309,7 @@ Future<void> _removeStaleAdaptiveIcons(
 Future<void> updateColorsXmlFile(
   String backgroundConfig,
   String? flavor, {
-  FLILogger? logger,
+  LILogger? logger,
 }) async {
   final File colorsXml = File(constants.androidColorsFile(flavor));
   // Using the sync method here due to `avoid_slow_async_io` lint suggestion.
@@ -405,7 +405,7 @@ Future<void> updateColorsFile(File colorsFile, String backgroundColor) async {
 /// Overrides the existing launcher icons in the project
 /// Note: Do not change interpolation unless you end up with better results (see issue for result when using cubic
 /// interpolation)
-/// https://github.com/fluttercommunity/flutter_launcher_icons/issues/101#issuecomment-495528733
+/// https://github.com/Quasiflo/launcher_icons/issues/101#issuecomment-495528733
 Future<void> overwriteExistingIcons(
   AndroidIconTemplate template,
   Image image,
@@ -424,7 +424,7 @@ Future<void> overwriteExistingIcons(
 
 /// Saves new launcher icons to the project, keeping the old launcher icons.
 /// Note: Do not change interpolation unless you end up with better results
-/// https://github.com/fluttercommunity/flutter_launcher_icons/issues/101#issuecomment-495528733
+/// https://github.com/Quasiflo/launcher_icons/issues/101#issuecomment-495528733
 Future<void> _saveNewImages(
   AndroidIconTemplate template,
   Image image,

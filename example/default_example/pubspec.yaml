@@ -1,5 +1,5 @@
 name: example
-description: A new Flutter project to quickly test flutter_launcher_icons.
+description: A new Flutter project to quickly test launcher_icons.
 
 version: 1.0.0+1
 
@@ -10,10 +10,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.3
-  flutter_launcher_icons:
+  launcher_icons:
     path: ../..
 
-flutter_launcher_icons:
+launcher_icons:
   #  image_path: "assets/images/icon-128x128.png"
   android:
     generate: true # can specify icon_name here e.g. "ic_launcher"

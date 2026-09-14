@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/config/linux_config.dart';
-import 'package:flutter_launcher_icons/config/macos_config.dart';
-import 'package:flutter_launcher_icons/config/web_config.dart';
-import 'package:flutter_launcher_icons/config/windows_config.dart';
-import 'package:flutter_launcher_icons/logger.dart';
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/config/linux_config.dart';
+import 'package:launcher_icons/config/macos_config.dart';
+import 'package:launcher_icons/config/web_config.dart';
+import 'package:launcher_icons/config/windows_config.dart';
+import 'package:launcher_icons/logger.dart';
 
 /// A base class to generate icons
 abstract class IconGenerator {
@@ -44,7 +44,7 @@ class IconGeneratorContext {
   final Config config;
 
   /// A logger
-  final FLILogger logger;
+  final LILogger logger;
 
   /// Value of `--prefix` flag
   final String prefixPath;
@@ -78,7 +78,7 @@ Future<void> generateIconsFor({
   required Config config,
   required String? flavor,
   required String prefixPath,
-  required FLILogger logger,
+  required LILogger logger,
   required List<IconGenerator> Function(IconGeneratorContext context) platforms,
 }) async {
   try {
