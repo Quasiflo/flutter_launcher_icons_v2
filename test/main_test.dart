@@ -120,8 +120,72 @@ flutter_launcher_icons:
       expect(main_dart.loadConfigFileFromArgResults(argResults), isNotNull);
     });
 
-    test('custom', () async {
-      await setCurrentDirectory('custom');
+    group('stale template shadowing (#628)', () {
+      Future<void> writeStaleYamlAndRealPubspec() async {
+        await File('flutter_launcher_icons.yaml').writeAsString('''
+flutter_launcher_icons:
+  image_path: "assets/icon/icon.png"
+  android:
+    generate: true
+''');
+        await File('pubspec.yaml').writeAsString('''
+flutter_launcher_icons:
+  image_path: "real.png"
+  android:
+    generate: true
+''');
+        await File('real.png').writeAsBytes([0]);
+      }
+
+      test('prefers pubspec when default file is a stale template', () async {
+        await setCurrentDirectory('stale_template');
+        await writeStaleYamlAndRealPubspec();
+        final ArgResults argResults = parser.parse(<String>[]);
+        final Config? config =
+            main_dart.loadConfigFileFromArgResults(argResults);
+        expect(config, isNotNull);
+        expect(config!.imagePath, equals('real.png'));
+      });
+
+      test('explicit -f still honors the given file', () async {
+        await setCurrentDirectory('stale_template_explicit');
+        await writeStaleYamlAndRealPubspec();
+        final ArgResults argResults = parser.parse(
+          <String>['-f', 'flutter_launcher_icons.yaml'],
+        );
+        final Config? config = main_dart.loadConfigFileFromArgResults(
+          argResults,
+          explicitFile: true,
+        );
+        expect(config, isNotNull);
+        expect(config!.imagePath, equals('assets/icon/icon.png'));
+      });
+
+      test('prefers the file when its images exist', () async {
+        await setCurrentDirectory('both_real');
+        await File('flutter_launcher_icons.yaml').writeAsString('''
+flutter_launcher_icons:
+  image_path: "yaml.png"
+  android:
+    generate: true
+''');
+        await File('pubspec.yaml').writeAsString('''
+flutter_launcher_icons:
+  image_path: "real.png"
+  android:
+    generate: true
+''');
+        await File('yaml.png').writeAsBytes([0]);
+        await File('real.png').writeAsBytes([0]);
+        final ArgResults argResults = parser.parse(<String>[]);
+        final Config? config =
+            main_dart.loadConfigFileFromArgResults(argResults);
+        expect(config, isNotNull);
+        expect(config!.imagePath, equals('yaml.png'));
+      });
+    });
+
+    test('custom', () async {      await setCurrentDirectory('custom');
       await File('custom.yaml').writeAsString('''
 flutter_launcher_icons:
   android:
@@ -163,7 +227,8 @@ flutter_launcher_icons:
     test('returns null when -f names the default config file', () {
       expect(
         main_dart.explicitFlavorFromArgs(
-            parser.parse(<String>['-f', defaultConfigFile])),
+          parser.parse(<String>['-f', defaultConfigFile]),
+        ),
         isNull,
       );
     });
@@ -171,7 +236,8 @@ flutter_launcher_icons:
     test('returns null when -f names a non-flavor file', () {
       expect(
         main_dart.explicitFlavorFromArgs(
-            parser.parse(<String>['-f', 'custom.yaml'])),
+          parser.parse(<String>['-f', 'custom.yaml']),
+        ),
         isNull,
       );
     });
@@ -193,6 +259,19 @@ flutter_launcher_icons:
         ),
         equals('prod'),
       );
+    });
+  });
+
+  group('isFileOptionExplicit', () {
+    test('is false when -f is absent', () {
+      expect(main_dart.isFileOptionExplicit([]), isFalse);
+      expect(main_dart.isFileOptionExplicit(['-v']), isFalse);
+    });
+
+    test('detects -f, --file and --file= forms', () {
+      expect(main_dart.isFileOptionExplicit(['-f', 'x.yaml']), isTrue);
+      expect(main_dart.isFileOptionExplicit(['--file', 'x.yaml']), isTrue);
+      expect(main_dart.isFileOptionExplicit(['--file=x.yaml']), isTrue);
     });
   });
 
