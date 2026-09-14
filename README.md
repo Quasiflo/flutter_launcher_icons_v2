@@ -38,7 +38,7 @@ An example is shown below. More complex examples [can be found in the example pr
 
 ```yaml
 dev_dependencies:
-  launcher_icons: "^0.14.4"
+  launcher_icons: "^0.14.4" # x-release-please-version
 
 launcher_icons:
   image_path: "assets/icon/icon.png"
