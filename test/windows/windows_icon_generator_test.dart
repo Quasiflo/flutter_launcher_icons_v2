@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:launcher_icons/abs/icon_generator.dart';
 import 'package:launcher_icons/config/config.dart';
 import 'package:launcher_icons/config/windows_config.dart';
+import 'package:launcher_icons/custom_exceptions.dart';
 import 'package:launcher_icons/logger.dart';
 import 'package:launcher_icons/windows/windows_icon_generator.dart';
 import 'package:mockito/annotations.dart';
@@ -102,6 +103,22 @@ void main() {
         when(mockConfig.windowsConfig).thenReturn(mockWindowsConfig);
         when(mockWindowsConfig.generate).thenReturn(false);
         expect(generator.isEnabled, isFalse);
+      });
+
+      test('Config.fromJson rejects removed windows.icon_size with help',
+          () {
+        expect(
+          () => Config.fromJson(<String, dynamic>{
+            'windows': {'generate': true, 'icon_size': 48},
+          }),
+          throwsA(
+            isA<InvalidConfigException>().having(
+              (e) => e.toString(),
+              'message',
+              contains('windows.icon_size'),
+            ),
+          ),
+        );
       });
 
       test('should return false when windows.image_path and imagePath is null',

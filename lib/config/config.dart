@@ -133,6 +133,13 @@ class Config {
         );
       }
     }
+    final windows = json['windows'];
+    if (windows is Map && windows.containsKey('icon_size')) {
+      throw const InvalidConfigException(
+        'Invalid `windows.icon_size`: the key was removed. The generator '
+        'always emits multi-size 16,24,32,48,256 — delete the key.',
+      );
+    }
     return _$ConfigFromJson(json);
   }
 
