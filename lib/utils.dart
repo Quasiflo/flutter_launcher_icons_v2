@@ -44,9 +44,7 @@ String generateError(Exception e, String? error) {
   return '\n✗ ERROR: ${(e).runtimeType.toString()}$errorOutput';
 }
 
-// TODO(RatakondalaArun): Remove nullable return type
-// this can never return null value since it already throws exception
-Future<Image?> decodeImageFile(String filePath) async {
+Future<Image> decodeImageFile(String filePath) async {
   final bytes = await File(filePath).readAsBytes();
   final image = decodeImage(bytes);
   if (image == null) {

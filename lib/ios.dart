@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
-import 'package:image/image.dart';
+import 'package:image/image.dart' hide decodeImageFile;
 import 'package:launcher_icons/config/config.dart';
 import 'package:launcher_icons/constants.dart';
 import 'package:launcher_icons/custom_exceptions.dart';
@@ -63,28 +63,18 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
     throw const InvalidConfigException(errorMissingImagePath);
   }
 
-  // decodeImageFile shows error message if null
-  // so can return here if image is null
-  Image? image = decodeImage(await File(filePath).readAsBytes());
-  if (image == null) {
-    return;
-  }
+  // decodeImageFile throws on missing/undecodable files, so a specified
+  // but bad path is a hard error rather than a silent skip.
+  Image image = await decodeImageFile(filePath);
 
-  // For dark and tinted images, return here if path was specified but image is null
   Image? darkImage;
   if (darkFilePath != null) {
-    darkImage = decodeImage(await File(darkFilePath).readAsBytes());
-    if (darkImage == null) {
-      return;
-    }
+    darkImage = await decodeImageFile(darkFilePath);
   }
 
   Image? tintedImage;
   if (tintedFilePath != null) {
-    tintedImage = decodeImage(await File(tintedFilePath).readAsBytes());
-    if (tintedImage == null) {
-      return;
-    }
+    tintedImage = await decodeImageFile(tintedFilePath);
     if (config.iosConfig!.desaturateTintedToGrayscale) {
       printStatus('Desaturating iOS tinted image to grayscale', logger);
       tintedImage = grayscale(tintedImage);

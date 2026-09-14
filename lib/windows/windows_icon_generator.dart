@@ -1,7 +1,6 @@
 import 'package:image/image.dart';
 import 'package:launcher_icons/abs/icon_generator.dart';
 import 'package:launcher_icons/constants.dart' as constants;
-import 'package:launcher_icons/custom_exceptions.dart';
 import 'package:launcher_icons/utils.dart' as utils;
 import 'package:path/path.dart' as path;
 
@@ -27,13 +26,6 @@ class WindowsIconGenerator extends IconGenerator {
     context.logger
         .verbose('Decoding and loading image file from $imgFilePath...');
     final imgFile = await utils.decodeImageFile(imgFilePath);
-    // TODO(RatakondalaArun): remove null check
-    // #utils.decodeImageFile never returns null instead it throws Exception
-    if (imgFile == null) {
-      context.logger
-          .error('Image File not found at given path $imgFilePath...');
-      throw FileNotFoundException(imgFilePath);
-    }
 
     context.logger.verbose('Generating icon from $imgFilePath...');
     await _generateIcon(imgFile);

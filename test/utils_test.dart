@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:launcher_icons/custom_exceptions.dart';
 import 'package:launcher_icons/utils.dart' as utils;
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
@@ -147,7 +150,7 @@ void main() {
     test('decodes indexed-color PNG and survives icon ops', () async {
       final image = await utils.decodeImageFile('test/assets/indexed.png');
       expect(image, isNotNull);
-      final pixel = image!.getPixel(0, 0);
+      final pixel = image.getPixel(0, 0);
       expect(pixel.r, equals(255));
       expect(utils.createResizedImage(48, image).width, equals(48));
     });
@@ -156,8 +159,35 @@ void main() {
       final image =
           await utils.decodeImageFile('test/assets/indexed_transparent.png');
       expect(image, isNotNull);
-      expect(image!.getPixel(0, 0).a, equals(255));
+      expect(image.getPixel(0, 0).a, equals(255));
       expect(utils.createResizedImage(48, image).width, equals(48));
+    });
+  });
+
+  // The loader contract: it never returns null — missing files raise
+  // FileSystemException, undecodable files raise
+  // NoDecoderForImageFormatException.
+  group('#decodeImageFile error contract', () {
+    test('throws FileSystemException for a missing file', () async {
+      await expectLater(
+        utils.decodeImageFile(path.join(d.sandbox, 'missing.png')),
+        throwsA(isA<FileSystemException>()),
+      );
+    });
+
+    test('throws NoDecoderForImageFormatException for garbage bytes',
+        () async {
+      final garbage =
+          File(path.join(d.sandbox, 'garbage.png'))..createSync(recursive: true);
+      // Plain text: every decoder probe rejects it and decodeImage returns
+      // null (short binary blobs can throw inside a probe instead).
+      await garbage.writeAsString(
+        'this is definitely not an image file, just plain text....',
+      );
+      await expectLater(
+        utils.decodeImageFile(garbage.path),
+        throwsA(isA<NoDecoderForImageFormatException>()),
+      );
     });
   });
 }
