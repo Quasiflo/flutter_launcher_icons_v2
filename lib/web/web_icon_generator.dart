@@ -71,13 +71,37 @@ class WebIconGenerator extends IconGenerator {
       faviconImgFile = imgFile;
     }
 
+    // resolve the maskable image: a dedicated source when provided,
+    // otherwise the base image with padded derivation at write time.
+    late final Image maskableImgFile;
+    final maskableImagePathOverride = context.webConfig!.imagePathMaskable;
+    final deriveMaskable = maskableImagePathOverride == null;
+    if (maskableImagePathOverride != null) {
+      final maskableImgFilePath =
+          path.join(context.prefixPath, maskableImagePathOverride);
+      context.logger.verbose(
+        'Decoding and loading maskable image file at $maskableImgFilePath...',
+      );
+      maskableImgFile = await utils.decodeImageFile(maskableImgFilePath);
+    } else {
+      maskableImgFile = imgFile;
+      if (imgFile.hasAlpha) {
+        context.logger.info(
+          'WARNING: Base image has transparency; deriving maskable icons '
+          'by centering the logo at ~80% on the opaque background_color. '
+          'Provide `web.image_path_maskable` for a designed full-bleed '
+          'maskable source.',
+        );
+      }
+    }
+
     // generate favicon in web/favicon.png
     context.logger.verbose('Generating favicon from $faviconImgFilePath...');
     await _generateFavicon(faviconImgFile);
 
     // generate icons in web/icons/
     context.logger.verbose('Generating icons from $imgFilePath...');
-    await _generateIcons(imgFile);
+    await _generateIcons(imgFile, maskableImgFile, deriveMaskable);
 
     // update manifest.json in <web root>/manifest.json
     context.logger.verbose(
@@ -146,18 +170,51 @@ class WebIconGenerator extends IconGenerator {
     await favIcoFile.writeAsBytes(encodeIco(favIcon));
   }
 
-  Future<void> _generateIcons(Image image) async {
+  Future<void> _generateIcons(
+    Image image,
+    Image maskableImage,
+    bool deriveMaskable,
+  ) async {
     final iconsDir = await utils.createDirIfNotExist(
       path.join(context.prefixPath, _iconsDirPath),
     );
     // generate icons
     for (final template in _webIconSizeTemplates) {
-      final resizedImg = utils.createResizedImage(template.size, image);
+      final Image resizedImg;
+      if (template.maskable && deriveMaskable) {
+        resizedImg = _buildPaddedMaskable(maskableImage, template.size);
+      } else if (template.maskable) {
+        resizedImg = utils.createResizedImage(template.size, maskableImage);
+      } else {
+        resizedImg = utils.createResizedImage(template.size, image);
+      }
       final iconFile = await utils.createFileIfNotExist(
         path.join(context.prefixPath, iconsDir.path, template.iconFile),
       );
       await iconFile.writeAsBytes(encodePng(resizedImg));
     }
+  }
+
+  /// Derives a safe-zone-compliant maskable icon: the logo scaled to ~80%
+  /// and centered on the opaque `background_color` (white fallback) so the
+  /// outer edge survives maskable cropping.
+  Image _buildPaddedMaskable(Image source, int size) {
+    var bg = (r: 255, g: 255, b: 255);
+    final bgRaw = context.webConfig?.backgroundColor;
+    if (bgRaw != null) {
+      try {
+        bg = utils.parseHexColor(bgRaw);
+      } catch (_) {
+        context.logger.verbose(
+          'Ignoring non-hex background_color "$bgRaw" for maskable icons; using white.',
+        );
+      }
+    }
+    final artwork = utils.createResizedImage((size * 0.8).round(), source);
+    final canvas = Image(width: size, height: size, numChannels: 4);
+    fill(canvas, color: ColorUint8.rgb(bg.r, bg.g, bg.b));
+    compositeImage(canvas, artwork, center: true);
+    return canvas.convert(numChannels: 3);
   }
 
   Future<void> _updateManifestFile() async {
