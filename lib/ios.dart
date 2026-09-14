@@ -315,8 +315,9 @@ Future<void> saveNewIcons({
 }) async {
   final String newIconFolder = iosAssetFolder + catalogName + '.appiconset/';
   final Image newImage = createResizedImage(template.size, image);
-  final newFile = await File(newIconFolder + iconName + template.name + '.png')
-      .create(recursive: true);
+  final newFile = await createFileIfNotExist(
+    newIconFolder + iconName + template.name + '.png',
+  );
   await newFile.writeAsBytes(encodePng(newImage));
 }
 
@@ -615,8 +616,7 @@ Future<void> modifyContentsFile(
 ]) async {
   final String newContentsFilename =
       iosAssetFolder + newIconName + '.appiconset/Contents.json';
-  final contentsJsonFile =
-      await File(newContentsFilename).create(recursive: true);
+  final contentsJsonFile = await createFileIfNotExist(newContentsFilename);
   final String contentsFileContent = generateContentsFileAsString(
     newIconName,
     darkIconName,
@@ -635,7 +635,7 @@ Future<void> modifyDefaultContentsFile(
 ]) async {
   const String newIconFolder =
       iosAssetFolder + 'AppIcon.appiconset/Contents.json';
-  final contentsJsonFile = await File(newIconFolder).create(recursive: true);
+  final contentsJsonFile = await createFileIfNotExist(newIconFolder);
   final String contentsFileContent = generateContentsFileAsString(
     newIconName,
     darkIconName,

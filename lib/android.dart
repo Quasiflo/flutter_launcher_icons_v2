@@ -230,20 +230,19 @@ Future<void> createMipmapXmlFile(
 
   late File mipmapXmlFile;
   if (config.isCustomAndroidFile) {
-    mipmapXmlFile = File(
+    mipmapXmlFile = await utils.createFileIfNotExist(
       constants.androidAdaptiveXmlFolder(flavor) +
           androidConfig.iconName! +
           '.xml',
     );
   } else {
-    mipmapXmlFile = File(
+    mipmapXmlFile = await utils.createFileIfNotExist(
       constants.androidAdaptiveXmlFolder(flavor) +
           constants.androidDefaultIconName +
           '.xml',
     );
   }
 
-  await mipmapXmlFile.create(recursive: true);
   await mipmapXmlFile.writeAsString(
     xml_template.mipmapXmlFile.replaceAll('{{CONTENT}}', xmlContent),
   );
@@ -349,8 +348,9 @@ Future<void> _createAdaptiveBackgrounds(
 
 /// Creates a colors.xml file if it was missing from android/app/src/main/res/values/colors.xml
 Future<void> createNewColorsFile(String backgroundColor, String? flavor) async {
-  final colorsFile =
-      await File(constants.androidColorsFile(flavor)).create(recursive: true);
+  final colorsFile = await utils.createFileIfNotExist(
+    constants.androidColorsFile(flavor),
+  );
   await colorsFile.writeAsString(xml_template.colorsXml);
   await updateColorsFile(colorsFile, backgroundColor);
 }
@@ -399,12 +399,12 @@ Future<void> writeResizedPng(
   String? flavor,
 ) async {
   final Image resizedImage = utils.createResizedImage(template.size, image);
-  final pngFile = await File(
+  final pngFile = await utils.createFileIfNotExist(
     constants.androidResFolder(flavor) +
         template.directoryName +
         '/' +
         filename,
-  ).create(recursive: true);
+  );
   await pngFile.writeAsBytes(encodePng(resizedImage));
 }
 
