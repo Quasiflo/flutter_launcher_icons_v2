@@ -16,6 +16,7 @@ IOSConfig _$IOSConfigFromJson(Map json) => $checkedCreate(
               $checkedConvert('single_size', (v) => v as bool? ?? false),
           imagePath: $checkedConvert('image_path', (v) => v as String?),
           iconName: $checkedConvert('icon_name', (v) => v as String?),
+          xcodeprojPath: $checkedConvert('xcodeproj_path', (v) => v as String?),
           imagePathDarkTransparent: $checkedConvert(
               'image_path_dark_transparent', (v) => v as String?),
           imagePathTintedGrayscale: $checkedConvert(
@@ -54,6 +55,7 @@ IOSConfig _$IOSConfigFromJson(Map json) => $checkedCreate(
         'singleSize': 'single_size',
         'imagePath': 'image_path',
         'iconName': 'icon_name',
+        'xcodeprojPath': 'xcodeproj_path',
         'imagePathDarkTransparent': 'image_path_dark_transparent',
         'imagePathTintedGrayscale': 'image_path_tinted_grayscale',
         'imagePathLiquidGlassIcon': 'image_path_liquid_glass_icon',
@@ -77,6 +79,7 @@ Map<String, dynamic> _$IOSConfigToJson(IOSConfig instance) => <String, dynamic>{
       'single_size': instance.singleSize,
       'image_path': instance.imagePath,
       'icon_name': instance.iconName,
+      'xcodeproj_path': instance.xcodeprojPath,
       'image_path_dark_transparent': instance.imagePathDarkTransparent,
       'image_path_tinted_grayscale': instance.imagePathTintedGrayscale,
       'image_path_liquid_glass_icon': instance.imagePathLiquidGlassIcon,

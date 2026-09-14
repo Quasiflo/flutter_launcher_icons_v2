@@ -175,7 +175,11 @@ Future<void> createIcons(Config config, String? flavor) async {
       }
     }
     iconName = iosDefaultIconName;
-    await changeIosLauncherIcon(catalogName, flavor);
+    await changeIosLauncherIcon(
+      catalogName,
+      flavor,
+      config.iosConfig?.xcodeprojPath,
+    );
     await modifyContentsFile(
       catalogName,
       darkIconName,
@@ -226,7 +230,11 @@ Future<void> createIcons(Config config, String? flavor) async {
       }
     }
     iconName = newIconName;
-    await changeIosLauncherIcon(iconName, flavor);
+    await changeIosLauncherIcon(
+      iconName,
+      flavor,
+      config.iosConfig?.xcodeprojPath,
+    );
     await modifyContentsFile(
       iconName,
       darkIconName,
@@ -258,7 +266,11 @@ Future<void> createIcons(Config config, String? flavor) async {
       tintedIconName = iosDefaultIconName + '-Tinted';
     }
     iconName = iosDefaultIconName;
-    await changeIosLauncherIcon('AppIcon', flavor);
+    await changeIosLauncherIcon(
+      'AppIcon',
+      flavor,
+      config.iosConfig?.xcodeprojPath,
+    );
     // Still need to modify the Contents.json file
     // since the user could have added dark and tinted icons
     await modifyDefaultContentsFile(
@@ -274,7 +286,10 @@ Future<void> createIcons(Config config, String? flavor) async {
   if (config.hasLiquidGlassIconConfig) {
     await generateLiquidGlassIcon(config, catalogName);
     // Add .icon file reference to project.pbxproj
-    await addLiquidGlassIconToProject(catalogName);
+    await addLiquidGlassIconToProject(
+      catalogName,
+      config.iosConfig?.xcodeprojPath,
+    );
   }
 }
 
@@ -332,8 +347,12 @@ Image createResizedImage(IosIconTemplate template, Image image) {
 }
 
 /// Add liquid glass .icon file reference to project.pbxproj
-Future<void> addLiquidGlassIconToProject(String iconName) async {
-  final File iOSConfigFile = File(iosConfigFile);
+Future<void> addLiquidGlassIconToProject(
+  String iconName, [
+  String? xcodeprojPath,
+]) async {
+  final resolvedPath = resolveIosPbxprojPath(xcodeprojPath) ?? iosConfigFile;
+  final File iOSConfigFile = File(resolvedPath);
   if (!iOSConfigFile.existsSync()) {
     printStatus(
       'Warning: project.pbxproj not found, skipping .icon reference addition',
