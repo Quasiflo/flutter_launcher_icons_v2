@@ -15,6 +15,8 @@ WebConfig _$WebConfigFromJson(Map json) => $checkedCreate(
           imagePath: $checkedConvert('image_path', (v) => v as String?),
           imagePathFavicon:
               $checkedConvert('image_path_favicon', (v) => v as String?),
+          faviconSize: $checkedConvert('favicon_size',
+              (v) => (v as num?)?.toInt() ?? constants.kFaviconSize),
           backgroundColor:
               $checkedConvert('background_color', (v) => v as String?),
           themeColor: $checkedConvert('theme_color', (v) => v as String?),
@@ -24,6 +26,7 @@ WebConfig _$WebConfigFromJson(Map json) => $checkedCreate(
       fieldKeyMap: const {
         'imagePath': 'image_path',
         'imagePathFavicon': 'image_path_favicon',
+        'faviconSize': 'favicon_size',
         'backgroundColor': 'background_color',
         'themeColor': 'theme_color'
       },
@@ -33,6 +36,7 @@ Map<String, dynamic> _$WebConfigToJson(WebConfig instance) => <String, dynamic>{
       'generate': instance.generate,
       'image_path': instance.imagePath,
       'image_path_favicon': instance.imagePathFavicon,
+      'favicon_size': instance.faviconSize,
       'background_color': instance.backgroundColor,
       'theme_color': instance.themeColor,
     };
