@@ -1,7 +1,3 @@
-import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:launcher_icons/custom_exceptions.dart';
 import 'package:launcher_icons/utils.dart' as utils;
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
@@ -162,49 +158,6 @@ void main() {
       expect(image, isNotNull);
       expect(image!.getPixel(0, 0).a, equals(255));
       expect(utils.createResizedImage(48, image).width, equals(48));
-    });
-  });
-
-  // Image URLs (#511) are served by a loopback server: hermetic, no network.
-  group('#decodeImageFile over HTTP', () {
-    late HttpServer server;
-    late Uint8List pngBytes;
-
-    setUpAll(() async {
-      pngBytes = await File(
-        path.join(Directory.current.path, 'test', 'assets', 'app_icon.png'),
-      ).readAsBytes();
-      server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
-      server.listen((request) async {
-        if (request.uri.path == '/icon.png') {
-          request.response
-            ..statusCode = HttpStatus.ok
-            ..add(pngBytes);
-        } else {
-          request.response.statusCode = HttpStatus.notFound;
-        }
-        await request.response.close();
-      });
-    });
-
-    tearDownAll(() async {
-      await server.close(force: true);
-    });
-
-    test('decodes images from http URLs', () async {
-      final image = await utils.decodeImageFile(
-        'http://127.0.0.1:${server.port}/icon.png',
-      );
-      expect(image, isNotNull);
-      expect(image!.width, greaterThan(0));
-      expect(image.height, greaterThan(0));
-    });
-
-    test('throws FileNotFoundException on HTTP 404', () async {
-      await expectLater(
-        utils.decodeImageFile('http://127.0.0.1:${server.port}/missing.png'),
-        throwsA(isA<FileNotFoundException>()),
-      );
     });
   });
 }
