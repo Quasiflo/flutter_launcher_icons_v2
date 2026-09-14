@@ -44,6 +44,19 @@ class IOSConfig {
   @JsonKey(name: 'image_path_liquid_glass_icon')
   final String? imagePathLiquidGlassIcon;
 
+  /// Liquid glass dark-appearance layer source.
+  ///
+  /// Falls back to `image_path_dark_transparent` when unset, so the dark
+  /// app artwork is reused instead of requiring a second file.
+  @JsonKey(name: 'image_path_liquid_glass_icon_dark')
+  final String? imagePathLiquidGlassIconDark;
+
+  /// Liquid glass tinted-appearance layer source.
+  ///
+  /// Falls back to `image_path_tinted_grayscale` when unset.
+  @JsonKey(name: 'image_path_liquid_glass_icon_tinted')
+  final String? imagePathLiquidGlassIconTinted;
+
   /// IOS remove_alpha
   @JsonKey(name: 'remove_alpha')
   final bool removeAlpha;
@@ -102,6 +115,8 @@ class IOSConfig {
     this.imagePathDarkTransparent,
     this.imagePathTintedGrayscale,
     this.imagePathLiquidGlassIcon,
+    this.imagePathLiquidGlassIconDark,
+    this.imagePathLiquidGlassIconTinted,
     this.removeAlpha = false,
     this.removeLiquidGlass = false,
     this.desaturateTintedToGrayscale = false,

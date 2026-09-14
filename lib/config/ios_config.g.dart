@@ -23,6 +23,10 @@ IOSConfig _$IOSConfigFromJson(Map json) => $checkedCreate(
               'image_path_tinted_grayscale', (v) => v as String?),
           imagePathLiquidGlassIcon: $checkedConvert(
               'image_path_liquid_glass_icon', (v) => v as String?),
+          imagePathLiquidGlassIconDark: $checkedConvert(
+              'image_path_liquid_glass_icon_dark', (v) => v as String?),
+          imagePathLiquidGlassIconTinted: $checkedConvert(
+              'image_path_liquid_glass_icon_tinted', (v) => v as String?),
           removeAlpha:
               $checkedConvert('remove_alpha', (v) => v as bool? ?? false),
           removeLiquidGlass: $checkedConvert(
@@ -59,6 +63,8 @@ IOSConfig _$IOSConfigFromJson(Map json) => $checkedCreate(
         'imagePathDarkTransparent': 'image_path_dark_transparent',
         'imagePathTintedGrayscale': 'image_path_tinted_grayscale',
         'imagePathLiquidGlassIcon': 'image_path_liquid_glass_icon',
+        'imagePathLiquidGlassIconDark': 'image_path_liquid_glass_icon_dark',
+        'imagePathLiquidGlassIconTinted': 'image_path_liquid_glass_icon_tinted',
         'removeAlpha': 'remove_alpha',
         'removeLiquidGlass': 'remove_liquid_glass',
         'desaturateTintedToGrayscale': 'desaturate_tinted_to_grayscale',
@@ -83,6 +89,10 @@ Map<String, dynamic> _$IOSConfigToJson(IOSConfig instance) => <String, dynamic>{
       'image_path_dark_transparent': instance.imagePathDarkTransparent,
       'image_path_tinted_grayscale': instance.imagePathTintedGrayscale,
       'image_path_liquid_glass_icon': instance.imagePathLiquidGlassIcon,
+      'image_path_liquid_glass_icon_dark':
+          instance.imagePathLiquidGlassIconDark,
+      'image_path_liquid_glass_icon_tinted':
+          instance.imagePathLiquidGlassIconTinted,
       'remove_alpha': instance.removeAlpha,
       'remove_liquid_glass': instance.removeLiquidGlass,
       'desaturate_tinted_to_grayscale': instance.desaturateTintedToGrayscale,
