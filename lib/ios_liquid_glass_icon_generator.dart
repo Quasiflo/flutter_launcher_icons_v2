@@ -6,12 +6,17 @@ import 'package:flutter_launcher_icons/config/config.dart';
 import 'package:flutter_launcher_icons/config/ios_config.dart';
 import 'package:flutter_launcher_icons/constants.dart';
 import 'package:flutter_launcher_icons/custom_exceptions.dart';
+import 'package:flutter_launcher_icons/logger.dart';
 import 'package:flutter_launcher_icons/utils.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as path;
 
 /// Generate liquid glass .icon file for iOS
-Future<void> generateLiquidGlassIcon(Config config, String iconName) async {
+Future<void> generateLiquidGlassIcon(
+  Config config,
+  String iconName, {
+  FLILogger? logger,
+}) async {
   if (!config.hasLiquidGlassIconConfig) {
     return;
   }
@@ -38,7 +43,7 @@ Future<void> generateLiquidGlassIcon(Config config, String iconName) async {
     );
   }
 
-  printStatus('Creating liquid glass .icon for $iconName');
+  printStatus('Creating liquid glass .icon for $iconName', logger);
 
   // Create directory structure
   final iconFolderPath = iosLiquidGlassIconPath(iconName);
@@ -58,7 +63,7 @@ Future<void> generateLiquidGlassIcon(Config config, String iconName) async {
   final configFile = await createFileIfNotExist(configFilePath);
   await configFile.writeAsString(prettifyJsonEncode(iconConfig));
 
-  printStatus('Generated liquid glass .icon at $iconFolderPath');
+  printStatus('Generated liquid glass .icon at $iconFolderPath', logger);
 }
 
 /// Generate the icon.json configuration

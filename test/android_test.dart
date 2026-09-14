@@ -3,11 +3,75 @@ import 'dart:io';
 import 'package:flutter_launcher_icons/android.dart' as android;
 import 'package:flutter_launcher_icons/config/config.dart';
 import 'package:flutter_launcher_icons/constants.dart';
+import 'package:flutter_launcher_icons/logger.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
+/// Captures `info` output so logger routing can be asserted.
+class _RecordingLogger extends FLILogger {
+  final List<String> messages = <String>[];
+
+  _RecordingLogger() : super(false);
+
+  @override
+  void info(Object? message) {
+    messages.add(message.toString());
+  }
+}
+
 // unit tests for android.dart
 void main() {
+  group('printStatus logger routing (#552)', () {
+    test('status messages route through the provided logger', () async {
+      final logger = _RecordingLogger();
+      // Exercise the nested pass-through (updateColorsXmlFile) with a color
+      // background inside the adaptive sandbox below.
+      final config = Config.fromJson(<String, dynamic>{
+        'android': {
+          'generate': true,
+          'adaptive_icon_background': '#ffffff',
+          'adaptive_icon_foreground': 'app_icon.png',
+        },
+      });
+      // Reuse the adaptive sandbox layout: android/ + icon file.
+      final sandboxDir = path.join(
+        '.dart_tool',
+        'flutter_launcher_icons',
+        'test',
+        'android_logger',
+      );
+      final sandbox = Directory(sandboxDir);
+      if (sandbox.existsSync()) {
+        sandbox.deleteSync(recursive: true);
+      }
+      sandbox.createSync(recursive: true);
+      File(
+        path.join(
+          Directory.current.path,
+          'test',
+          'assets',
+          'app_icon.png',
+        ),
+      ).copySync(path.join(sandboxDir, 'app_icon.png'));
+      final originalDir = Directory.current.path;
+      Directory.current = sandboxDir;
+      try {
+        await android.createAdaptiveIcons(config, null, logger: logger);
+      } finally {
+        Directory.current = originalDir;
+      }
+      expect(
+        logger.messages
+            .any((m) => m.contains('Creating adaptive icons Android')),
+        isTrue,
+      );
+      expect(
+        logger.messages.any((m) => m.contains('colors.xml')),
+        isTrue,
+      );
+    });
+  });
+
   group('minSdk fallback', () {
     late String originalDir;
     late String sandboxDir;

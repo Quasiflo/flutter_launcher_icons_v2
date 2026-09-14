@@ -194,18 +194,29 @@ Future<void> createIconsFromConfig(
 
   final concurrentIconCreation = <Future<void>>[];
   if (flutterConfigs.isNeedingNewAndroidIcon) {
-    concurrentIconCreation
-        .add(android_launcher_icons.createDefaultIcons(flutterConfigs, flavor));
+    concurrentIconCreation.add(
+      android_launcher_icons.createDefaultIcons(
+        flutterConfigs,
+        flavor,
+        logger: logger,
+      ),
+    );
   }
   if (flutterConfigs.hasAndroidAdaptiveConfig) {
     concurrentIconCreation.add(
-        android_launcher_icons.createAdaptiveIcons(flutterConfigs, flavor));
+      android_launcher_icons.createAdaptiveIcons(
+        flutterConfigs,
+        flavor,
+        logger: logger,
+      ),
+    );
   }
   if (flutterConfigs.hasAndroidAdaptiveMonochromeConfig) {
     concurrentIconCreation.add(
       android_launcher_icons.createAdaptiveMonochromeIcons(
         flutterConfigs,
         flavor,
+        logger: logger,
       ),
     );
   }
@@ -214,10 +225,15 @@ Future<void> createIconsFromConfig(
     await android_launcher_icons.createMipmapXmlFile(
       flutterConfigs,
       flavor,
+      logger: logger,
     );
   }
   if (flutterConfigs.isNeedingNewIOSIcon) {
-    await ios_launcher_icons.createIcons(flutterConfigs, flavor);
+    await ios_launcher_icons.createIcons(
+      flutterConfigs,
+      flavor,
+      logger: logger,
+    );
   }
 
   // Generates Icons for given platform

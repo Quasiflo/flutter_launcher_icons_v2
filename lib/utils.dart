@@ -8,6 +8,7 @@ import 'package:image/image.dart';
 import 'package:path/path.dart' as path;
 
 import 'custom_exceptions.dart';
+import 'logger.dart';
 
 Image createResizedImage(int iconSize, Image image) {
   if (image.width >= iconSize) {
@@ -27,8 +28,13 @@ Image createResizedImage(int iconSize, Image image) {
   }
 }
 
-void printStatus(String message) {
-  print('• $message');
+/// Prints a status bullet, routed through [logger] when provided (#552).
+void printStatus(String message, [FLILogger? logger]) {
+  if (logger != null) {
+    logger.info('• $message');
+  } else {
+    print('• $message');
+  }
 }
 
 String generateError(Exception e, String? error) {

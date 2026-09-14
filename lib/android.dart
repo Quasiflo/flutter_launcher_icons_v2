@@ -6,6 +6,7 @@ import 'package:flutter_launcher_icons/config/config.dart';
 import 'package:flutter_launcher_icons/constants.dart' as constants;
 import 'package:flutter_launcher_icons/constants.dart';
 import 'package:flutter_launcher_icons/custom_exceptions.dart';
+import 'package:flutter_launcher_icons/logger.dart';
 import 'package:flutter_launcher_icons/utils.dart' as utils;
 import 'package:flutter_launcher_icons/xml_templates.dart' as xml_template;
 import 'package:image/image.dart';
@@ -36,9 +37,10 @@ List<AndroidIconTemplate> androidIcons = <AndroidIconTemplate>[
 
 Future<void> createDefaultIcons(
   Config config,
-  String? flavor,
-) async {
-  utils.printStatus('Creating default icons Android');
+  String? flavor, {
+  FLILogger? logger,
+}) async {
+  utils.printStatus('Creating default icons Android', logger);
   // TODO(p-mazhnik): support prefixPath
   final String? filePath = config.getImagePathAndroid();
   if (filePath == null) {
@@ -51,7 +53,7 @@ Future<void> createDefaultIcons(
   final File androidManifestFile = File(constants.androidManifestFile);
   final concurrentIconUpdates = <Future<void>>[];
   if (config.isCustomAndroidFile) {
-    utils.printStatus('Adding a new Android launcher icon');
+    utils.printStatus('Adding a new Android launcher icon', logger);
     final String iconName = config.androidConfig!.iconName!;
     isAndroidIconNameCorrectFormat(iconName);
     final String iconPath = '$iconName.png';
@@ -64,6 +66,7 @@ Future<void> createDefaultIcons(
   } else {
     utils.printStatus(
       'Overwriting the default Android launcher icon with a new icon',
+      logger,
     );
     for (AndroidIconTemplate template in androidIcons) {
       concurrentIconUpdates.add(
@@ -96,9 +99,10 @@ bool isAndroidIconNameCorrectFormat(String iconName) {
 
 Future<void> createAdaptiveIcons(
   Config config,
-  String? flavor,
-) async {
-  utils.printStatus('Creating adaptive icons Android');
+  String? flavor, {
+  FLILogger? logger,
+}) async {
+  utils.printStatus('Creating adaptive icons Android', logger);
 
   // Retrieve the necessary Flutter Launcher Icons configuration from the pubspec.yaml file
   final androidConfig = config.androidConfig!;
@@ -130,6 +134,7 @@ Future<void> createAdaptiveIcons(
   if (isTransparentAdaptiveBackground(backgroundConfig)) {
     utils.printStatus(
       'Using transparent adaptive icon background (@android:color/transparent)',
+      logger,
     );
   } else if (isAdaptiveIconConfigImageFile(backgroundConfig)) {
     concurrentImageUpdates.add(
@@ -140,16 +145,17 @@ Future<void> createAdaptiveIcons(
       ),
     );
   } else {
-    await updateColorsXmlFile(backgroundConfig, flavor);
+    await updateColorsXmlFile(backgroundConfig, flavor, logger: logger);
   }
   await Future.wait(concurrentImageUpdates);
 }
 
 Future<void> createAdaptiveMonochromeIcons(
   Config config,
-  String? flavor,
-) async {
-  utils.printStatus('Creating adaptive monochrome icons Android');
+  String? flavor, {
+  FLILogger? logger,
+}) async {
+  utils.printStatus('Creating adaptive monochrome icons Android', logger);
 
   // Retrieve the necessary Flutter Launcher Icons configuration from the pubspec.yaml file
   final String? monochromeImagePath =
@@ -180,8 +186,9 @@ Future<void> createAdaptiveMonochromeIcons(
 
 Future<void> createMipmapXmlFile(
   Config config,
-  String? flavor,
-) async {
+  String? flavor, {
+  FLILogger? logger,
+}) async {
   // Note: Adaptive Icons will only be used when both
   // `adaptive_icon_background` and `adaptive_icon_foreground` or
   // `adaptive_icon_monochrome` are specified (The `image_path` is not
@@ -190,11 +197,11 @@ Future<void> createMipmapXmlFile(
       !config.hasAndroidAdaptiveMonochromeConfig) {
     // No adaptive icons requested: clear leftovers from a previous adaptive
     // configuration so they cannot shadow the fresh icons (#328).
-    await _removeStaleAdaptiveIcons(config, flavor);
+    await _removeStaleAdaptiveIcons(config, flavor, logger: logger);
     return;
   }
 
-  utils.printStatus('Creating mipmap xml file Android');
+  utils.printStatus('Creating mipmap xml file Android', logger);
 
   String xmlContent = '';
   final androidConfig = config.androidConfig!;
@@ -258,7 +265,11 @@ Future<void> createMipmapXmlFile(
 /// Only tool-owned file names are removed (`colors.xml` is shared and left
 /// untouched). Both the default and the custom icon xml names are covered so
 /// switching in either direction is cleaned up.
-Future<void> _removeStaleAdaptiveIcons(Config config, String? flavor) async {
+Future<void> _removeStaleAdaptiveIcons(
+  Config config,
+  String? flavor, {
+  FLILogger? logger,
+}) async {
   final xmlNames = <String>{constants.androidDefaultIconName};
   final customName = config.androidConfig?.iconName;
   if (customName != null) {
@@ -282,7 +293,7 @@ Future<void> _removeStaleAdaptiveIcons(Config config, String? flavor) async {
     final file = File(filePath);
     // Using the sync method here due to `avoid_slow_async_io` lint suggestion.
     if (file.existsSync()) {
-      utils.printStatus('Removing stale adaptive icon file $filePath');
+      utils.printStatus('Removing stale adaptive icon file $filePath', logger);
       await file.delete();
     }
   }
@@ -296,18 +307,26 @@ Future<void> _removeStaleAdaptiveIcons(Config config, String? flavor) async {
 /// If not, the colors.xml file is created and a color item for the adaptive icon
 /// background is included in the new colors.xml file.
 Future<void> updateColorsXmlFile(
-    String backgroundConfig, String? flavor) async {
+  String backgroundConfig,
+  String? flavor, {
+  FLILogger? logger,
+}) async {
   final File colorsXml = File(constants.androidColorsFile(flavor));
   // Using the sync method here due to `avoid_slow_async_io` lint suggestion.
   if (colorsXml.existsSync()) {
     utils.printStatus(
       'Updating colors.xml with color for adaptive icon background',
+      logger,
     );
     await updateColorsFile(colorsXml, backgroundConfig);
   } else {
-    utils.printStatus('No colors.xml file found in your Android project');
+    utils.printStatus(
+      'No colors.xml file found in your Android project',
+      logger,
+    );
     utils.printStatus(
       'Creating colors.xml file and adding it to your Android project',
+      logger,
     );
     await createNewColorsFile(backgroundConfig, flavor);
   }
