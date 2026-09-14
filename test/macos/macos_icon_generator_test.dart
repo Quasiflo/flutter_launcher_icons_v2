@@ -5,6 +5,7 @@ import 'package:flutter_launcher_icons/config/config.dart';
 import 'package:flutter_launcher_icons/config/macos_config.dart';
 import 'package:flutter_launcher_icons/logger.dart';
 import 'package:flutter_launcher_icons/macos/macos_icon_generator.dart';
+import 'package:image/image.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:path/path.dart' as path;
@@ -222,6 +223,44 @@ void main() {
         ).existsSync(),
         isFalse,
       );
+    });
+    test('rounded config produces transparent corners end-to-end (#463)',
+        () async {
+      final imageFile = File(path.join(assetPath, 'app_icon.png'));
+      await d.dir('fli_test_rounded', [
+        d.dir('macos/Runner/Assets.xcassets/AppIcon.appiconset', [
+          d.file('Contents.json', templates.macOSContentsJsonFile),
+        ]),
+        d.file('app_icon.png', imageFile.readAsBytesSync()),
+      ]).create();
+      final roundedPrefix = path.join(d.sandbox, 'fli_test_rounded');
+      const roundedConfig = Config(
+        imagePath: 'app_icon.png',
+        macOSConfig: MacOSConfig(generate: true, roundedCorners: true),
+      );
+      final roundedContext = IconGeneratorContext(
+        config: roundedConfig,
+        prefixPath: roundedPrefix,
+        logger: FLILogger(false),
+      );
+      final roundedGenerator = MacOSIconGenerator(roundedContext);
+
+      expect(roundedGenerator.validateRequirements(), isTrue);
+      await roundedGenerator.createIcons();
+
+      final output = decodeImage(
+        await File(
+          path.join(
+            roundedPrefix,
+            'macos',
+            'Runner',
+            'Assets.xcassets',
+            'AppIcon.appiconset',
+            'app_icon_16.png',
+          ),
+        ).readAsBytes(),
+      )!;
+      expect(output.getPixel(0, 0).a, equals(0));
     });
   });
 }

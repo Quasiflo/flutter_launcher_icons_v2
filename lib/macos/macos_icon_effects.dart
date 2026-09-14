@@ -1,0 +1,81 @@
+import 'package:flutter_launcher_icons/utils.dart' as utils;
+import 'package:image/image.dart';
+
+/// Apple-like corner radius as a fraction of the icon size.
+///
+/// Real Apple icons use continuous (squircle) corners; a plain rounded
+/// rectangle with this radius is a close, cheap approximation.
+const double macOSCornerRadiusFraction = 0.225;
+
+/// Builds one macOS icon of [size] pixels from [source].
+///
+/// When [paddingPercent] is 0 the source is resized straight to [size]
+/// (historical behavior, byte-identical). Otherwise the artwork is resized
+/// to the inner area and centered on a transparent canvas, leaving a
+/// safe-area margin of [paddingPercent]% on every side. When
+/// [roundedCorners] is true the canvas corners are masked off.
+Image buildMacOSIconImage(
+  Image source,
+  int size, {
+  int paddingPercent = 0,
+  bool roundedCorners = false,
+}) {
+  final maxPad = (size - 1) ~/ 2;
+  final pad =
+      (size * paddingPercent / 100).round().clamp(0, maxPad).toInt();
+  final artworkSize = size - 2 * pad;
+  final artwork = utils.createResizedImage(artworkSize, source);
+
+  Image canvas = artwork;
+  if (artworkSize < size) {
+    canvas = Image(width: size, height: size, numChannels: 4);
+    compositeImage(canvas, artwork, center: true);
+  }
+  if (roundedCorners) {
+    canvas = applyRoundedCorners(canvas);
+  }
+  return canvas;
+}
+
+/// Masks the corners of [image] with an Apple-like rounded rectangle.
+///
+/// Returns an RGBA image; pixels outside the rounded shape become
+/// transparent. The input is left unmodified when it already fits.
+Image applyRoundedCorners(Image image) {
+  final size = image.width;
+  assert(image.height == size, 'macOS icons must be square');
+  final radius = (size * macOSCornerRadiusFraction).round();
+
+  var canvas = image;
+  if (canvas.numChannels != 4) {
+    canvas = canvas.convert(numChannels: 4);
+  } else {
+    canvas = canvas.clone();
+  }
+
+  bool inside(int x, int y) {
+    final dx = x < radius
+        ? (radius - 1 - x).toDouble()
+        : (x - (size - radius)).toDouble();
+    final dy = y < radius
+        ? (radius - 1 - y).toDouble()
+        : (y - (size - radius)).toDouble();
+    final nx = x < radius || x >= size - radius ? dx : -1.0;
+    final ny = y < radius || y >= size - radius ? dy : -1.0;
+    if (nx < 0 && ny < 0) {
+      return true;
+    }
+    final ox = nx < 0 ? 0.0 : nx;
+    final oy = ny < 0 ? 0.0 : ny;
+    return ox * ox + oy * oy <= radius * radius;
+  }
+
+  for (var y = 0; y < size; y++) {
+    for (var x = 0; x < size; x++) {
+      if (!inside(x, y)) {
+        canvas.setPixelRgba(x, y, 0, 0, 0, 0);
+      }
+    }
+  }
+  return canvas;
+}

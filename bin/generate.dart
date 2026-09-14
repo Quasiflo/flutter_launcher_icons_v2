@@ -131,6 +131,8 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "path/to/image.png"
+    # padding: 10 # safe-area margin as % of icon size, 0 disables
+    # rounded_corners: true # mask corners with an Apple-like shape
 
   linux:
     generate: true
