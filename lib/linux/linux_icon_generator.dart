@@ -229,7 +229,7 @@ parts:
   }
 
   /// Returns `true` when [iconPath] (or its directory) is declared in the
-  /// `flutter.assets` section of `pubspec.yaml`.
+  /// `assets:` list under `flutter:` in `pubspec.yaml`.
   bool _hasPubspecAsset(String iconPath) {
     final pubspecFile = File(path.join(context.prefixPath, 'pubspec.yaml'));
 
