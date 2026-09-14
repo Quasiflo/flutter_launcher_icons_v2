@@ -2,6 +2,7 @@ import 'package:test/test.dart';
 
 import 'abs/icon_generator_test.dart' as icon_generator_test;
 import 'android_test.dart' as android_test;
+import 'cli_flavor_test.dart' as cli_flavor_test;
 import 'config_test.dart' as fli_config;
 import 'custom_exceptions_test.dart' as custom_exceptions_test;
 import 'ios/ios_change_icon_test.dart' as ios_change_icon_test;
@@ -27,6 +28,7 @@ void main() {
     icon_generator_test.main();
 
     main_test.main();
+    cli_flavor_test.main();
     // android
     android_test.main();
     // ios
