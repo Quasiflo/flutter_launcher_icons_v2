@@ -6,6 +6,7 @@ import 'config_test.dart' as fli_config;
 import 'custom_exceptions_test.dart' as custom_exceptions_test;
 import 'ios/ios_liquid_glass_test.dart' as ios_liquid_glass_test;
 import 'ios/ios_pbxproj_test.dart' as ios_pbxproj_test;
+import 'ios/ios_remove_alpha_test.dart' as ios_remove_alpha_test;
 import 'linux/linux_icon_generator_test.dart' as linux_icon_gen_test;
 import 'macos/macos_icon_generator_test.dart' as macos_icons_gen_test;
 import 'macos/macos_icon_template_test.dart' as macos_template_test;
@@ -29,6 +30,7 @@ void main() {
     // ios
     ios_liquid_glass_test.main();
     ios_pbxproj_test.main();
+    ios_remove_alpha_test.main();
     // web
     web_template_test.main();
     web_icon_gen_test.main();
