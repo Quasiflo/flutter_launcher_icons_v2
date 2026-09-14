@@ -698,9 +698,26 @@ Future<void> changeIosLauncherIcon(
       onConfigurationSection = false;
     }
     if (onConfigurationSection) {
+      // Block headers carry the exact configuration name
+      // (`<id> /* Debug-development */ = {`). This is the primary signal:
+      // flavor-duplicated configurations usually keep sharing the base
+      // `.xcconfig`, so the reference below cannot tell them apart.
+      final header = RegExp(
+        r'^\s*\S+ /\* ([^*]+) \*/ = \{$',
+      ).firstMatch(line);
+      if (header != null) {
+        currentConfig = header.group(1);
+      }
       final match = RegExp('.*/\\* (.*)\.xcconfig \\*/;').firstMatch(line);
       if (match != null) {
-        currentConfig = match.group(1);
+        // A shared base xcconfig must not clobber a flavored block header
+        // (the common Flutter-flavors shape reuses Debug.xcconfig).
+        final headerIsOurs = currentConfig != null &&
+            flavor != null &&
+            (currentConfig == flavor || currentConfig.endsWith('-$flavor'));
+        if (!headerIsOurs) {
+          currentConfig = match.group(1);
+        }
       }
 
       if (currentConfig != null &&
@@ -778,9 +795,20 @@ Future<int> clearIosFlavorAppIconLines(
       onConfigurationSection = false;
     }
     if (onConfigurationSection) {
+      // Same exact-token primary signal as changeIosLauncherIcon: block
+      // headers name the configuration even when it shares a base xcconfig.
+      final header = RegExp(
+        r'^\s*\S+ /\* ([^*]+) \*/ = \{$',
+      ).firstMatch(line);
+      if (header != null) {
+        currentConfig = header.group(1);
+      }
       final match = RegExp('.*/\\* (.*)\.xcconfig \\*/;').firstMatch(line);
       if (match != null) {
-        currentConfig = match.group(1);
+        // A shared base xcconfig must not clobber a flavored block header.
+        if (currentConfig == null || !_isFlavorConfig(currentConfig, flavor)) {
+          currentConfig = match.group(1);
+        }
       }
       if (currentConfig != null &&
           _isFlavorConfig(currentConfig, flavor) &&

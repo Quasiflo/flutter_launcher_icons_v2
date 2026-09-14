@@ -111,6 +111,30 @@ void main() {
         );
         expect(generator.validateRequirements(), isFalse);
       });
+
+      test('flavor validates without a pre-existing icon set', () async {
+        await d.dir('fli_test', [
+          d.dir('macos/Runner/Assets.xcassets'),
+          d.file('app_icon.png', testImageFile.readAsBytesSync()),
+        ]).create();
+        await expectLater(
+          d.dir('fli_test', [
+            d.dir('macos/Runner/Assets.xcassets'),
+            d.file('app_icon.png', anything),
+          ]).validate(),
+          completes,
+        );
+        final flavorContext = IconGeneratorContext(
+          config: mockConfig,
+          prefixPath: prefixPath,
+          logger: mockLogger,
+          flavor: 'staging',
+        );
+        expect(
+          MacOSIconGenerator(flavorContext).validateRequirements(),
+          isTrue,
+        );
+      });
     });
   });
 
