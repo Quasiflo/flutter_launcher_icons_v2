@@ -775,7 +775,8 @@ bool isAdaptiveIconConfigImageFile(String backgroundFile) {
   return normalizedPath.endsWith('.png') ||
       normalizedPath.endsWith('.jpg') ||
       normalizedPath.endsWith('.jpeg') ||
-      normalizedPath.endsWith('.webp');
+      normalizedPath.endsWith('.webp') ||
+      normalizedPath.endsWith('.svg');
 }
 
 /// Returns true when the adaptive background is the `transparent` keyword

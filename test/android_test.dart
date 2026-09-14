@@ -118,6 +118,14 @@ void main() {
       android.isAdaptiveIconConfigImageFile('assets/background.WEBP'),
       isTrue,
     );
+    expect(
+      android.isAdaptiveIconConfigImageFile('assets/background.svg'),
+      isTrue,
+    );
+    expect(
+      android.isAdaptiveIconConfigImageFile('assets/background.SVG'),
+      isTrue,
+    );
     expect(android.isAdaptiveIconConfigImageFile('#ffffff'), isFalse);
   });
 
