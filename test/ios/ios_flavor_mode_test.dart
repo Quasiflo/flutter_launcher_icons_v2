@@ -105,6 +105,58 @@ void main() {
 
       expect(pbxproj(), contains('AppIcon-staging; FOO = x;'));
     });
+
+    test('shared base xcconfigs still wire via block headers', () async {
+      // The common Flutter-flavors shape: duplicated configurations that
+      // keep pointing at the base Debug/Release xcconfigs (no
+      // per-flavor xcconfig files). Matching keys off the exact block
+      // header names.
+      const shared = r'''
+// !$*UTF8*$!
+{
+/* Begin XCBuildConfiguration section */
+		AAA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AAA /* Debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+			};
+			name = Debug;
+		};
+		BBB /* Debug-staging */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AAA /* Debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+			};
+			name = Debug-staging;
+		};
+		CCC /* Debug-production */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AAA /* Debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+			};
+			name = Debug-production;
+		};
+/* End XCBuildConfiguration section */
+}
+''';
+      File(path.join('ios', 'Runner.xcodeproj', 'project.pbxproj'))
+          .writeAsStringSync(shared);
+
+      await ios.changeIosLauncherIcon('AppIcon-staging', 'staging');
+
+      final content = pbxproj();
+      expect(
+        content,
+        contains('ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-staging;'),
+      );
+      expect(
+        'ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;'.allMatches(content),
+        hasLength(2),
+      );
+    });
   });
 
   group('xcconfig flavor mode', () {

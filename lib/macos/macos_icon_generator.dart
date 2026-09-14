@@ -144,11 +144,11 @@ class MacOSIconGenerator extends IconGenerator {
       return false;
     }
 
-    // this files and folders should exist to create macos icons
+    // The asset catalog must exist; the (flavor) icon set inside it is
+    // created on demand, so a new flavor bootstraps from the CLI.
     final enitiesToCheck = [
       path.join(context.prefixPath, constants.macOSDirPath),
-      path.join(context.prefixPath, _iconsDirPath()),
-      path.join(context.prefixPath, _contentsFilePath()),
+      path.join(context.prefixPath, constants.macOSAssetsDirPath),
     ];
 
     final failedEntityPath = utils.areFSEntiesExist(enitiesToCheck);
