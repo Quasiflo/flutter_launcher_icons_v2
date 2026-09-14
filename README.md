@@ -214,6 +214,7 @@ foreground of the Android 13+ themed icon. For more information see [Android Ada
 - `macos`: Add MacOS related configs
   - `generate`: Specifies whether to generate icons for MacOS platform or not
   - `image_path`: Path to macos icon.png file
+  - Flavors: a flavor run writes `AppIcon-<flavor>.appiconset`; select it in Xcode under `Build Settings` > `Asset Catalog App Icon Set Name`.
 
 *Note: macOS icons are resized copies of your source image — transparency is preserved, not filled (unlike iOS `remove_alpha`). Prefer an opaque source image: transparent regions can render unpredictably under system themes (e.g. macOS Tahoe), and macOS will not round the artwork for you.*
 

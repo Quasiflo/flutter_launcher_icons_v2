@@ -30,6 +30,24 @@ class MacOSIconGenerator extends IconGenerator {
   @override
   bool get isEnabled => context.macOSConfig?.generate ?? false;
 
+  /// Icons directory, flavor-aware: `AppIcon-<flavor>.appiconset` for flavor
+  /// runs so macOS honors flavors like iOS does (#638).
+  String _iconsDirPath() {
+    final flavor = context.flavor;
+    if (flavor == null) {
+      return constants.macOSIconsDirPath;
+    }
+    return path.join(
+      constants.macOSDirPath,
+      'Runner',
+      'Assets.xcassets',
+      'AppIcon-$flavor.appiconset',
+    );
+  }
+
+  /// Contents.json path matching [_iconsDirPath].
+  String _contentsFilePath() => path.join(_iconsDirPath(), 'Contents.json');
+
   @override
   Future<void> createIcons() async {
     final imgFilePath = path.join(
@@ -81,8 +99,8 @@ class MacOSIconGenerator extends IconGenerator {
     // this files and folders should exist to create macos icons
     final enitiesToCheck = [
       path.join(context.prefixPath, constants.macOSDirPath),
-      path.join(context.prefixPath, constants.macOSIconsDirPath),
-      path.join(context.prefixPath, constants.macOSContentsFilePath),
+      path.join(context.prefixPath, _iconsDirPath()),
+      path.join(context.prefixPath, _contentsFilePath()),
     ];
 
     final failedEntityPath = utils.areFSEntiesExist(enitiesToCheck);
@@ -98,7 +116,7 @@ class MacOSIconGenerator extends IconGenerator {
 
   Future<void> _generateIcons(Image image) async {
     final iconsDir = await utils.createDirIfNotExist(
-      path.join(context.prefixPath, constants.macOSIconsDirPath),
+      path.join(context.prefixPath, _iconsDirPath()),
     );
 
     for (final template in _iconSizeTemplates) {
@@ -112,7 +130,7 @@ class MacOSIconGenerator extends IconGenerator {
 
   void _updateContentsFile() {
     final contentsFilePath =
-        File(path.join(context.prefixPath, constants.macOSContentsFilePath));
+        File(path.join(context.prefixPath, _contentsFilePath()));
     final contentsConfig =
         jsonDecode(contentsFilePath.readAsStringSync()) as Map<String, dynamic>;
     contentsConfig

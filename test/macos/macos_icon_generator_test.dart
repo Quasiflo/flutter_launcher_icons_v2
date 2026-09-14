@@ -172,5 +172,56 @@ void main() {
         reason: 'Contents.json file contents are not equal',
       );
     });
+
+    test('should generate flavor icons into AppIcon-<flavor>.appiconset (#638)',
+        () async {
+      final imageFile = File(path.join(assetPath, 'app_icon.png'));
+      await d.dir('fli_test_flavor', [
+        d.dir('macos/Runner/Assets.xcassets/AppIcon-staging.appiconset', [
+          d.file('Contents.json', templates.macOSContentsJsonFile),
+        ]),
+        d.file('flutter_launcher_icons.yaml', templates.fliConfigTemplate),
+        d.file('app_icon.png', imageFile.readAsBytesSync()),
+      ]).create();
+      final flavorPrefix = path.join(d.sandbox, 'fli_test_flavor');
+      final flavorConfig = Config.loadConfigFromPath(
+        'flutter_launcher_icons.yaml',
+        flavorPrefix,
+      )!;
+      final flavorContext = IconGeneratorContext(
+        config: flavorConfig,
+        prefixPath: flavorPrefix,
+        logger: FLILogger(false),
+        flavor: 'staging',
+      );
+      final flavorGenerator = MacOSIconGenerator(flavorContext);
+
+      expect(flavorGenerator.validateRequirements(), isTrue);
+      await flavorGenerator.createIcons();
+
+      await expectLater(
+        d.dir('fli_test_flavor', [
+          d.dir('macos/Runner/Assets.xcassets/AppIcon-staging.appiconset', [
+            d.file('app_icon_1024.png', anything),
+            d.file('app_icon_16.png', anything),
+          ]),
+        ]).validate(),
+        completes,
+        reason: 'Flavor icon files are not generated',
+      );
+      // The default set must be left alone.
+      expect(
+        Directory(
+          path.join(
+            flavorPrefix,
+            'macos',
+            'Runner',
+            'Assets.xcassets',
+            'AppIcon.appiconset',
+          ),
+        ).existsSync(),
+        isFalse,
+      );
+    });
   });
 }
