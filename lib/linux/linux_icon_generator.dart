@@ -97,7 +97,8 @@ class LinuxIconGenerator extends IconGenerator {
 
     final Map<dynamic, dynamic>? yamlDoc;
     try {
-      yamlDoc = loadYaml(pubspecFile.readAsStringSync()) as Map<dynamic, dynamic>?;
+      yamlDoc =
+          loadYaml(pubspecFile.readAsStringSync()) as Map<dynamic, dynamic>?;
     } catch (_) {
       context.logger.error('Could not parse pubspec.yaml');
       return false;

@@ -162,14 +162,16 @@ flutter_launcher_icons:
 
     test('returns null when -f names the default config file', () {
       expect(
-        main_dart.explicitFlavorFromArgs(parser.parse(<String>['-f', defaultConfigFile])),
+        main_dart.explicitFlavorFromArgs(
+            parser.parse(<String>['-f', defaultConfigFile])),
         isNull,
       );
     });
 
     test('returns null when -f names a non-flavor file', () {
       expect(
-        main_dart.explicitFlavorFromArgs(parser.parse(<String>['-f', 'custom.yaml'])),
+        main_dart.explicitFlavorFromArgs(
+            parser.parse(<String>['-f', 'custom.yaml'])),
         isNull,
       );
     });
@@ -186,7 +188,8 @@ flutter_launcher_icons:
     test('matches flavor files in subdirectories by basename', () {
       expect(
         main_dart.explicitFlavorFromArgs(
-          parser.parse(<String>['-f', 'config/flutter_launcher_icons-prod.yaml']),
+          parser
+              .parse(<String>['-f', 'config/flutter_launcher_icons-prod.yaml']),
         ),
         equals('prod'),
       );
