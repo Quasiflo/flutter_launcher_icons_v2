@@ -37,7 +37,7 @@ class MacOSConfig {
     this.roundedCorners = false,
   });
 
-  /// Creates [WebConfig] from [json]
+  /// Creates [MacOSConfig] from [json]
   factory MacOSConfig.fromJson(Map<dynamic, dynamic> json) =>
       _$MacOSConfigFromJson(json);
 

@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs
 
 import 'dart:convert';
 import 'dart:io';
@@ -405,6 +404,8 @@ bool isGrayscaleImage(Image image, {int gridDivisions = 8}) {
   return true;
 }
 
+/// Overwrites the default `AppIcon` set in place, optionally suffixed for
+/// the dark/tinted variants.
 Future<void> overwriteDefaultIcons(
   IosIconTemplate template,
   Image image, [
@@ -424,6 +425,8 @@ Future<void> overwriteDefaultIcons(
   ).writeAsBytes(encodePng(newImage));
 }
 
+/// Writes fresh PNGs into `<catalogName>.appiconset/` under [iconName],
+/// keeping any previous set intact.
 Future<void> saveNewIcons({
   required IosIconTemplate template,
   required Image image,
@@ -946,6 +949,8 @@ Future<void> modifyDefaultContentsFile(
   await contentsJsonFile.writeAsString(contentsFileContent);
 }
 
+/// Serializes the `Contents.json` image list (plus `xcode` info block) to
+/// a JSON string.
 String generateContentsFileAsString(
   String newIconName,
   String? darkIconName,
@@ -962,15 +967,21 @@ String generateContentsFileAsString(
   return json.encode(contentJson);
 }
 
+/// An appearance qualifier (e.g. luminosity/dark) for a catalog image.
 class ContentsImageAppearanceObject {
+  /// Creates an instance of [ContentsImageAppearanceObject].
   ContentsImageAppearanceObject({
     required this.appearance,
     required this.value,
   });
 
+  /// Appearance axis name (e.g. `luminosity`).
   final String appearance;
+
+  /// Appearance value (e.g. `dark`).
   final String value;
 
+  /// Serializes to the catalog JSON form.
   Map<String, String> toJson() {
     return <String, String>{
       'appearance': appearance,
@@ -979,7 +990,9 @@ class ContentsImageAppearanceObject {
   }
 }
 
+/// One image entry of an asset-catalog `Contents.json`.
 class ContentsImageObject {
+  /// Creates an instance of [ContentsImageObject].
   ContentsImageObject({
     required this.size,
     required this.idiom,
@@ -989,13 +1002,25 @@ class ContentsImageObject {
     this.appearances,
   });
 
+  /// Point size (e.g. `20x20`).
   final String size;
+
+  /// Device idiom (e.g. `universal`).
   final String idiom;
+
+  /// PNG file name.
   final String filename;
+
+  /// Display scale (e.g. `2x`).
   final String scale;
+
+  /// Platform scope (e.g. `ios`), omitted when null.
   final String? platform;
+
+  /// Appearance qualifiers, omitted when null.
   final List<ContentsImageAppearanceObject>? appearances;
 
+  /// Serializes to the catalog JSON form.
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'size': size,
@@ -1009,12 +1034,18 @@ class ContentsImageObject {
   }
 }
 
+/// The `info` block of an asset-catalog `Contents.json`.
 class ContentsInfoObject {
+  /// Creates an instance of [ContentsInfoObject].
   ContentsInfoObject({required this.version, required this.author});
 
+  /// Schema version.
   final int version;
+
+  /// Authoring tool name.
   final String author;
 
+  /// Serializes to the catalog JSON form.
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'version': version,

@@ -1,5 +1,3 @@
-// ignore_for_file: public_member_api_docs
-
 // Project-relative path builders live in paths.dart and shared error
 // strings in errors.dart; both are re-exported here so existing
 // `constants.X` references keep working. New code should import
@@ -37,6 +35,7 @@ const String iosDefaultIconName = 'Icon-App';
 /// favicon.ico size
 const int kFaviconSize = 16;
 
+/// CLI banner with the current package version.
 String introMessage(String currentVersion) => '''
   ════════════════════════════════════════════
      LAUNCHER ICONS (v$currentVersion)                               
