@@ -84,8 +84,9 @@ Future<void> createIcons(Config config, String? flavor,
       final pixel = tintedImage.getPixel(0, 0);
       do {
         if (pixel.r != pixel.g || pixel.g != pixel.b) {
-          print(
+          printStatus(
             '\nWARNING: Tinted iOS image is not grayscale.\nSet "ios.desaturate_tinted_to_grayscale: true" to desaturate it.\n',
+            logger,
           );
           break;
         }
@@ -103,8 +104,9 @@ Future<void> createIcons(Config config, String? flavor,
     image = image.convert(numChannels: 3);
   }
   if (image.hasAlpha) {
-    print(
+    printStatus(
       '\nWARNING: Icons with alpha channel are not allowed in the Apple App Store.\nSet "ios.remove_alpha: true" to remove it.\n',
+      logger,
     );
   }
   String iconName;
@@ -176,6 +178,7 @@ Future<void> createIcons(Config config, String? flavor,
       flavor,
       config.iosConfig?.xcodeprojPath,
       prefixPath,
+      logger,
     );
     await modifyContentsFile(
       catalogName,
@@ -236,6 +239,7 @@ Future<void> createIcons(Config config, String? flavor,
       flavor,
       config.iosConfig?.xcodeprojPath,
       prefixPath,
+      logger,
     );
     await modifyContentsFile(
       iconName,
@@ -281,6 +285,7 @@ Future<void> createIcons(Config config, String? flavor,
       flavor,
       config.iosConfig?.xcodeprojPath,
       prefixPath,
+      logger,
     );
     // Still need to modify the Contents.json file
     // since the user could have added dark and tinted icons
@@ -576,6 +581,7 @@ Future<void> changeIosLauncherIcon(
   String? flavor, [
   String? xcodeprojPath,
   String prefixPath = '.',
+  LILogger? logger,
 ]) async {
   // Falls back to the standard location so a missing project still fails
   // with the historical PathNotFoundException.
@@ -616,12 +622,13 @@ Future<void> changeIosLauncherIcon(
     // The flavor catalog was generated on disk but Xcode will keep building
     // the previous icon set. Warn loudly instead of reporting silent
     // success (#341).
-    print(
+    printStatus(
       '\nWARNING: No ASSETCATALOG_COMPILER_APPICON_NAME entry for "$flavor" '
       'configurations was found in project.pbxproj, so Xcode will keep using '
       'the previous icon set. Set the Primary App Icon Set Name to '
       '"$iconName" for the $flavor configurations in Xcode, or add the '
       'missing build setting.\n',
+      logger,
     );
   }
 

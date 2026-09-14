@@ -13,6 +13,7 @@ import 'package:launcher_icons/ios/ios_icon_generator.dart';
 import 'package:launcher_icons/linux/linux_icon_generator.dart';
 import 'package:launcher_icons/logger.dart';
 import 'package:launcher_icons/macos/macos_icon_generator.dart';
+import 'package:launcher_icons/utils.dart' as utils;
 import 'package:launcher_icons/web/web_icon_generator.dart';
 import 'package:launcher_icons/windows/windows_icon_generator.dart';
 import 'package:path/path.dart' as path;
@@ -80,8 +81,8 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
   logger.verbose('Received args ${argResults.arguments}');
 
   if (argResults[helpFlag]) {
-    stdout.writeln('Generates icons for iOS and Android');
-    stdout.writeln(parser.usage);
+    logger.info('Generates icons for iOS and Android');
+    logger.info(parser.usage);
     exit(0);
   }
 
@@ -106,21 +107,21 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
       );
     }
     try {
-      print('\nFlavor: $onlyFlavor');
+      logger.info('\nFlavor: $onlyFlavor');
       await createIconsFromConfig(
         flutterLauncherIconsConfigs,
         logger,
         prefixPath,
         onlyFlavor,
       );
-      print('\n✓ Successfully generated launcher icons');
+      logger.info('\n✓ Successfully generated launcher icons');
     } on IconGenerationException catch (e) {
-      stderr.writeln('\n✕ Could not generate launcher icons');
-      stderr.writeln(e);
+      logger.error('\n✕ Could not generate launcher icons');
+      logger.error(e);
       exit(1);
     } catch (e) {
-      stderr.writeln('\n✕ Could not generate launcher icons');
-      stderr.writeln(e);
+      logger.error('\n✕ Could not generate launcher icons');
+      logger.error(e);
       exit(2);
     }
     return;
@@ -140,6 +141,7 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
     final flutterLauncherIconsConfigs = loadConfigFileFromArgResults(
       argResults,
       explicitFile: isFileOptionExplicit(arguments),
+      logger: logger,
     );
     if (flutterLauncherIconsConfigs == null) {
       throw NoConfigFoundException(
@@ -153,20 +155,20 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
         logger,
         prefixPath,
       );
-      print('\n✓ Successfully generated launcher icons');
+      logger.info('\n✓ Successfully generated launcher icons');
     } on IconGenerationException catch (e) {
-      stderr.writeln('\n✕ Could not generate launcher icons');
-      stderr.writeln(e);
+      logger.error('\n✕ Could not generate launcher icons');
+      logger.error(e);
       exit(1);
     } catch (e) {
-      stderr.writeln('\n✕ Could not generate launcher icons');
-      stderr.writeln(e);
+      logger.error('\n✕ Could not generate launcher icons');
+      logger.error(e);
       exit(2);
     }
   } else {
     try {
       for (String flavor in flavors) {
-        print('\nFlavor: $flavor');
+        logger.info('\nFlavor: $flavor');
         final flutterLauncherIconsConfigs =
             Config.loadConfigFromFlavor(flavor, prefixPath);
         if (flutterLauncherIconsConfigs == null) {
@@ -181,14 +183,14 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
           flavor,
         );
       }
-      print('\n✓ Successfully generated launcher icons for flavors');
+      logger.info('\n✓ Successfully generated launcher icons for flavors');
     } on IconGenerationException catch (e) {
-      stderr.writeln('\n✕ Could not generate launcher icons for flavors');
-      stderr.writeln(e);
+      logger.error('\n✕ Could not generate launcher icons for flavors');
+      logger.error(e);
       exit(1);
     } catch (e) {
-      stderr.writeln('\n✕ Could not generate launcher icons for flavors');
-      stderr.writeln(e);
+      logger.error('\n✕ Could not generate launcher icons for flavors');
+      logger.error(e);
       exit(2);
     }
   }
@@ -238,6 +240,7 @@ Future<void> createIconsFromConfig(
 Config? loadConfigFileFromArgResults(
   ArgResults argResults, {
   bool explicitFile = false,
+  LILogger? logger,
 }) {
   final String prefixPath = argResults[prefixOption];
   final String filePath = argResults[fileOption] as String;
@@ -259,13 +262,14 @@ Config? loadConfigFileFromArgResults(
     if (pubspecConfigs != null &&
         !_hasExistingImage(flutterLauncherIconsConfigs, prefixPath) &&
         _hasExistingImage(pubspecConfigs, prefixPath)) {
-      stderr.writeln(
+      utils.printStatus(
         'Warning: $defaultConfigFile looks like an unedited generated template '
         '(its icon files were not found) while pubspec.yaml declares icons that exist. ' +
             (explicitFile
                 ? 'Continuing with $defaultConfigFile as requested.'
                 : 'Using pubspec.yaml instead. '
                     'Delete $defaultConfigFile or pass -f to be explicit.'),
+        logger,
       );
       if (!explicitFile) {
         return pubspecConfigs;

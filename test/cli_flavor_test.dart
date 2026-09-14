@@ -8,6 +8,13 @@ import 'package:test/test.dart';
 // End-to-end tests for flavor selection through createIconsFromArguments.
 // These change the process working directory (the CLI resolves everything
 // against CWD); test execution is serialized via dart_test.yaml.
+//
+// LILogger routes info output through top-level print (via cli_util's
+// StandardLogger), so a print zone captures the CLI banners below.
+
+// End-to-end tests for flavor selection through createIconsFromArguments.
+// These change the process working directory (the CLI resolves everything
+// against CWD); test execution is serialized via dart_test.yaml.
 void main() {
   group('createIconsFromArguments flavor selection', () {
     late String originalDir;
