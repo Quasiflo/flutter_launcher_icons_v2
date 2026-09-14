@@ -66,9 +66,7 @@ Future<Uint8List> _downloadImageBytes(String url) async {
       throw FileNotFoundException('$url (HTTP ${response.statusCode})');
     }
     final builder = BytesBuilder();
-    await for (final chunk in response) {
-      builder.add(chunk);
-    }
+    await response.forEach(builder.add);
     return builder.takeBytes();
   } finally {
     client.close();
