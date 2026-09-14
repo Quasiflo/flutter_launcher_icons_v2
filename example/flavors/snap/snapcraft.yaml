@@ -1,0 +1,28 @@
+name: example_with_flavors
+version: 1.0.0
+summary: example_with_flavors
+description: example_with_flavors
+
+confinement: strict
+base: core22
+grade: stable
+
+slots:
+  dbus-example_with_flavors: # adjust accordingly to your app name
+    interface: dbus
+    bus: session
+    name: org.example.example_with_flavors # adjust accordingly to your app name
+
+apps:
+  example_with_flavors:
+    command: example_with_flavors
+    extensions: [gnome] # gnome includes the libraries required by flutter
+    plugs:
+    - network
+    slots:
+      - dbus-example_with_flavors
+parts:
+  example_with_flavors:
+    source: .
+    plugin: flutter
+    flutter-target: lib/main.dart # The main entry-point file of the application

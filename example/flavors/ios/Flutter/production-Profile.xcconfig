@@ -1,0 +1,2 @@
+#include "Generated.xcconfig"
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-production

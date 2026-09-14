@@ -1,6 +1,68 @@
+# Development flavor — the transparency showcase.
+#
+# Run: dart run launcher_icons -f launcher_icons-development.yaml
+# (discovers the "-development" flavor from the file name automatically)
+#
+# Every key is filled. `icon_name` is intentionally absent: under flavors the
+# catalog is always `AppIcon-<flavor>` (iOS/macOS) / `src/<flavor>/res`
+# (Android), so a custom name would be ignored.
 launcher_icons:
+  image_path: "assets/icon/icon-dev.png"
+
   android:
     generate: true
+    image_path: "assets/icon/icon-dev.png"
+    adaptive_icon_background: "transparent" # keyword: no colors.xml entry
+    adaptive_icon_foreground: "assets/icon/icon-dev-foreground.png"
+    adaptive_icon_foreground_inset: 16
+    adaptive_icon_monochrome: "assets/icon/icon-dev-monochrome.png"
+    adaptive_icon_round: "assets/icon/icon-dev-round.png"
+    play_store_icon: true
+
   ios:
     generate: true
-  image_path: "assets/launcher_icon/demo-icon-dev.png"
+    single_size: false
+    image_path: "assets/icon/icon-dev.png"
+    xcodeproj_path: "ios/Runner.xcodeproj"
+    flavor_mode: "pbxproj" # rewrites ASSETCATALOG_COMPILER_APPICON_NAME
+    remove_alpha: true # matte below blended onto background_color
+    background_color: "#123456"
+    image_path_dark_transparent: "assets/icon/icon-dev-dark.png"
+    image_path_tinted_grayscale: "assets/icon/icon-dev-tinted.png"
+    desaturate_tinted_to_grayscale: true
+    image_path_liquid_glass_icon: "assets/icon/icon-dev.png"
+    remove_liquid_glass: false
+    liquid_glass_icon_scale: 1.0
+    liquid_glass_translucency: 0.5
+    liquid_glass_specular: true
+    liquid_glass_shadow_kind: "Chromatic"
+    liquid_glass_shadow_opacity: 0.5
+    liquid_glass_blur: 0.5
+    liquid_glass_offset_x: 0.0
+    liquid_glass_offset_y: 0.0
+
+  web:
+    generate: true
+    image_path: "assets/icon/icon-dev.png"
+    image_path_favicon: "assets/icon/icon-dev-favicon.png"
+    image_path_maskable: "assets/icon/icon-dev-maskable.png"
+    favicon_size: 16
+    favicon_ico: true
+    output_path: "web_development"
+    background_color: "#123456"
+    theme_color: "#123456"
+
+  windows:
+    generate: true
+    image_path: "assets/icon/icon-dev.png"
+    icon_filename: "app_icon_development.ico"
+
+  macos:
+    generate: true
+    image_path: "assets/icon/icon-dev.png"
+    padding: 10
+    rounded_corners: true
+
+  linux:
+    generate: true
+    image_path: "assets/icon/icon-dev.png"

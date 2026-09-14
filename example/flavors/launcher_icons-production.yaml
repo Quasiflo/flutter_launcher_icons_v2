@@ -1,6 +1,75 @@
+# Production flavor — the opaque full-bleed + liquid-glass showcase.
+#
+# Run: dart run launcher_icons -f launcher_icons-production.yaml
+# (discovers the "-production" flavor from the file name automatically)
+#
+# Every key is filled. `icon_name` is intentionally absent: under flavors the
+# catalog is always `AppIcon-<flavor>` (iOS/macOS) / `src/<flavor>/res`
+# (Android), so a custom name would be ignored.
 launcher_icons:
+  image_path: "assets/icon/icon-prod.png"
+
   android:
     generate: true
+    image_path: "assets/icon/icon-prod.png"
+    adaptive_icon_background: "assets/icon/icon-prod-background.png"
+    adaptive_icon_foreground: "assets/icon/icon-prod-foreground.png"
+    adaptive_icon_foreground_inset: 10
+    adaptive_icon_monochrome: "assets/icon/icon-prod-monochrome.png"
+    adaptive_icon_round: "assets/icon/icon-prod-round.png"
+    play_store_icon: false
+
   ios:
     generate: true
-  image_path: "assets/launcher_icon/demo-icon.png"
+    single_size: false
+    image_path: "assets/icon/icon-prod.png"
+    xcodeproj_path: "ios/Runner.xcodeproj"
+    flavor_mode: "xcconfig" # writes ios/Flutter/<flavor>-<Mode>.xcconfig
+    remove_alpha: false # art is already opaque; nothing to blend
+    background_color: "#ffffff"
+    image_path_dark_transparent: "assets/icon/icon-prod-dark.png"
+    image_path_tinted_grayscale: "assets/icon/icon-prod-tinted.png"
+    desaturate_tinted_to_grayscale: false
+    image_path_liquid_glass_icon: "assets/icon/icon-prod-glass.png"
+    image_path_liquid_glass_icon_dark: "assets/icon/icon-prod-glass-dark.png"
+    image_path_liquid_glass_icon_tinted: "assets/icon/icon-prod-glass-tinted.png"
+    remove_liquid_glass: false
+    liquid_glass_icon_scale: 0.9
+    liquid_glass_translucency: 0.7
+    liquid_glass_specular: true
+    liquid_glass_shadow_kind: "Neutral"
+    liquid_glass_shadow_opacity: 0.3
+    liquid_glass_blur: 0.8
+    liquid_glass_offset_x: 0.0
+    liquid_glass_offset_y: 4.0
+    liquid_glass_lighting: "individual"
+    liquid_glass_refractivity_enabled: true
+    liquid_glass_refractivity_depth: 0.5
+    liquid_glass_refractivity_strength: 0.5
+    liquid_glass_specular_highlight_placement: "outside"
+
+  web:
+    generate: true
+    image_path: "assets/icon/icon-prod.png"
+    image_path_favicon: "assets/icon/icon-prod-favicon.png"
+    # no image_path_maskable: derives a padded fallback from the logo (warns)
+    favicon_size: 32
+    favicon_ico: false # ship the PNG only
+    output_path: "web_production"
+    background_color: "#283593"
+    theme_color: "#283593"
+
+  windows:
+    generate: true
+    image_path: "assets/icon/icon-prod.png"
+    icon_filename: "app_icon.ico"
+
+  macos:
+    generate: true
+    image_path: "assets/icon/icon-prod.png"
+    padding: 0
+    rounded_corners: false
+
+  linux:
+    generate: true
+    image_path: "assets/icon/icon-prod.png"
