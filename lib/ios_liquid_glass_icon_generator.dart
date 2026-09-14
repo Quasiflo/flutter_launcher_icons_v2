@@ -106,10 +106,48 @@ Map<String, dynamic> generateIconConfig(Config config, String imageFileName) {
     return path.basename(source);
   }
 
-  final darkName = variantName(iosConfig.imagePathLiquidGlassIconDark ??
-      iosConfig.imagePathDarkTransparent,);
-  final tintedName = variantName(iosConfig.imagePathLiquidGlassIconTinted ??
-      iosConfig.imagePathTintedGrayscale,);
+  final darkName = variantName(
+    iosConfig.imagePathLiquidGlassIconDark ??
+        iosConfig.imagePathDarkTransparent,
+  );
+  final tintedName = variantName(
+    iosConfig.imagePathLiquidGlassIconTinted ??
+        iosConfig.imagePathTintedGrayscale,
+  );
+
+  // Optical pass-throughs. All are opt-in so unset keys stay out of the
+  // document and historical output is byte-identical.
+  final lighting = iosConfig.liquidGlassLighting;
+  if (lighting != null && lighting != 'individual' && lighting != 'combined') {
+    throw InvalidConfigException(
+      'ios.liquid_glass_lighting must be either "individual" or "combined", got: $lighting',
+    );
+  }
+  Map<String, dynamic>? refractivity;
+  if (iosConfig.liquidGlassRefractivityEnabled == true) {
+    final depth = iosConfig.liquidGlassRefractivityDepth;
+    final strength = iosConfig.liquidGlassRefractivityStrength;
+    if (depth == null || strength == null) {
+      throw const InvalidConfigException(
+        'ios.liquid_glass_refractivity_enabled requires '
+        '`liquid_glass_refractivity_depth` and '
+        '`liquid_glass_refractivity_strength`.',
+      );
+    }
+    refractivity = {'enabled': true, 'depth': depth, 'strength': strength};
+  }
+  final specularPlacement = iosConfig.liquidGlassSpecularHighlightPlacement;
+  if (specularPlacement != null &&
+      specularPlacement != 'inside' &&
+      specularPlacement != 'outside') {
+    throw InvalidConfigException(
+      'ios.liquid_glass_specular_highlight_placement must be either "inside" or "outside", got: $specularPlacement',
+    );
+  }
+
+  // NOTE: no top-level `features` declaration is emitted. It is optional
+  // per the format (the keys below stand alone), and actool rejects the
+  // array with an internal error — verified against Xcode 26.6.
 
   final layer = <String, dynamic>{
     'glass': !iosConfig.removeLiquidGlass,
@@ -140,7 +178,9 @@ Map<String, dynamic> generateIconConfig(Config config, String imageFileName) {
     'groups': [
       {
         'blur-material': iosConfig.liquidGlassBlur,
+        if (lighting != null) 'lighting': lighting,
         'layers': [layer],
+        if (refractivity != null) 'refractivity': refractivity,
         'shadow': {
           'kind': iosConfig.liquidGlassShadowKind.toLowerCase() == 'chromatic'
               ? 'layer-color'
@@ -148,6 +188,8 @@ Map<String, dynamic> generateIconConfig(Config config, String imageFileName) {
           'opacity': iosConfig.liquidGlassShadowOpacity,
         },
         'specular': iosConfig.liquidGlassSpecular,
+        if (specularPlacement != null)
+          'specular-highlight-placement': specularPlacement,
         'translucency': {
           'enabled': !iosConfig.removeLiquidGlass,
           'value': iosConfig.liquidGlassTranslucency ?? 0.5,

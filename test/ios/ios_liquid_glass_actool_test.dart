@@ -122,6 +122,40 @@ void main() {
           isTrue,
         );
       });
+
+      test('fully-loaded bundle compiles without errors', () async {
+        final config = Config.fromJson(<String, dynamic>{
+          'ios': {
+            'generate': true,
+            'image_path_liquid_glass_icon': 'icon.png',
+            'image_path_liquid_glass_icon_dark': 'icon-dark.png',
+            'image_path_liquid_glass_icon_tinted': 'icon-tinted.png',
+            'liquid_glass_lighting': 'combined',
+            'liquid_glass_refractivity_enabled': true,
+            'liquid_glass_refractivity_depth': 0.6,
+            'liquid_glass_refractivity_strength': 0.7,
+            'liquid_glass_specular_highlight_placement': 'inside',
+            'liquid_glass_shadow_kind': 'Chromatic',
+          },
+        });
+
+        await generateLiquidGlassIcon(config, 'AppIcon');
+
+        final result = await compileIcon(
+          'ios/Runner/AppIcon.icon',
+          'AppIcon',
+          'compiled-full',
+        );
+        expect(
+          result.exitCode,
+          equals(0),
+          reason: result.stdout.toString() + result.stderr.toString(),
+        );
+        expect(
+          File(path.join('compiled-full', 'Assets.car')).existsSync(),
+          isTrue,
+        );
+      });
     },
     skip: !Platform.isMacOS ? 'requires macOS with Xcode actool' : false,
   );

@@ -97,6 +97,28 @@ class IOSConfig {
   @JsonKey(name: 'liquid_glass_blur')
   final double? liquidGlassBlur;
 
+  /// Group lighting model: `individual` lights each layer separately,
+  /// `combined` treats the group as one shape. Unset by default (omitted
+  /// from icon.json); only observable with 2+ layers.
+  @JsonKey(name: 'liquid_glass_lighting')
+  final String? liquidGlassLighting;
+
+  /// Enables group refractivity (`depth` + `strength` required).
+  @JsonKey(name: 'liquid_glass_refractivity_enabled')
+  final bool? liquidGlassRefractivityEnabled;
+
+  /// Refractivity depth (required when refractivity is enabled).
+  @JsonKey(name: 'liquid_glass_refractivity_depth')
+  final double? liquidGlassRefractivityDepth;
+
+  /// Refractivity strength (required when refractivity is enabled).
+  @JsonKey(name: 'liquid_glass_refractivity_strength')
+  final double? liquidGlassRefractivityStrength;
+
+  /// Specular highlight placement: `inside` or `outside`. Unset by default.
+  @JsonKey(name: 'liquid_glass_specular_highlight_placement')
+  final String? liquidGlassSpecularHighlightPlacement;
+
   /// IOS liquid glass offset X
   @JsonKey(name: 'liquid_glass_offset_x')
   final double? liquidGlassOffsetX;
@@ -127,6 +149,11 @@ class IOSConfig {
     this.liquidGlassShadowKind = 'Neutral',
     this.liquidGlassShadowOpacity = 0.5,
     this.liquidGlassBlur = 0.5,
+    this.liquidGlassLighting,
+    this.liquidGlassRefractivityEnabled,
+    this.liquidGlassRefractivityDepth,
+    this.liquidGlassRefractivityStrength,
+    this.liquidGlassSpecularHighlightPlacement,
     this.liquidGlassOffsetX = 0.0,
     this.liquidGlassOffsetY = 0.0,
   });
