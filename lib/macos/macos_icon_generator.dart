@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:image/image.dart';
 import 'package:launcher_icons/abs/icon_generator.dart';
 import 'package:launcher_icons/constants.dart' as constants;
+import 'package:launcher_icons/ios.dart' as ios;
 import 'package:launcher_icons/macos/macos_icon_effects.dart'
     as effects;
 import 'package:launcher_icons/macos/macos_icon_template.dart';
@@ -64,6 +65,42 @@ class MacOSIconGenerator extends IconGenerator {
     await _generateIcons(imgFile);
     context.logger.verbose('Updating contents.json');
     _updateContentsFile();
+
+    // Flavor runs write AppIcon-<flavor>.appiconset/ but Xcode keeps
+    // pointing at AppIcon until ASSETCATALOG_COMPILER_APPICON_NAME is
+    // updated — the same wiring the iOS generator performs. Default runs
+    // need no edit: the template already points at AppIcon. A missing
+    // project file only warns: the icons themselves are still valid.
+    final flavor = context.flavor;
+    if (flavor != null) {
+      final pbxprojPath = path.join(
+        context.prefixPath,
+        'macos',
+        'Runner.xcodeproj',
+        'project.pbxproj',
+      );
+      if (!File(pbxprojPath).existsSync()) {
+        context.logger.error(
+          'macOS project.pbxproj not found at $pbxprojPath: generated '
+          'AppIcon-$flavor.appiconset but Xcode will keep using the '
+          'previous icon set. Set the Primary App Icon Set Name to '
+          '"AppIcon-$flavor" for the $flavor configurations in Xcode.',
+        );
+      } else {
+        await ios.changeIosLauncherIcon(
+          'AppIcon-$flavor',
+          flavor,
+          path.join(
+            context.prefixPath,
+            'macos',
+            'Runner.xcodeproj',
+          ),
+          // The xcodeproj path above is already prefixed.
+          '.',
+          context.logger,
+        );
+      }
+    }
   }
 
   @override
