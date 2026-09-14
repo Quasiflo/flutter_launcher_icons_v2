@@ -186,8 +186,7 @@ flutter:
       expect(generator.validateRequirements(), isFalse);
     });
 
-    test(
-        'validateRequirements accepts a directory entry in pubspec assets',
+    test('validateRequirements accepts a directory entry in pubspec assets',
         () async {
       await setUpValidProject(pubspecAssetsEntry: 'assets/images/');
 
@@ -476,8 +475,7 @@ static void my_application_activate(GApplication* application) {
         );
       });
 
-      test('no-op when canonical block already has the correct path',
-          () async {
+      test('no-op when canonical block already has the correct path', () async {
         const originalContent = '''
 #include "my_application.h"
 #include <gio/gio.h>
