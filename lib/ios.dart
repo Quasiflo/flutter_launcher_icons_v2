@@ -302,15 +302,12 @@ Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) asyn
   }
 }
 
-/// Note: Do not change interpolation unless you end up with better results (see issue for result when using cubic
-/// interpolation)
-/// https://github.com/Quasiflo/launcher_icons/issues/101#issuecomment-495528733
 Future<void> overwriteDefaultIcons(
   IosIconTemplate template,
   Image image, [
   String iconNameSuffix = '',
 ]) async {
-  final Image newImage = createResizedImage(template, image);
+  final Image newImage = createResizedImage(template.size, image);
   await File(
     iosDefaultIconFolder +
         iosDefaultIconName +
@@ -320,9 +317,6 @@ Future<void> overwriteDefaultIcons(
   ).writeAsBytes(encodePng(newImage));
 }
 
-/// Note: Do not change interpolation unless you end up with better results (see issue for result when using cubic
-/// interpolation)
-/// https://github.com/Quasiflo/launcher_icons/issues/101#issuecomment-495528733
 Future<void> saveNewIcons({
   required IosIconTemplate template,
   required Image image,
@@ -330,29 +324,10 @@ Future<void> saveNewIcons({
   required String iconName,
 }) async {
   final String newIconFolder = iosAssetFolder + catalogName + '.appiconset/';
-  final Image newImage = createResizedImage(template, image);
+  final Image newImage = createResizedImage(template.size, image);
   final newFile = await File(newIconFolder + iconName + template.name + '.png')
       .create(recursive: true);
   await newFile.writeAsBytes(encodePng(newImage));
-}
-
-/// create resized icon image
-Image createResizedImage(IosIconTemplate template, Image image) {
-  if (image.width >= template.size) {
-    return copyResize(
-      image,
-      width: template.size,
-      height: template.size,
-      interpolation: Interpolation.average,
-    );
-  } else {
-    return copyResize(
-      image,
-      width: template.size,
-      height: template.size,
-      interpolation: Interpolation.linear,
-    );
-  }
 }
 
 /// Add liquid glass .icon file reference to project.pbxproj
