@@ -87,13 +87,21 @@ void main() {
 
   test('Adaptive icon background image paths are detected', () {
     expect(
-        android.isAdaptiveIconConfigImageFile('assets/background.png'), isTrue,);
+      android.isAdaptiveIconConfigImageFile('assets/background.png'),
+      isTrue,
+    );
     expect(
-        android.isAdaptiveIconConfigImageFile('assets/background.PNG'), isTrue,);
+      android.isAdaptiveIconConfigImageFile('assets/background.PNG'),
+      isTrue,
+    );
     expect(
-        android.isAdaptiveIconConfigImageFile('assets/background.jpg'), isTrue,);
+      android.isAdaptiveIconConfigImageFile('assets/background.jpg'),
+      isTrue,
+    );
     expect(
-        android.isAdaptiveIconConfigImageFile('assets/background.JPG'), isTrue,);
+      android.isAdaptiveIconConfigImageFile('assets/background.JPG'),
+      isTrue,
+    );
     expect(
       android.isAdaptiveIconConfigImageFile('assets/background.jpeg'),
       isTrue,
@@ -235,8 +243,7 @@ void main() {
       expect(mipmapXml, contains('@color/ic_launcher_background'));
     });
 
-    test('bare hex background gains a # prefix in colors.xml (#673)',
-        () async {
+    test('bare hex background gains a # prefix in colors.xml (#673)', () async {
       final config = Config.fromJson(<String, dynamic>{
         'android': {
           'generate': true,

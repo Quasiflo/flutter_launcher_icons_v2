@@ -109,7 +109,9 @@ void main() {
 
       expect(
         output,
-        contains('<!-- <color name="ic_launcher_background">#000000</color> -->'),
+        contains(
+          '<!-- <color name="ic_launcher_background">#000000</color> -->',
+        ),
       );
       expect(
         output,

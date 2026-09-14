@@ -28,9 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: flavor.title,
-      theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: flavor.seedColor),
-      ),
+      theme: ThemeData(colorScheme: .fromSeed(seedColor: flavor.seedColor)),
       home: MyHomePage(title: '${flavor.title} Home Page'),
     );
   }

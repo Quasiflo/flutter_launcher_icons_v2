@@ -5,8 +5,7 @@ import 'package:image/image.dart';
 import 'package:launcher_icons/abs/icon_generator.dart';
 import 'package:launcher_icons/constants.dart' as constants;
 import 'package:launcher_icons/ios.dart' as ios;
-import 'package:launcher_icons/macos/macos_icon_effects.dart'
-    as effects;
+import 'package:launcher_icons/macos/macos_icon_effects.dart' as effects;
 import 'package:launcher_icons/macos/macos_icon_template.dart';
 import 'package:launcher_icons/utils.dart' as utils;
 import 'package:path/path.dart' as path;
@@ -82,9 +81,8 @@ class MacOSIconGenerator extends IconGenerator {
         'Runner',
         'Assets.xcassets',
       ),
-      currentCatalog: context.flavor == null
-          ? 'AppIcon'
-          : 'AppIcon-${context.flavor}',
+      currentCatalog:
+          context.flavor == null ? 'AppIcon' : 'AppIcon-${context.flavor}',
       referenceTexts: [
         if (pbxprojFile.existsSync()) await pbxprojFile.readAsString(),
       ],
@@ -188,8 +186,8 @@ class MacOSIconGenerator extends IconGenerator {
         File(path.join(context.prefixPath, _contentsFilePath()));
     Map<String, dynamic>? contentsConfig;
     try {
-      contentsConfig =
-          jsonDecode(contentsFilePath.readAsStringSync()) as Map<String, dynamic>;
+      contentsConfig = jsonDecode(contentsFilePath.readAsStringSync())
+          as Map<String, dynamic>;
     } on FormatException catch (_) {
       contentsConfig = null;
     } on FileSystemException catch (_) {

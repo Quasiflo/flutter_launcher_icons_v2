@@ -141,8 +141,7 @@ launcher_icons:
       expect(config!.iosConfig!.generate, isFalse);
 
       // read pubspec if provided file is not found
-      argResults =
-          parser.parse(<String>['-f', defaultConfigFile, '-p', dir]);
+      argResults = parser.parse(<String>['-f', defaultConfigFile, '-p', dir]);
       expect(main_dart.loadConfigFileFromArgResults(argResults), isNotNull);
     });
 
@@ -286,8 +285,7 @@ launcher_icons:
     test('matches flavor files in subdirectories by basename', () {
       expect(
         main_dart.explicitFlavorFromArgs(
-          parser
-              .parse(<String>['-f', 'config/launcher_icons-prod.yaml']),
+          parser.parse(<String>['-f', 'config/launcher_icons-prod.yaml']),
         ),
         equals('prod'),
       );

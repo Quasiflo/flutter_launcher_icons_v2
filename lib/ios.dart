@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -53,8 +52,12 @@ List<IosIconTemplate> iosIcons = <IosIconTemplate>[
 ];
 
 /// create the ios icons
-Future<void> createIcons(Config config, String? flavor,
-    {LILogger? logger, String prefixPath = '.',}) async {
+Future<void> createIcons(
+  Config config,
+  String? flavor, {
+  LILogger? logger,
+  String prefixPath = '.',
+}) async {
   final String? filePath = config.getImagePathIOS();
   final String? darkFilePath = config.iosConfig?.imagePathDarkTransparent;
   final String? tintedFilePath = config.iosConfig?.imagePathTintedGrayscale;
@@ -65,11 +68,16 @@ Future<void> createIcons(Config config, String? flavor,
 
   // decodeImageFile throws on missing/undecodable files, so a specified
   // but bad path is a hard error rather than a silent skip.
-  Image image = await decodeImageFile(withPrefix(prefixPath, filePath));  // Single-size mode generates only the 1024px marketing icon (#592):
+  Image image = await decodeImageFile(
+    withPrefix(
+      prefixPath,
+      filePath,
+    ),
+  );
+  // Single-size mode generates only the 1024px marketing icon (#592):
   // dark/tinted variants are skipped entirely (no decode, no I/O).
   final bool singleSize = config.iosConfig?.singleSize == true;
-  if (singleSize &&
-      (darkFilePath != null || tintedFilePath != null)) {
+  if (singleSize && (darkFilePath != null || tintedFilePath != null)) {
     printStatus(
       'Dark/tinted variants are ignored in single-size mode',
       logger,
@@ -83,8 +91,7 @@ Future<void> createIcons(Config config, String? flavor,
 
   Image? tintedImage;
   if (tintedFilePath != null && !singleSize) {
-    tintedImage =
-        await decodeImageFile(withPrefix(prefixPath, tintedFilePath));
+    tintedImage = await decodeImageFile(withPrefix(prefixPath, tintedFilePath));
     if (config.iosConfig!.desaturateTintedToGrayscale) {
       printStatus('Desaturating iOS tinted image to grayscale', logger);
       tintedImage = grayscale(tintedImage);
@@ -139,9 +146,9 @@ Future<void> createIcons(Config config, String? flavor,
   // Single-size mode generates only the 1024px marketing icon (#592).
   final List<IosIconTemplate> generateIosIcons = singleSize
       ? <IosIconTemplate>[
-              IosIconTemplate(name: '-1024x1024@1x', size: 1024),
-            ]
-          : iosIcons;
+          IosIconTemplate(name: '-1024x1024@1x', size: 1024),
+        ]
+      : iosIcons;
   final String? customIconName = config.iosConfig?.iconName;
   final concurrentIconUpdates = <Future<void>>[];
   // The name of the icon catalog the generated icons are written to. The
@@ -305,7 +312,8 @@ Future<void> createIcons(Config config, String? flavor,
       );
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates.add(
-            overwriteDefaultIcons(template, darkImage, '-Dark', prefixPath),);
+          overwriteDefaultIcons(template, darkImage, '-Dark', prefixPath),
+        );
       }
       darkIconName = iosDefaultIconName + '-Dark';
     }
@@ -316,7 +324,8 @@ Future<void> createIcons(Config config, String? flavor,
       );
       for (IosIconTemplate template in generateIosIcons) {
         concurrentIconUpdates.add(
-            overwriteDefaultIcons(template, tintedImage, '-Tinted', prefixPath),);
+          overwriteDefaultIcons(template, tintedImage, '-Tinted', prefixPath),
+        );
       }
       tintedIconName = iosDefaultIconName + '-Tinted';
     }
@@ -355,8 +364,12 @@ Future<void> createIcons(Config config, String? flavor,
 
   // Generate liquid glass .icon if configured
   if (config.hasLiquidGlassIconConfig) {
-    await generateLiquidGlassIcon(config, catalogName,
-        logger: logger, prefixPath: prefixPath,);
+    await generateLiquidGlassIcon(
+      config,
+      catalogName,
+      logger: logger,
+      prefixPath: prefixPath,
+    );
     // Add .icon file reference to project.pbxproj
     await addLiquidGlassIconToProject(
       catalogName,
@@ -449,8 +462,8 @@ Future<void> addLiquidGlassIconToProject(
   LILogger? logger,
   String prefixPath = '.',
 ]) async {
-  final resolvedPath =
-      resolveIosPbxprojPath(xcodeprojPath, prefixPath) ?? withPrefix(prefixPath, iosConfigFile);
+  final resolvedPath = resolveIosPbxprojPath(xcodeprojPath, prefixPath) ??
+      withPrefix(prefixPath, iosConfigFile);
   final File iOSConfigFile = File(resolvedPath);
   if (!iOSConfigFile.existsSync()) {
     printStatus(
@@ -644,7 +657,10 @@ String _generateUniqueId(String fileName, String projectFile) {
 /// `ios/Runner.xcodeproj` location, then the first `*.xcodeproj` found under
 /// `ios/` so renamed Runner projects keep working (#543). Returns `null`
 /// when no project file exists.
-String? resolveIosPbxprojPath([String? xcodeprojPath, String prefixPath = '.']) {
+String? resolveIosPbxprojPath([
+  String? xcodeprojPath,
+  String prefixPath = '.',
+]) {
   if (xcodeprojPath != null) {
     return '$xcodeprojPath/project.pbxproj';
   }
@@ -852,8 +868,9 @@ Future<void> writeIosFlavorXcconfigs(
     final file = File(withPrefix(prefixPath, relativePath));
     final existed = file.existsSync();
     final target = existed ? file : await file.create(recursive: true);
-    var xcconfigLines =
-        existed ? await target.readAsLines() : ['#include "Generated.xcconfig"'];
+    var xcconfigLines = existed
+        ? await target.readAsLines()
+        : ['#include "Generated.xcconfig"'];
     var replaced = false;
     for (var i = 0; i < xcconfigLines.length; i++) {
       if (xcconfigLines[i].split('=').first.trim() == setting) {

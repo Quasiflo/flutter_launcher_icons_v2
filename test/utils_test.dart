@@ -175,10 +175,9 @@ void main() {
       );
     });
 
-    test('throws NoDecoderForImageFormatException for garbage bytes',
-        () async {
-      final garbage =
-          File(path.join(d.sandbox, 'garbage.png'))..createSync(recursive: true);
+    test('throws NoDecoderForImageFormatException for garbage bytes', () async {
+      final garbage = File(path.join(d.sandbox, 'garbage.png'))
+        ..createSync(recursive: true);
       // Plain text: every decoder probe rejects it and decodeImage returns
       // null (short binary blobs can throw inside a probe instead).
       await garbage.writeAsString(

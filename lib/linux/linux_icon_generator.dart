@@ -21,8 +21,8 @@ class LinuxIconGenerator extends IconGenerator {
 
   @override
   Future<void> createIcons() async {
-    final iconPath = context.config
-        .resolveImagePath(context.linuxConfig!.imagePath)!;
+    final iconPath =
+        context.config.resolveImagePath(context.linuxConfig!.imagePath)!;
 
     context.logger.verbose('Using Linux icon at $iconPath...');
 
@@ -139,8 +139,7 @@ class LinuxIconGenerator extends IconGenerator {
       return null;
     }
     try {
-      return loadYaml(pubspecFile.readAsStringSync())
-          as Map<dynamic, dynamic>?;
+      return loadYaml(pubspecFile.readAsStringSync()) as Map<dynamic, dynamic>?;
     } catch (_) {
       return null;
     }
@@ -204,8 +203,7 @@ parts:
       return false;
     }
 
-    final iconPath = context.config
-        .resolveImagePath(linuxConfig.imagePath)!;
+    final iconPath = context.config.resolveImagePath(linuxConfig.imagePath)!;
 
     final entitesToCheck = [
       path.join(context.prefixPath, constants.linuxDirPath),

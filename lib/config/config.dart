@@ -209,8 +209,7 @@ class Config {
 
   /// whether or not there is configuration for round icons for android
   bool get hasAndroidAdaptiveRoundConfig {
-    return isNeedingNewAndroidIcon &&
-        androidConfig?.adaptiveIconRound != null;
+    return isNeedingNewAndroidIcon && androidConfig?.adaptiveIconRound != null;
   }
 
   /// Checks if at least one platform section has `generate: true`.
@@ -267,8 +266,7 @@ class Config {
   /// Method for the retrieval of the Android icon path
   /// If android.image_path is found, this will be prioritised over the image_path
   /// value.
-  String? getImagePathAndroid() =>
-      resolveImagePath(androidConfig?.imagePath);
+  String? getImagePathAndroid() => resolveImagePath(androidConfig?.imagePath);
 
   /// get the image path for IOS
   String? getImagePathIOS() => resolveImagePath(iosConfig?.imagePath);

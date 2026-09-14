@@ -97,8 +97,7 @@ void main() {
           ),
         ).existsSync();
 
-    Config customConfig(String iconName) =>
-        Config.fromJson(<String, dynamic>{
+    Config customConfig(String iconName) => Config.fromJson(<String, dynamic>{
           'android': {
             'generate': true,
             'image_path': 'app_icon.png',

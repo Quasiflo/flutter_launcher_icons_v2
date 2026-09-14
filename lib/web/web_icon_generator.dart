@@ -187,8 +187,7 @@ class WebIconGenerator extends IconGenerator {
     if (context.webConfig?.faviconIco ?? true) {
       // Browsers request /favicon.ico by default; emit the consensus
       // multi-frame container alongside the PNG (#540).
-      final multi =
-          utils.createResizedImage(_faviconIcoSizes.first, image);
+      final multi = utils.createResizedImage(_faviconIcoSizes.first, image);
       for (final frameSize in _faviconIcoSizes.skip(1)) {
         multi.addFrame(utils.createResizedImage(frameSize, image));
       }
@@ -279,9 +278,8 @@ class WebIconGenerator extends IconGenerator {
   Future<void> _generateAppleTouchIcon(Image source) async {
     const size = 180;
     final resized = utils.createResizedImage(size, source);
-    final rgba = resized.numChannels == 4
-        ? resized
-        : resized.convert(numChannels: 4);
+    final rgba =
+        resized.numChannels == 4 ? resized : resized.convert(numChannels: 4);
 
     var bg = (r: 255, g: 255, b: 255);
     final bgRaw = context.webConfig?.backgroundColor;
@@ -325,8 +323,7 @@ class WebIconGenerator extends IconGenerator {
     final indexFile = File(path.join(context.prefixPath, _indexFilePath));
     var content = await indexFile.readAsString();
 
-    final favSize =
-        context.webConfig?.faviconSize ?? constants.kFaviconSize;
+    final favSize = context.webConfig?.faviconSize ?? constants.kFaviconSize;
     final themeColor = context.webConfig?.themeColor;
     final includeIco = context.webConfig?.faviconIco ?? true;
     final block = '''

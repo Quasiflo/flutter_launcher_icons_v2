@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:launcher_icons/config/config.dart';

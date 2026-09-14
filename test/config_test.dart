@@ -452,8 +452,7 @@ void main() {
         expect(config.resolveImagePath('platform.png'), equals('platform.png'));
       });
 
-      test('falls back to the top-level path when platform path is null',
-          () {
+      test('falls back to the top-level path when platform path is null', () {
         const config = Config(imagePath: 'global.png');
         expect(config.resolveImagePath(null), equals('global.png'));
       });

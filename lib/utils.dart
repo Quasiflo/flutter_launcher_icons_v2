@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -68,8 +67,7 @@ String withPrefix(String prefixPath, String target) =>
 /// Only the 6-digit form is accepted; anything else throws
 /// [InvalidConfigException].
 ({int r, int g, int b}) parseHexColor(String hexColor) {
-  final cleanHex =
-      hexColor.startsWith('#') ? hexColor.substring(1) : hexColor;
+  final cleanHex = hexColor.startsWith('#') ? hexColor.substring(1) : hexColor;
   final hexValue = int.tryParse(cleanHex, radix: 16);
   if (cleanHex.length != 6 || hexValue == null) {
     throw InvalidConfigException(

@@ -121,8 +121,7 @@ void main() {
         expect(generator.isEnabled, isFalse);
       });
 
-      test('Config.fromJson rejects removed windows.icon_size with help',
-          () {
+      test('Config.fromJson rejects removed windows.icon_size with help', () {
         expect(
           () => Config.fromJson(<String, dynamic>{
             'windows': {'generate': true, 'icon_size': 48},
@@ -149,7 +148,7 @@ void main() {
         ]);
       });
 
-    test('should return false when windows dir does not exist', () async {
+      test('should return false when windows dir does not exist', () async {
         await d.dir('fli_test', [
           d.file('app_icon.png', testImageFile.readAsBytesSync()),
         ]).create();

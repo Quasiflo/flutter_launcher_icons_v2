@@ -34,8 +34,7 @@ void main() {
       Directory.current = originalDir;
     });
 
-    test('throws NoDecoderForImageFormatException for garbage image',
-        () async {
+    test('throws NoDecoderForImageFormatException for garbage image', () async {
       final garbage = File('icon.png')..createSync();
       // Plain text: every decoder probe rejects it and decodeImage returns
       // null (short binary blobs can throw inside a probe instead).

@@ -96,10 +96,12 @@ void main() {
     test('rewrite stops at the first semicolon', () async {
       const tricky = 'ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; FOO = x;';
       File(path.join('ios', 'Runner.xcodeproj', 'project.pbxproj'))
-          .writeAsStringSync(_pbxproj.replaceAll(
-        'ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;',
-        tricky,
-      ),);
+          .writeAsStringSync(
+        _pbxproj.replaceAll(
+          'ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;',
+          tricky,
+        ),
+      );
 
       await ios.changeIosLauncherIcon('AppIcon-staging', 'staging');
 
