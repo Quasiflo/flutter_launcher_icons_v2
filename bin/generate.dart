@@ -68,7 +68,7 @@ void main(List<String> arguments) {
 
 void _generateConfigFile(File configFile) {
   try {
-    configFile.writeAsStringSync(_configFileTemplate);
+    configFile.writeAsStringSync(configFileTemplate);
 
     print('\nConfig file generated successfully 🎉');
     print(
@@ -81,7 +81,12 @@ void _generateConfigFile(File configFile) {
   }
 }
 
-const _configFileTemplate = '''
+/// Default `launcher_icons.yaml` template.
+///
+/// Public so tests can assert it covers every schema key the loader
+/// validates (see `test/generate_template_test.dart`): add new config keys
+/// here when they are introduced.
+const configFileTemplate = '''
 # dart run launcher_icons
 launcher_icons:
   image_path: "assets/icon/icon.png"
@@ -94,18 +99,25 @@ launcher_icons:
     # adaptive_icon_foreground: "assets/icon/foreground.png"
     # adaptive_icon_foreground_inset: 16
     # adaptive_icon_monochrome: "assets/icon/monochrome.png"
+    # adaptive_icon_round: "assets/icon/round.png" # opt-in round icon + manifest roundIcon
+    # play_store_icon: true # 512px store-upload sidecar next to the project, off by default
 
   ios:
     generate: true
+    # single_size: true # single 1024px icon; dark/tinted variants are ignored
     # image_path: "assets/icon/icon-ios.png"
     # icon_name: "My-Launcher-Icon" # generate a new icon without removing the old default
     # xcodeproj_path: "ios/Runner.xcodeproj" # set when the Xcode project was renamed
+    # flavor_mode: "xcconfig" # "pbxproj" (default) or "xcconfig" flavor wiring
     remove_alpha: true
     # image_path_dark_transparent: "assets/icon/icon_dark.png"
     # image_path_tinted_grayscale: "assets/icon/icon_tinted.png"
     # desaturate_tinted_to_grayscale: true
     # background_color: "#ffffff"
     # image_path_liquid_glass_icon: "assets/icon/liquid_glass_icon.png"
+    # image_path_liquid_glass_icon_dark: "assets/icon/liquid_glass_icon_dark.png"
+    # image_path_liquid_glass_icon_tinted: "assets/icon/liquid_glass_icon_tinted.png"
+    # remove_liquid_glass: true # flat icon without glass effects
     # liquid_glass_icon_scale: 1.0
     # liquid_glass_translucency: 0.5
     # liquid_glass_specular: true
@@ -114,19 +126,27 @@ launcher_icons:
     # liquid_glass_blur: 0.5
     # liquid_glass_offset_x: 0.0
     # liquid_glass_offset_y: 0.0
+    # liquid_glass_lighting: "combined" # "individual" or "combined"
+    # liquid_glass_refractivity_enabled: true # requires depth + strength
+    # liquid_glass_refractivity_depth: 0.5
+    # liquid_glass_refractivity_strength: 0.5
+    # liquid_glass_specular_highlight_placement: "inside" # "inside" or "outside"
 
   web:
     generate: true
     image_path: "path/to/image.png"
     # image_path_favicon: "assets/icon/icon-favicon.png"
+    # image_path_maskable: "assets/icon/icon-maskable.png" # safe-zone-aware source
     # favicon_size: 16
+    # favicon_ico: false # skip favicon.ico, ship the PNG only
     # output_path: "web" # custom web root, e.g. per flavor
-    background_color: "#hexcode"
-    theme_color: "#hexcode"
+    # background_color: "#0175C2" # hex color
+    # theme_color: "#0175C2" # hex color
 
   windows:
     generate: true
     image_path: "path/to/image.png"
+    # icon_filename: "app_icon_staging.ico" # per-flavor output name
 
   macos:
     generate: true
