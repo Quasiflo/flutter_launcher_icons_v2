@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'ios_config.g.dart';
 
-/// The flutter_launcher_icons configuration set for iOS
+/// The launcher_icons configuration set for iOS
 @JsonSerializable(
   anyMap: true,
   checked: true,

@@ -2,12 +2,12 @@
 
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/config/ios_config.dart';
-import 'package:flutter_launcher_icons/constants.dart';
-import 'package:flutter_launcher_icons/custom_exceptions.dart';
-import 'package:flutter_launcher_icons/logger.dart';
-import 'package:flutter_launcher_icons/utils.dart';
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/config/ios_config.dart';
+import 'package:launcher_icons/constants.dart';
+import 'package:launcher_icons/custom_exceptions.dart';
+import 'package:launcher_icons/logger.dart';
+import 'package:launcher_icons/utils.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as path;
 
@@ -15,7 +15,7 @@ import 'package:path/path.dart' as path;
 Future<void> generateLiquidGlassIcon(
   Config config,
   String iconName, {
-  FLILogger? logger,
+  LILogger? logger,
 }) async {
   if (!config.hasLiquidGlassIconConfig) {
     return;

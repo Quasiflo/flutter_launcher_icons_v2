@@ -1,6 +1,6 @@
-import 'package:flutter_launcher_icons/abs/icon_generator.dart';
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/logger.dart';
+import 'package:launcher_icons/abs/icon_generator.dart';
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/logger.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:path/path.dart' as path;
@@ -13,19 +13,19 @@ import 'icon_generator_test.mocks.dart';
 void main() {
   group('#generateIconsFor', () {
     late String prefixPath;
-    late FLILogger logger;
+    late LILogger logger;
     late IconGenerator mockGenerator;
-    late Config mockFLIConfig;
+    late Config mockLIConfig;
     setUp(() async {
       prefixPath = path.join(d.sandbox, 'fli_test');
-      mockFLIConfig = MockConfig();
-      logger = FLILogger(false);
+      mockLIConfig = MockConfig();
+      logger = LILogger(false);
       mockGenerator = MockIconGenerator();
       when(mockGenerator.platformName).thenReturn('Mock');
       when(mockGenerator.isEnabled).thenReturn(true);
       when(mockGenerator.context).thenReturn(
         IconGeneratorContext(
-          config: mockFLIConfig,
+          config: mockLIConfig,
           prefixPath: prefixPath,
           logger: logger,
         ),
@@ -35,7 +35,7 @@ void main() {
         () {
       when(mockGenerator.validateRequirements()).thenReturn(true);
       generateIconsFor(
-        config: mockFLIConfig,
+        config: mockLIConfig,
         flavor: null,
         prefixPath: prefixPath,
         logger: logger,
@@ -50,7 +50,7 @@ void main() {
         () {
       when(mockGenerator.validateRequirements()).thenReturn(false);
       generateIconsFor(
-        config: mockFLIConfig,
+        config: mockLIConfig,
         flavor: null,
         prefixPath: prefixPath,
         logger: logger,
@@ -63,7 +63,7 @@ void main() {
     test('should skip disabled platform without validating requirements', () {
       when(mockGenerator.isEnabled).thenReturn(false);
       generateIconsFor(
-        config: mockFLIConfig,
+        config: mockLIConfig,
         flavor: null,
         prefixPath: prefixPath,
         logger: logger,
@@ -78,7 +78,7 @@ void main() {
       when(mockGenerator.createIcons())
           .thenThrow(Exception('should-skip-platform'));
       generateIconsFor(
-        config: mockFLIConfig,
+        config: mockLIConfig,
         flavor: null,
         prefixPath: prefixPath,
         logger: logger,

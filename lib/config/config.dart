@@ -1,21 +1,21 @@
 import 'dart:io';
 
 import 'package:checked_yaml/checked_yaml.dart' as yaml;
-import 'package:flutter_launcher_icons/config/android_config.dart';
-import 'package:flutter_launcher_icons/config/ios_config.dart';
-import 'package:flutter_launcher_icons/config/linux_config.dart';
-import 'package:flutter_launcher_icons/config/macos_config.dart';
-import 'package:flutter_launcher_icons/config/web_config.dart';
-import 'package:flutter_launcher_icons/config/windows_config.dart';
-import 'package:flutter_launcher_icons/constants.dart' as constants;
-import 'package:flutter_launcher_icons/custom_exceptions.dart';
-import 'package:flutter_launcher_icons/utils.dart' as utils;
 import 'package:json_annotation/json_annotation.dart';
+import 'package:launcher_icons/config/android_config.dart';
+import 'package:launcher_icons/config/ios_config.dart';
+import 'package:launcher_icons/config/linux_config.dart';
+import 'package:launcher_icons/config/macos_config.dart';
+import 'package:launcher_icons/config/web_config.dart';
+import 'package:launcher_icons/config/windows_config.dart';
+import 'package:launcher_icons/constants.dart' as constants;
+import 'package:launcher_icons/custom_exceptions.dart';
+import 'package:launcher_icons/utils.dart' as utils;
 import 'package:path/path.dart' as path;
 
 part 'config.g.dart';
 
-/// A model representing the flutter_launcher_icons configuration
+/// A model representing the launcher_icons configuration
 @JsonSerializable(
   anyMap: true,
   checked: true,
@@ -73,9 +73,9 @@ class Config {
         configContent,
         (Map<dynamic, dynamic>? json) {
           if (json != null) {
-            // if we have flutter_launcher_icons configuration ...
-            if (json['flutter_launcher_icons'] != null) {
-              return Config.fromJson(json['flutter_launcher_icons']);
+            // if we have launcher_icons configuration ...
+            if (json['launcher_icons'] != null) {
+              return Config.fromJson(json['launcher_icons']);
             }
           }
           return null;

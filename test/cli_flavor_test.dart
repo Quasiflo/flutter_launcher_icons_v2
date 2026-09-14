@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/main.dart' as main_dart;
+import 'package:launcher_icons/main.dart' as main_dart;
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
@@ -14,7 +14,7 @@ void main() {
     late String sandboxDir;
 
     const windowsYaml = '''
-flutter_launcher_icons:
+launcher_icons:
   image_path: "icon.png"
   windows:
     generate: true
@@ -24,7 +24,7 @@ flutter_launcher_icons:
       originalDir = Directory.current.path;
       sandboxDir = path.join(
         '.dart_tool',
-        'flutter_launcher_icons',
+        'launcher_icons',
         'test',
         'cli_flavor',
       );
@@ -37,10 +37,10 @@ flutter_launcher_icons:
       File(path.join(originalDir, 'test', 'assets', 'app_icon.png'))
           .copySync(path.join(sandboxDir, 'icon.png'));
       await File(
-        path.join(sandboxDir, 'flutter_launcher_icons-staging.yaml'),
+        path.join(sandboxDir, 'launcher_icons-staging.yaml'),
       ).writeAsString(windowsYaml);
       await File(
-        path.join(sandboxDir, 'flutter_launcher_icons-production.yaml'),
+        path.join(sandboxDir, 'launcher_icons-production.yaml'),
       ).writeAsString(windowsYaml);
       await File(path.join(sandboxDir, 'custom.yaml'))
           .writeAsString(windowsYaml);
@@ -77,7 +77,7 @@ flutter_launcher_icons:
 
     test('explicit -f flavor file runs only that flavor (#215)', () async {
       final printed =
-          await runCli(['-f', 'flutter_launcher_icons-staging.yaml']);
+          await runCli(['-f', 'launcher_icons-staging.yaml']);
       expect(printed.any((line) => line.contains('Flavor: staging')), isTrue);
       expect(
         printed.any((line) => line.contains('Flavor: production')),

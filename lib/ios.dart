@@ -2,14 +2,15 @@
 
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:crypto/crypto.dart';
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/constants.dart';
-import 'package:flutter_launcher_icons/custom_exceptions.dart';
-import 'package:flutter_launcher_icons/ios_liquid_glass_icon_generator.dart';
-import 'package:flutter_launcher_icons/logger.dart';
-import 'package:flutter_launcher_icons/utils.dart';
 import 'package:image/image.dart';
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/constants.dart';
+import 'package:launcher_icons/custom_exceptions.dart';
+import 'package:launcher_icons/ios_liquid_glass_icon_generator.dart';
+import 'package:launcher_icons/logger.dart';
+import 'package:launcher_icons/utils.dart';
 
 /// File to handle the creation of icons for iOS platform
 class IosIconTemplate {
@@ -52,7 +53,7 @@ List<IosIconTemplate> iosIcons = <IosIconTemplate>[
 ];
 
 /// create the ios icons
-Future<void> createIcons(Config config, String? flavor, {FLILogger? logger}) async {
+Future<void> createIcons(Config config, String? flavor, {LILogger? logger}) async {
   // TODO(p-mazhnik): support prefixPath
   final String? filePath = config.getImagePathIOS();
   final String? darkFilePath = config.iosConfig?.imagePathDarkTransparent;
@@ -303,7 +304,7 @@ Future<void> createIcons(Config config, String? flavor, {FLILogger? logger}) asy
 
 /// Note: Do not change interpolation unless you end up with better results (see issue for result when using cubic
 /// interpolation)
-/// https://github.com/fluttercommunity/flutter_launcher_icons/issues/101#issuecomment-495528733
+/// https://github.com/Quasiflo/launcher_icons/issues/101#issuecomment-495528733
 Future<void> overwriteDefaultIcons(
   IosIconTemplate template,
   Image image, [
@@ -321,7 +322,7 @@ Future<void> overwriteDefaultIcons(
 
 /// Note: Do not change interpolation unless you end up with better results (see issue for result when using cubic
 /// interpolation)
-/// https://github.com/fluttercommunity/flutter_launcher_icons/issues/101#issuecomment-495528733
+/// https://github.com/Quasiflo/launcher_icons/issues/101#issuecomment-495528733
 Future<void> saveNewIcons({
   required IosIconTemplate template,
   required Image image,
@@ -358,7 +359,7 @@ Image createResizedImage(IosIconTemplate template, Image image) {
 Future<void> addLiquidGlassIconToProject(
   String iconName, [
   String? xcodeprojPath,
-  FLILogger? logger,
+  LILogger? logger,
 ]) async {
   final resolvedPath = resolveIosPbxprojPath(xcodeprojPath) ?? iosConfigFile;
   final File iOSConfigFile = File(resolvedPath);

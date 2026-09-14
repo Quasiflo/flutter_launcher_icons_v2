@@ -1,11 +1,11 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/abs/icon_generator.dart';
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/config/windows_config.dart';
-import 'package:flutter_launcher_icons/logger.dart';
-import 'package:flutter_launcher_icons/windows/windows_icon_generator.dart';
+import 'package:launcher_icons/abs/icon_generator.dart';
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/config/windows_config.dart';
+import 'package:launcher_icons/logger.dart';
+import 'package:launcher_icons/windows/windows_icon_generator.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:path/path.dart' as path;
@@ -44,7 +44,7 @@ List<({int width, int height, int offset, int size})> _parseIcoDirectory(
   ];
 }
 
-@GenerateMocks([Config, WindowsConfig, FLILogger])
+@GenerateMocks([Config, WindowsConfig, LILogger])
 void main() {
   group('WindowsIconGenerator', () {
     late IconGeneratorContext context;
@@ -53,7 +53,7 @@ void main() {
     late WindowsConfig mockWindowsConfig;
     late String prefixPath;
     late File testImageFile;
-    late MockFLILogger mockLogger;
+    late MockLILogger mockLogger;
     final assetPath = path.join(Directory.current.path, 'test', 'assets');
 
     group('#validateRequirments', () {
@@ -66,7 +66,7 @@ void main() {
         prefixPath = path.join(d.sandbox, 'fli_test');
         mockConfig = MockConfig();
         mockWindowsConfig = MockWindowsConfig();
-        mockLogger = MockFLILogger();
+        mockLogger = MockLILogger();
         context = IconGeneratorContext(
           config: mockConfig,
           prefixPath: prefixPath,
@@ -150,19 +150,19 @@ void main() {
       expect(imageFile.existsSync(), isTrue);
       await d.dir('fli_test', [
         d.dir('windows'),
-        d.file('flutter_launcher_icons.yaml', templates.fliWindowsConfig),
+        d.file('launcher_icons.yaml', templates.liWindowsConfig),
         d.file('pubspec.yaml', templates.pubspecTemplate),
         d.file('app_icon.png', imageFile.readAsBytesSync()),
       ]).create();
       prefixPath = path.join(d.sandbox, 'fli_test');
       config = Config.loadConfigFromPath(
-        'flutter_launcher_icons.yaml',
+        'launcher_icons.yaml',
         prefixPath,
       )!;
       context = IconGeneratorContext(
         config: config,
         prefixPath: prefixPath,
-        logger: FLILogger(false),
+        logger: LILogger(false),
       );
       generator = WindowsIconGenerator(context);
     });

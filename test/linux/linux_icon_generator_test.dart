@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/abs/icon_generator.dart';
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/config/linux_config.dart';
-import 'package:flutter_launcher_icons/linux/linux_icon_generator.dart';
-import 'package:flutter_launcher_icons/logger.dart';
+import 'package:launcher_icons/abs/icon_generator.dart';
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/config/linux_config.dart';
+import 'package:launcher_icons/linux/linux_icon_generator.dart';
+import 'package:launcher_icons/logger.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -23,7 +23,7 @@ void main() {
 
       context = IconGeneratorContext(
         config: config,
-        logger: FLILogger(false),
+        logger: LILogger(false),
         prefixPath: tempDir.path,
       );
 
@@ -80,7 +80,7 @@ flutter:
 
         final testContext = IconGeneratorContext(
           config: config,
-          logger: FLILogger(false),
+          logger: LILogger(false),
           prefixPath: tempDir.path,
         );
 
@@ -92,7 +92,7 @@ flutter:
 
         final testContext = IconGeneratorContext(
           config: config,
-          logger: FLILogger(false),
+          logger: LILogger(false),
           prefixPath: tempDir.path,
         );
 
@@ -108,7 +108,7 @@ flutter:
 
       final testContext = IconGeneratorContext(
         config: config,
-        logger: FLILogger(false),
+        logger: LILogger(false),
         prefixPath: tempDir.path,
       );
 
@@ -124,7 +124,7 @@ flutter:
 
       final testContext = IconGeneratorContext(
         config: config,
-        logger: FLILogger(false),
+        logger: LILogger(false),
         prefixPath: tempDir.path,
       );
 
@@ -142,7 +142,7 @@ flutter:
 
       final testContext = IconGeneratorContext(
         config: config,
-        logger: FLILogger(false),
+        logger: LILogger(false),
         prefixPath: tempDir.path,
       );
 
@@ -209,7 +209,7 @@ flutter:
 
       final testContext = IconGeneratorContext(
         config: config,
-        logger: FLILogger(false),
+        logger: LILogger(false),
         prefixPath: tempDir.path,
       );
 
@@ -411,7 +411,7 @@ static void my_application_activate(GApplication* application) {
 
         final testContext = IconGeneratorContext(
           config: config,
-          logger: FLILogger(false),
+          logger: LILogger(false),
           prefixPath: tempDir.path,
         );
 

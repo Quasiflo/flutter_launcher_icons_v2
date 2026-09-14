@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/abs/icon_generator.dart';
-import 'package:flutter_launcher_icons/constants.dart' as constants;
-import 'package:flutter_launcher_icons/custom_exceptions.dart';
-import 'package:flutter_launcher_icons/macos/macos_icon_effects.dart'
-    as effects;
-import 'package:flutter_launcher_icons/macos/macos_icon_template.dart';
-import 'package:flutter_launcher_icons/utils.dart' as utils;
 import 'package:image/image.dart';
+import 'package:launcher_icons/abs/icon_generator.dart';
+import 'package:launcher_icons/constants.dart' as constants;
+import 'package:launcher_icons/custom_exceptions.dart';
+import 'package:launcher_icons/macos/macos_icon_effects.dart'
+    as effects;
+import 'package:launcher_icons/macos/macos_icon_template.dart';
+import 'package:launcher_icons/utils.dart' as utils;
 import 'package:path/path.dart' as path;
 
 /// A [IconGenerator] implementation for macos
@@ -88,11 +88,11 @@ class MacOSIconGenerator extends IconGenerator {
     if (macOSConfig.imagePath == null && context.config.imagePath == null) {
       context.logger
         ..verbose({
-          'flutter_launcher_icons.macos.image_path': macOSConfig.imagePath,
-          'flutter_launcher_icons.image_path': context.config.imagePath,
+          'launcher_icons.macos.image_path': macOSConfig.imagePath,
+          'launcher_icons.image_path': context.config.imagePath,
         })
         ..error(
-          'Missing image_path. Either provide "flutter_launcher_icons.macos.image_path" or "flutter_launcher_icons.image_path"',
+          'Missing image_path. Either provide "launcher_icons.macos.image_path" or "launcher_icons.image_path"',
         );
 
       return false;

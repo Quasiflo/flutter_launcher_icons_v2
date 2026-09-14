@@ -1,8 +1,8 @@
 # Flutter Launcher Icons
 
-[![Flutter Community: flutter_launcher_icons](https://fluttercommunity.dev/_github/header/flutter_launcher_icons)](https://github.com/fluttercommunity/community)
+[![Flutter Community: launcher_icons](https://fluttercommunity.dev/_github/header/launcher_icons)](https://github.com/fluttercommunity/community)
 
-[![pub package](https://img.shields.io/pub/v/flutter_launcher_icons.svg)](https://pub.dartlang.org/packages/flutter_launcher_icons)
+[![pub package](https://img.shields.io/pub/v/launcher_icons.svg)](https://pub.dartlang.org/packages/launcher_icons)
 
 A command-line tool which simplifies the task of updating your Flutter app's launcher icon. Fully flexible, allowing you to choose what platform you wish to update the launcher icon for and if you want, the option to keep your old launcher icon in case you want to revert back sometime in the future.
 
@@ -13,33 +13,33 @@ A command-line tool which simplifies the task of updating your Flutter app's lau
 Run the following command to create a new config automatically:
 
 ```shell
-dart run flutter_launcher_icons:generate
+dart run launcher_icons:generate
 ```
 
-This will create a new file called `flutter_launcher_icons.yaml` in your `flutter` project's root directory.
+This will create a new file called `launcher_icons.yaml` in your `flutter` project's root directory.
 
 If you want to override the default location or name of the config file, use the `-f` flag:
 
 ```shell
-dart run flutter_launcher_icons:generate -f <your config file name here>
+dart run launcher_icons:generate -f <your config file name here>
 ```
 
 To override an existing config file, use the `-o` flag:
 
 ```shell
-dart run flutter_launcher_icons:generate -o
+dart run launcher_icons:generate -o
 ```
 
 OR
 
 Add your Flutter Launcher Icons configuration to your `pubspec.yaml`.  
-An example is shown below. More complex examples [can be found in the example projects](https://github.com/fluttercommunity/flutter_launcher_icons/tree/master/example).
+An example is shown below. More complex examples [can be found in the example projects](https://github.com/Quasiflo/launcher_icons/tree/master/example).
 
 ```yaml
 dev_dependencies:
-  flutter_launcher_icons: "^0.14.4"
+  launcher_icons: "^0.14.4"
 
-flutter_launcher_icons:
+launcher_icons:
   image_path: "assets/icon/icon.png"
   android:
     generate: true
@@ -88,20 +88,20 @@ After setting up the configuration, all that is left to do is run the package.
 
 ```shell
 flutter pub get
-dart run flutter_launcher_icons
+dart run launcher_icons
 ```
 
-If you name your configuration file something other than `flutter_launcher_icons.yaml` or `pubspec.yaml` you will need to specify
+If you name your configuration file something other than `launcher_icons.yaml` or `pubspec.yaml` you will need to specify
 the name of the file when running the package.
 
 ```shell
 flutter pub get
-dart run flutter_launcher_icons -f <your config file name here>
+dart run launcher_icons -f <your config file name here>
 ```
 
 Note: If you are not using the existing `pubspec.yaml` ensure that your config file is located in the same directory as it.
 
-If you encounter any issues [please report them here](https://github.com/fluttercommunity/flutter_launcher_icons/issues).
+If you encounter any issues [please report them here](https://github.com/Quasiflo/launcher_icons/issues).
 
 In the above configuration, the package is setup to replace the existing launcher icons
 with the icon located in the image path specified above for every platform with
@@ -110,12 +110,12 @@ icon under a custom name without removing the old default one.
 
 ### Command-line options
 
-Shown below is the full list of options supported by the `flutter_launcher_icons:generate` command.
+Shown below is the full list of options supported by the `launcher_icons:generate` command.
 
 | Option                              | Description                                                                    |
 | ----------------------------------- | ------------------------------------------------------------------------------ |
-| `-f, --file <path>`                 | Path to the config file. Defaults to `flutter_launcher_icons.yaml`             |
-| `-o, --override`                    | Override an existing config file (only used by `flutter_launcher_icons:generate`) |
+| `-f, --file <path>`                 | Path to the config file. Defaults to `launcher_icons.yaml`             |
+| `-o, --override`                    | Override an existing config file (only used by `launcher_icons:generate`) |
 | `-v, --verbose`                     | Verbose output                                                                 |
 | `-p, --prefix <path>`               | Generates icons in the given path. Only supports web platform                  |
 | `--flavor-path <path>`              | Path to search for flavor configuration files. Defaults to the current directory |
@@ -240,19 +240,19 @@ After running the icon generation you'll have to set the wished icon for your co
 
 ## Flavor support
 
-Create a Flutter Launcher Icons configuration file for your flavor. The config file is called `flutter_launcher_icons-<flavor>.yaml` by replacing `<flavor>` by the name of your desired flavor.
+Create a Flutter Launcher Icons configuration file for your flavor. The config file is called `launcher_icons-<flavor>.yaml` by replacing `<flavor>` by the name of your desired flavor.
 
 The configuration file format is the same.
 
 Flavor configuration files are looked up recursively, so they may live in a subdirectory of your project. To search a directory other than the current directory, use the `--flavor-path` option:
 
 ```shell
-dart run flutter_launcher_icons --flavor-path=<directory>
+dart run launcher_icons --flavor-path=<directory>
 ```
 
-*Note: `--flavor-path` only controls where flavor configuration files are searched for and the search is performed recursively. Each flavor's configuration file (`flutter_launcher_icons-<flavor>.yaml`) is still loaded from the directory you run the command from (the current working directory).*
+*Note: `--flavor-path` only controls where flavor configuration files are searched for and the search is performed recursively. Each flavor's configuration file (`launcher_icons-<flavor>.yaml`) is still loaded from the directory you run the command from (the current working directory).*
 
-An example project with flavor support enabled [has been added to the examples](https://github.com/fluttercommunity/flutter_launcher_icons/tree/master/example/flavors).
+An example project with flavor support enabled [has been added to the examples](https://github.com/Quasiflo/launcher_icons/tree/master/example/flavors).
 
 ## :question: Troubleshooting
 
@@ -277,20 +277,20 @@ Caused by an update to the image dependency which is used by Flutter Launcher Ic
 Use #AARRGGBB for colors instead of #AABBGGRR, to be compatible with Flutter image class.
 ```
 
-[Related issue](https://github.com/fluttercommunity/flutter_launcher_icons/issues/98)
+[Related issue](https://github.com/Quasiflo/launcher_icons/issues/98)
 
 ### Dependency incompatible
 
 You may receive a message similar to the following
 
 ```log
-Because flutter_launcher_icons >=0.9.0 depends on args 2.0.0 and flutter_native_splash 1.2.0 depends on args ^2.1.1, flutter_launcher_icons >=0.9.0 is incompatible with flutter_native_splash 1.2.0.
-And because no versions of flutter_native_splash match >1.2.0 <2.0.0, flutter_launcher_icons >=0.9.0 is incompatible with flutter_native_splash ^1.2.0.
-So, because enstack depends on both flutter_native_splash ^1.2.0 and flutter_launcher_icons ^0.9.0, version solving failed.
-pub get failed (1; So, because enstack depends on both flutter_native_splash ^1.2.0 and flutter_launcher_icons ^0.9.0, version solving failed.)
+Because launcher_icons >=0.9.0 depends on args 2.0.0 and flutter_native_splash 1.2.0 depends on args ^2.1.1, launcher_icons >=0.9.0 is incompatible with flutter_native_splash 1.2.0.
+And because no versions of flutter_native_splash match >1.2.0 <2.0.0, launcher_icons >=0.9.0 is incompatible with flutter_native_splash ^1.2.0.
+So, because enstack depends on both flutter_native_splash ^1.2.0 and launcher_icons ^0.9.0, version solving failed.
+pub get failed (1; So, because enstack depends on both flutter_native_splash ^1.2.0 and launcher_icons ^0.9.0, version solving failed.)
 ```
 
-For a quick fix, you can temporarily override all references to a dependency: [See here for an example](https://github.com/fluttercommunity/flutter_launcher_icons/issues/262#issuecomment-879872076).
+For a quick fix, you can temporarily override all references to a dependency: [See here for an example](https://github.com/Quasiflo/launcher_icons/issues/262#issuecomment-879872076).
 
 ## :eyes: Example
 

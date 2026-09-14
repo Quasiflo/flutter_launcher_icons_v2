@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'windows_config.g.dart';
 
-/// The flutter_launcher_icons configuration set for Windows
+/// The launcher_icons configuration set for Windows
 @JsonSerializable(
   anyMap: true,
   checked: true,

@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/constants.dart';
-import 'package:flutter_launcher_icons/custom_exceptions.dart';
-import 'package:flutter_launcher_icons/ios_liquid_glass_icon_generator.dart';
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/constants.dart';
+import 'package:launcher_icons/custom_exceptions.dart';
+import 'package:launcher_icons/ios_liquid_glass_icon_generator.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
@@ -235,7 +235,7 @@ void main() {
         originalDir = Directory.current.path;
         sandboxDir = path.join(
           '.dart_tool',
-          'flutter_launcher_icons',
+          'launcher_icons',
           'test',
           'ios_liquid_glass',
         );

@@ -20,7 +20,7 @@ import 'web/web_template_test.dart' as web_template_test;
 import 'windows/windows_icon_generator_test.dart' as windows_icon_gen_test;
 
 void main() {
-  group('Flutter launcher icons', () {
+  group('Launcher icons', () {
     // others
     utils_test.main();
     fli_config.main();

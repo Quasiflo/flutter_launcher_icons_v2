@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:args/args.dart';
-import 'package:flutter_launcher_icons/android.dart' as android;
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/custom_exceptions.dart';
-import 'package:flutter_launcher_icons/ios.dart' as ios;
-import 'package:flutter_launcher_icons/main.dart' show defaultConfigFile;
-import 'package:flutter_launcher_icons/main.dart' as main_dart;
+import 'package:launcher_icons/android.dart' as android;
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/custom_exceptions.dart';
+import 'package:launcher_icons/ios.dart' as ios;
+import 'package:launcher_icons/main.dart' show defaultConfigFile;
+import 'package:launcher_icons/main.dart' as main_dart;
 import 'package:path/path.dart' show join;
 import 'package:test/test.dart';
 import 'package:test_descriptor/test_descriptor.dart' as d;
@@ -112,8 +112,8 @@ void main() {
 
     test('default', () async {
       final dir = await createCase('default', [
-        d.file('flutter_launcher_icons.yaml', '''
-flutter_launcher_icons:
+        d.file('launcher_icons.yaml', '''
+launcher_icons:
   android:
     generate: true
   ios:
@@ -128,7 +128,7 @@ flutter_launcher_icons:
     test('default_use_pubspec', () async {
       final dir = await createCase('pubspec_only', [
         d.file('pubspec.yaml', '''
-flutter_launcher_icons:
+launcher_icons:
   android:
     generate: true
   ios:
@@ -149,14 +149,14 @@ flutter_launcher_icons:
     group('stale template shadowing (#628)', () {
       Future<String> writeStaleYamlAndRealPubspec(String name) async {
         return createCase(name, [
-          d.file('flutter_launcher_icons.yaml', '''
-flutter_launcher_icons:
+          d.file('launcher_icons.yaml', '''
+launcher_icons:
   image_path: "assets/icon/icon.png"
   android:
     generate: true
 '''),
           d.file('pubspec.yaml', '''
-flutter_launcher_icons:
+launcher_icons:
   image_path: "real.png"
   android:
     generate: true
@@ -178,7 +178,7 @@ flutter_launcher_icons:
         final dir =
             await writeStaleYamlAndRealPubspec('stale_template_explicit');
         final ArgResults argResults = parser.parse(
-          <String>['-f', 'flutter_launcher_icons.yaml', '-p', dir],
+          <String>['-f', 'launcher_icons.yaml', '-p', dir],
         );
         final Config? config = main_dart.loadConfigFileFromArgResults(
           argResults,
@@ -190,14 +190,14 @@ flutter_launcher_icons:
 
       test('prefers the file when its images exist', () async {
         final dir = await createCase('both_real', [
-          d.file('flutter_launcher_icons.yaml', '''
-flutter_launcher_icons:
+          d.file('launcher_icons.yaml', '''
+launcher_icons:
   image_path: "yaml.png"
   android:
     generate: true
 '''),
           d.file('pubspec.yaml', '''
-flutter_launcher_icons:
+launcher_icons:
   image_path: "real.png"
   android:
     generate: true
@@ -216,7 +216,7 @@ flutter_launcher_icons:
     test('custom', () async {
       final dir = await createCase('custom', [
         d.file('custom.yaml', '''
-flutter_launcher_icons:
+launcher_icons:
   android:
     generate: true
   ios:
@@ -277,7 +277,7 @@ flutter_launcher_icons:
     test('returns the flavor when -f names a flavor file', () {
       expect(
         main_dart.explicitFlavorFromArgs(
-          parser.parse(<String>['-f', 'flutter_launcher_icons-staging.yaml']),
+          parser.parse(<String>['-f', 'launcher_icons-staging.yaml']),
         ),
         equals('staging'),
       );
@@ -287,7 +287,7 @@ flutter_launcher_icons:
       expect(
         main_dart.explicitFlavorFromArgs(
           parser
-              .parse(<String>['-f', 'config/flutter_launcher_icons-prod.yaml']),
+              .parse(<String>['-f', 'config/launcher_icons-prod.yaml']),
         ),
         equals('prod'),
       );

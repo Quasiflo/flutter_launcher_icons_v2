@@ -18,10 +18,10 @@ assignees: ''
 
 
 ### :scroll: Pubspec.yaml
-<!--- Please insert your flutter_launcher_icons yaml configuration here --->
+<!--- Please insert your launcher_icons yaml configuration here --->
 
 ```yaml
-flutter_launcher_icons:
+launcher_icons:
   android: 
   ios: 
   image_path: 

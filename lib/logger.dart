@@ -2,8 +2,8 @@ import 'package:cli_util/cli_logging.dart';
 
 export 'package:cli_util/cli_logging.dart' show Progress;
 
-/// Flutter Launcher Icons Logger
-class FLILogger {
+/// Launcher Icons Logger
+class LILogger {
   late Logger _logger;
 
   /// Returns true if this is a verbose logger
@@ -12,10 +12,10 @@ class FLILogger {
   /// Gives access to internal logger
   Logger get rawLogger => _logger;
 
-  /// Creates a instance of [FLILogger].
+  /// Creates a instance of [LILogger].
   /// In case [isVerbose] is `true`,
   /// it logs all the [verbose] logs to console
-  FLILogger(this.isVerbose) {
+  LILogger(this.isVerbose) {
     final ansi = Ansi(Ansi.terminalSupportsAnsi);
     _logger =
         isVerbose ? Logger.verbose(ansi: ansi) : Logger.standard(ansi: ansi);

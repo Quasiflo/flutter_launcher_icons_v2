@@ -117,6 +117,6 @@ const String errorIncorrectIconName =
 
 String introMessage(String currentVersion) => '''
   ════════════════════════════════════════════
-     FLUTTER LAUNCHER ICONS (v$currentVersion)                               
+     LAUNCHER ICONS (v$currentVersion)                               
   ════════════════════════════════════════════
   ''';

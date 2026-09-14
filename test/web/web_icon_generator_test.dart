@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:flutter_launcher_icons/abs/icon_generator.dart';
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:flutter_launcher_icons/logger.dart';
-import 'package:flutter_launcher_icons/web/web_icon_generator.dart';
 import 'package:image/image.dart';
+import 'package:launcher_icons/abs/icon_generator.dart';
+import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/logger.dart';
+import 'package:launcher_icons/web/web_icon_generator.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 import 'package:test_descriptor/test_descriptor.dart' as d;
@@ -28,20 +28,20 @@ void main() {
           d.file('index.html', templates.webIndexTemplate),
           d.file('manifest.json', templates.webManifestTemplate),
         ]),
-        d.file('flutter_launcher_icons.yaml', templates.fliWebConfig),
+        d.file('launcher_icons.yaml', templates.liWebConfig),
         d.file('pubspec.yaml', templates.pubspecTemplate),
         d.file('app_icon.png', imageFile.readAsBytesSync()),
         d.file('app_icon_favicon.png', imageFile.readAsBytesSync()),
       ]).create();
       prefixPath = path.join(d.sandbox, 'fli_test');
       config = Config.loadConfigFromPath(
-        'flutter_launcher_icons.yaml',
+        'launcher_icons.yaml',
         prefixPath,
       )!;
       context = IconGeneratorContext(
         config: config,
         prefixPath: prefixPath,
-        logger: FLILogger(false),
+        logger: LILogger(false),
       );
       generator = WebIconGenerator(context);
     });
@@ -67,7 +67,7 @@ void main() {
             // this manifest.json get updated in fs
             d.file('manifest.json', anything),
           ]),
-          d.file('flutter_launcher_icons.yaml', anything),
+          d.file('launcher_icons.yaml', anything),
           d.file('pubspec.yaml', templates.pubspecTemplate),
         ]).validate(),
         completes,
@@ -85,7 +85,7 @@ void main() {
       final sizedContext = IconGeneratorContext(
         config: sizedConfig,
         prefixPath: prefixPath,
-        logger: FLILogger(false),
+        logger: LILogger(false),
       );
       final sizedGenerator = WebIconGenerator(sizedContext);
 
@@ -131,7 +131,7 @@ void main() {
       final outputContext = IconGeneratorContext(
         config: outputConfig,
         prefixPath: prefixPath,
-        logger: FLILogger(false),
+        logger: LILogger(false),
       );
       final outputGenerator = WebIconGenerator(outputContext);
 
