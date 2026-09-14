@@ -203,13 +203,20 @@ class Config {
   bool get hasLiquidGlassIconConfig =>
       iosConfig?.imagePathLiquidGlassIcon != null;
 
+  /// Resolves the effective image path for a platform: the platform-level
+  /// `image_path` wins, falling back to the top-level `image_path`.
+  /// Returns null when neither is set — callers throw [errorMissingImagePath].
+  String? resolveImagePath(String? platformImagePath) =>
+      platformImagePath ?? imagePath;
+
   /// Method for the retrieval of the Android icon path
   /// If android.image_path is found, this will be prioritised over the image_path
   /// value.
-  String? getImagePathAndroid() => androidConfig?.imagePath ?? imagePath;
+  String? getImagePathAndroid() =>
+      resolveImagePath(androidConfig?.imagePath);
 
   /// get the image path for IOS
-  String? getImagePathIOS() => iosConfig?.imagePath ?? imagePath;
+  String? getImagePathIOS() => resolveImagePath(iosConfig?.imagePath);
 
   /// Converts config to [Map]
   Map<String, dynamic> toJson() => _$ConfigToJson(this);

@@ -63,7 +63,7 @@ class WebIconGenerator extends IconGenerator {
   Future<void> createIcons() async {
     final imgFilePath = path.join(
       context.prefixPath,
-      context.webConfig!.imagePath ?? context.config.imagePath!,
+      context.config.resolveImagePath(context.webConfig!.imagePath)!,
     );
 
     // load and decode the image file
@@ -114,7 +114,7 @@ class WebIconGenerator extends IconGenerator {
     // config preconditions are checked here.
     context.logger.verbose('Checking webconfig...');
     final webConfig = context.webConfig!;
-    if (webConfig.imagePath == null && context.config.imagePath == null) {
+    if (context.config.resolveImagePath(webConfig.imagePath) == null) {
       context.logger.error(
         'Invalid config. Either provide web.imagePath or imagePath',
       );

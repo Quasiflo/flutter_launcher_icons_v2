@@ -421,5 +421,23 @@ void main() {
         );
       });
     });
+
+    group('#resolveImagePath', () {
+      test('platform path wins over the top-level path', () {
+        const config = Config(imagePath: 'global.png');
+        expect(config.resolveImagePath('platform.png'), equals('platform.png'));
+      });
+
+      test('falls back to the top-level path when platform path is null',
+          () {
+        const config = Config(imagePath: 'global.png');
+        expect(config.resolveImagePath(null), equals('global.png'));
+      });
+
+      test('returns null when neither path is set', () {
+        const config = Config();
+        expect(config.resolveImagePath(null), isNull);
+      });
+    });
   });
 }

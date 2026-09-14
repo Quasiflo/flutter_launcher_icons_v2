@@ -17,8 +17,8 @@ class LinuxIconGenerator extends IconGenerator {
 
   @override
   Future<void> createIcons() async {
-    final iconPath =
-        context.linuxConfig!.imagePath ?? context.config.imagePath!;
+    final iconPath = context.config
+        .resolveImagePath(context.linuxConfig!.imagePath)!;
 
     context.logger.verbose('Using Linux icon at $iconPath...');
 
@@ -41,14 +41,15 @@ class LinuxIconGenerator extends IconGenerator {
     context.logger.verbose('Validating Linux config...');
     final linuxConfig = context.linuxConfig!;
 
-    if (linuxConfig.imagePath == null && context.config.imagePath == null) {
+    if (context.config.resolveImagePath(linuxConfig.imagePath) == null) {
       context.logger.error(
         'Invalid config. Either provide linux.image_path or image_path',
       );
       return false;
     }
 
-    final iconPath = linuxConfig.imagePath ?? context.config.imagePath!;
+    final iconPath = context.config
+        .resolveImagePath(linuxConfig.imagePath)!;
 
     // Check that icon path is in assets
     if (!iconPath.startsWith('assets/')) {
