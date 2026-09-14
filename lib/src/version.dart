@@ -3,4 +3,4 @@
 // and `test/package_version_test.dart` enforces the two stay in sync.
 // Do NOT regenerate this with build_version — its output drops the
 // `x-release-please-version` annotation below.
-const packageVersion = '0.14.4'; // x-release-please-version
+const packageVersion = '0.15.0'; // x-release-please-version
