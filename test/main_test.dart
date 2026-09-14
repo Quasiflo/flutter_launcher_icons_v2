@@ -32,18 +32,14 @@ void main() {
     }
   });
 
-  test('iOS legacy icon list is correct size', () {
-    expect(ios.legacyIosIcons.length, 21);
-  });
-
   test('Android icon list is correct size', () {
     expect(android.androidIcons.length, 5);
   });
 
   test(
-      'iOS image list used to generate legacy Contents.json for icon directory is correct size (no dark or tinted icons)',
+      'iOS image list used to generate Contents.json for icon directory is correct size (no dark or tinted icons)',
       () {
-    expect(ios.createLegacyImageList('blah').length, 25);
+    expect(ios.createImageList('blah', null, null).length, 20 + 1);
   });
 
   test(
