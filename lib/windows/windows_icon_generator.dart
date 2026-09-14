@@ -20,7 +20,7 @@ class WindowsIconGenerator extends IconGenerator {
   Future<void> createIcons() async {
     final imgFilePath = path.join(
       context.prefixPath,
-      context.windowsConfig!.imagePath ?? context.config.imagePath,
+      context.config.resolveImagePath(context.windowsConfig!.imagePath),
     );
 
     context.logger
@@ -38,7 +38,7 @@ class WindowsIconGenerator extends IconGenerator {
     context.logger.verbose('Validating windows config...');
     final windowsConfig = context.windowsConfig!;
 
-    if (windowsConfig.imagePath == null && context.config.imagePath == null) {
+    if (context.config.resolveImagePath(windowsConfig.imagePath) == null) {
       context.logger.error(
         'Invalid config. Either provide windows.image_path or image_path',
       );

@@ -84,6 +84,13 @@ void main() {
             .thenReturn(path.join(prefixPath, 'app_icon.png'));
         when(mockConfig.imagePath)
             .thenReturn(path.join(prefixPath, 'app_icon.png'));
+        // resolveImagePath is mocked: implement the real fallback rule so
+        // the unit tests exercise the generators, not the mock default.
+        when(mockConfig.resolveImagePath(argThat(anything))).thenAnswer(
+          (invocation) =>
+              (invocation.positionalArguments.first as String?) ??
+              mockConfig.imagePath,
+        );
       });
 
       test('isEnabled is false when windows config is not provided', () {

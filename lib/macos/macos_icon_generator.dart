@@ -53,7 +53,7 @@ class MacOSIconGenerator extends IconGenerator {
   Future<void> createIcons() async {
     final imgFilePath = path.join(
       context.prefixPath,
-      context.config.macOSConfig!.imagePath ?? context.config.imagePath,
+      context.config.resolveImagePath(context.config.macOSConfig!.imagePath),
     );
 
     context.logger
@@ -73,7 +73,7 @@ class MacOSIconGenerator extends IconGenerator {
     context.logger.verbose('Checking $platformName config...');
     final macOSConfig = context.macOSConfig!;
 
-    if (macOSConfig.imagePath == null && context.config.imagePath == null) {
+    if (context.config.resolveImagePath(macOSConfig.imagePath) == null) {
       context.logger.error(
         'Missing image_path. Either provide "launcher_icons.macos.image_path" or "launcher_icons.image_path"',
       );
