@@ -14,11 +14,6 @@ AndroidConfig _$AndroidConfigFromJson(Map json) => $checkedCreate(
           generate: $checkedConvert('generate', (v) => v as bool? ?? false),
           imagePath: $checkedConvert('image_path', (v) => v as String?),
           iconName: $checkedConvert('icon_name', (v) => v as String?),
-          minSdk: $checkedConvert(
-              'min_sdk',
-              (v) =>
-                  (v as num?)?.toInt() ??
-                  constants.androidDefaultAndroidMinSDK),
           adaptiveIconForeground:
               $checkedConvert('adaptive_icon_foreground', (v) => v as String?),
           adaptiveIconForegroundInset: $checkedConvert(
@@ -34,7 +29,6 @@ AndroidConfig _$AndroidConfigFromJson(Map json) => $checkedCreate(
       fieldKeyMap: const {
         'imagePath': 'image_path',
         'iconName': 'icon_name',
-        'minSdk': 'min_sdk',
         'adaptiveIconForeground': 'adaptive_icon_foreground',
         'adaptiveIconForegroundInset': 'adaptive_icon_foreground_inset',
         'adaptiveIconBackground': 'adaptive_icon_background',
@@ -47,7 +41,6 @@ Map<String, dynamic> _$AndroidConfigToJson(AndroidConfig instance) =>
       'generate': instance.generate,
       'image_path': instance.imagePath,
       'icon_name': instance.iconName,
-      'min_sdk': instance.minSdk,
       'adaptive_icon_foreground': instance.adaptiveIconForeground,
       'adaptive_icon_foreground_inset': instance.adaptiveIconForegroundInset,
       'adaptive_icon_background': instance.adaptiveIconBackground,

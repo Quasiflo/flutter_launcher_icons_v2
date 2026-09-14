@@ -10,7 +10,6 @@ import 'package:launcher_icons/custom_exceptions.dart';
 import 'package:launcher_icons/logger.dart';
 import 'package:launcher_icons/utils.dart' as utils;
 import 'package:launcher_icons/xml_templates.dart' as xml_template;
-import 'package:path/path.dart' as path;
 
 class AndroidIconTemplate {
   AndroidIconTemplate({required this.size, required this.directoryName});
@@ -489,109 +488,6 @@ List<String> _transformAndroidManifestWithNewLauncherIcon(
       return line;
     }
   }).toList();
-}
-
-/// Retrieves the minSdk value from the
-/// - flutter.gradle: `'$FLUTTER_ROOT/packages/flutter_tools/gradle/flutter.gradle'`
-/// - build.gradle: `'android/app/build.gradle'`
-/// - local.properties: `'android/local.properties'`
-///
-/// If found none returns [constants.androidDefaultAndroidMinSDK]
-Future<int> minSdk() async {
-  final androidGradleFile = File(constants.androidGradleFile);
-  final androidLocalPropertiesFile = File(constants.androidLocalPropertiesFile);
-
-  // looks for minSdk value in build.gradle, flutter.gradle & local.properties.
-  // this should always be order
-  // first check build.gradle, then local.properties, then flutter.gradle
-  return await _getMinSdkFromFile(androidGradleFile) ??
-      await _getMinSdkFromFile(androidLocalPropertiesFile) ??
-      await _getMinSdkFlutterGradle(androidLocalPropertiesFile) ??
-      constants.androidDefaultAndroidMinSDK;
-}
-
-/// Retrieves the minSdk value from [File]
-Future<int?> _getMinSdkFromFile(File file) async {
-  // Missing or unreadable files fall through to the default (#644).
-  List<String> lines;
-  try {
-    lines = await file.readAsLines();
-  } on FileSystemException {
-    return null;
-  }
-  for (String line in lines) {
-    if (line.contains('minSdkVersion')) {
-      if (line.contains('//') &&
-          line.indexOf('//') < line.indexOf('minSdkVersion')) {
-        // This line is commented
-        continue;
-      }
-      // remove anything from the line that is not a digit
-      final String minSdk = line.replaceAll(RegExp(r'[^\d]'), '');
-      // when minSdkVersion value not found
-      return int.tryParse(minSdk);
-    }
-  }
-  return null; // Didn't find minSdk, assume the worst
-}
-
-/// A helper function to [_getMinSdkFlutterGradle]
-/// which retrives value of `flutter.sdk` from `local.properties` file
-Future<String?> _getFlutterSdkPathFromLocalProperties(File file) async {
-  // Missing or unreadable files fall through to the default (#644).
-  List<String> lines;
-  try {
-    lines = await file.readAsLines();
-  } on FileSystemException {
-    return null;
-  }
-  for (String line in lines) {
-    if (!line.contains('flutter.sdk=')) {
-      continue;
-    }
-    if (line.contains('#') &&
-        line.indexOf('#') < line.indexOf('flutter.sdk=')) {
-      continue;
-    }
-    final flutterSdkPath = line.split('=').last.trim();
-    if (flutterSdkPath.isEmpty) {
-      return null;
-    }
-    return flutterSdkPath;
-  }
-  return null;
-}
-
-/// Retrives value of `minSdkVersion` from `flutter.gradle`
-Future<int?> _getMinSdkFlutterGradle(File localPropertiesFile) async {
-  final flutterRoot =
-      await _getFlutterSdkPathFromLocalProperties(localPropertiesFile);
-  if (flutterRoot == null) {
-    return null;
-  }
-
-  final flutterGradleFile =
-      File(path.join(flutterRoot, constants.androidFlutterGradlePath));
-
-  // The SDK layout may not contain this file (#644).
-  List<String> lines;
-  try {
-    lines = await flutterGradleFile.readAsLines();
-  } on FileSystemException {
-    return null;
-  }
-  for (String line in lines) {
-    if (!line.contains('static int minSdkVersion =')) {
-      continue;
-    }
-    if (line.contains('//') &&
-        line.indexOf('//') < line.indexOf('static int minSdkVersion =')) {
-      continue;
-    }
-    final minSdk = line.split('=').last.trim();
-    return int.tryParse(minSdk);
-  }
-  return null;
 }
 
 /// Returns true if the adaptive icon configuration is an image file.

@@ -7,7 +7,6 @@ launcher_icons:
     adaptive_icon_background: "assets/images/christmas-background.png"
     adaptive_icon_foreground: "assets/images/icon-foreground-432x432.png"
     adaptive_icon_monochrome: "assets/images/icon-monochrome-432x432.png"
-    min_sdk: 21
   ios:
     generate: true
     image_path: "assets/images/icon-1024x1024.png"
@@ -116,7 +115,6 @@ launcher_icons:
     adaptive_icon_background: "assets/images/christmas-background.png"
     adaptive_icon_foreground: "assets/images/icon-foreground-432x432.png"
     adaptive_icon_monochrome: "assets/images/icon-monochrome-432x432.png"
-    min_sdk: 21
   ios:
     generate: true
     image_path: "assets/images/icon-1024x1024.png"

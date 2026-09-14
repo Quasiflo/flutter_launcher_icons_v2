@@ -37,14 +37,12 @@ void main() {
         );
         expect(configs.androidConfig!.adaptiveIconBackground, isNotNull);
         expect(configs.androidConfig!.adaptiveIconForeground, isNotNull);
-        expect(configs.androidConfig!.minSdk, equals(21));
         expect(
           configs.androidConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
             'image_path': 'assets/images/icon-710x599-android.png',
             'icon_name': null,
-            'min_sdk': 21,
             'adaptive_icon_foreground':
                 'assets/images/icon-foreground-432x432.png',
             'adaptive_icon_foreground_inset': 16,
@@ -175,7 +173,6 @@ void main() {
         expect(configs.getImagePathAndroid(), equals(imagePath));
         expect(configs.androidConfig!.adaptiveIconBackground, isNull);
         expect(configs.androidConfig!.adaptiveIconForeground, isNull);
-        expect(configs.androidConfig!.minSdk, equals(21));
         // ios configs
         expect(configs.hasIOSConfig, isTrue);
         expect(configs.isNeedingNewIOSIcon, isTrue);
@@ -215,14 +212,12 @@ void main() {
         );
         expect(configs.androidConfig!.adaptiveIconBackground, isNotNull);
         expect(configs.androidConfig!.adaptiveIconForeground, isNotNull);
-        expect(configs.androidConfig!.minSdk, equals(21));
         expect(
           configs.androidConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
             'image_path': 'assets/images/icon-710x599-android.png',
             'icon_name': null,
-            'min_sdk': 21,
             'adaptive_icon_foreground':
                 'assets/images/icon-foreground-432x432.png',
             'adaptive_icon_foreground_inset': 16,

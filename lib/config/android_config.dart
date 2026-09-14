@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:launcher_icons/constants.dart' as constants;
 
 part 'android_config.g.dart';
 
@@ -22,10 +21,6 @@ class AndroidConfig {
   /// default one. When `null`, the default existing icon is overridden.
   @JsonKey(name: 'icon_name')
   final String? iconName;
-
-  /// Android min_sdk
-  @JsonKey(name: 'min_sdk')
-  final int minSdk;
 
   /// android adaptive_icon_foreground image
   @JsonKey(name: 'adaptive_icon_foreground')
@@ -51,7 +46,6 @@ class AndroidConfig {
     this.generate = false,
     this.imagePath,
     this.iconName,
-    this.minSdk = constants.androidDefaultAndroidMinSDK,
     this.adaptiveIconForeground,
     this.adaptiveIconForegroundInset = 16,
     this.adaptiveIconBackground,
