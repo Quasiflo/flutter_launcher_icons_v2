@@ -152,6 +152,12 @@ class WebIconGenerator extends IconGenerator {
       path.join(context.prefixPath, constants.webFaviconFilePath),
     );
     await favIconFile.writeAsBytes(encodePng(favIcon));
+    // Browsers request /favicon.ico by default; emit it alongside (#540).
+    // index.html keeps pointing at favicon.png, either file now resolves.
+    final favIcoFile = await utils.createFileIfNotExist(
+      path.join(context.prefixPath, constants.webFaviconIcoFilePath),
+    );
+    await favIcoFile.writeAsBytes(encodeIco(favIcon));
   }
 
   Future<void> _generateIcons(Image image) async {
