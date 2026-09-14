@@ -21,8 +21,7 @@ Image buildMacOSIconImage(
   bool roundedCorners = false,
 }) {
   final maxPad = (size - 1) ~/ 2;
-  final pad =
-      (size * paddingPercent / 100).round().clamp(0, maxPad).toInt();
+  final pad = (size * paddingPercent / 100).round().clamp(0, maxPad).toInt();
   final artworkSize = size - 2 * pad;
   final artwork = utils.createResizedImage(artworkSize, source);
 

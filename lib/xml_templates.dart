@@ -1,4 +1,3 @@
-
 /// Adaptive-icon xml template; `{{CONTENT}}` is replaced with the
 /// background/foreground/monochrome layers.
 const String mipmapXmlFile = '''

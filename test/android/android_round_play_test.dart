@@ -90,8 +90,11 @@ void main() {
     test('writes round drawables, round xml, and roundIcon wiring', () async {
       final config = roundConfig();
 
-      await android.createAdaptiveRoundIcons(config, null,
-          prefixPath: prefixPath,);
+      await android.createAdaptiveRoundIcons(
+        config,
+        null,
+        prefixPath: prefixPath,
+      );
       await android.createMipmapXmlFile(config, null, prefixPath: prefixPath);
       await android.createDefaultIcons(config, null, prefixPath: prefixPath);
 
@@ -210,8 +213,12 @@ void main() {
         'android': {'generate': true, 'image_path': 'app_icon.png'},
       });
       final logger = _RecordingLogger();
-      await android.createDefaultIcons(config, null,
-          logger: logger, prefixPath: prefixPath,);
+      await android.createDefaultIcons(
+        config,
+        null,
+        logger: logger,
+        prefixPath: prefixPath,
+      );
 
       expect(
         logger.messages.any((m) => m.contains('roundIcon')),
@@ -282,8 +289,7 @@ void main() {
 
       await generatorFor(config).createIcons();
 
-      final sidecar =
-          File(path.join(prefixPath, androidPlayStoreIconFile));
+      final sidecar = File(path.join(prefixPath, androidPlayStoreIconFile));
       expect(sidecar.existsSync(), isTrue);
       final image = decodeImage(sidecar.readAsBytesSync())!;
       expect(image.width, equals(512));

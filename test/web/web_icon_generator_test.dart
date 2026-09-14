@@ -93,8 +93,7 @@ void main() {
       await sizedGenerator.createIcons();
 
       final favicon = decodeImage(
-        await File(path.join(prefixPath, 'web', 'favicon.png'))
-            .readAsBytes(),
+        await File(path.join(prefixPath, 'web', 'favicon.png')).readAsBytes(),
       )!;
       expect(favicon.width, equals(32));
       expect(favicon.height, equals(32));
@@ -106,8 +105,7 @@ void main() {
       await generator.createIcons();
 
       final ico = decodeIco(
-        await File(path.join(prefixPath, 'web', 'favicon.ico'))
-            .readAsBytes(),
+        await File(path.join(prefixPath, 'web', 'favicon.ico')).readAsBytes(),
       )!;
       expect(ico.width, equals(16));
       expect(ico.height, equals(16));

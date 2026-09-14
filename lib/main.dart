@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:args/args.dart';
@@ -160,8 +159,7 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
   // already handled by the onlyFlavor branch above.) Suffixed
   // `launcher_icons-<flavor>:` sections inside the pinned file still count:
   // `-f` pins the file, not the absence of flavors.
-  final hasFileFlavors =
-      flavors.isNotEmpty && !isFileOptionExplicit(arguments);
+  final hasFileFlavors = flavors.isNotEmpty && !isFileOptionExplicit(arguments);
 
   // Suffixed flavor sections live in the pinned file when `-f` names one,
   // otherwise in launcher_icons.yaml (when present) and pubspec.yaml, with
@@ -176,7 +174,8 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
     );
   } else {
     for (final file in [defaultConfigFile, constants.pubspecFilePath]) {
-      for (final entry in Config.loadFlavorConfigsFromPath(file, prefixPath).entries) {
+      for (final entry
+          in Config.loadFlavorConfigsFromPath(file, prefixPath).entries) {
         keyFlavors.putIfAbsent(entry.key, () => entry.value);
       }
     }
@@ -405,7 +404,7 @@ Config? loadConfigFileFromArgResults(
         _hasExistingImage(pubspecConfigs, prefixPath)) {
       utils.printStatus(
         'Warning: $defaultConfigFile looks like an unedited generated template '
-        '(its icon files were not found) while pubspec.yaml declares icons that exist. ' +
+                '(its icon files were not found) while pubspec.yaml declares icons that exist. ' +
             (explicitFile
                 ? 'Continuing with $defaultConfigFile as requested.'
                 : 'Using pubspec.yaml instead. '

@@ -45,21 +45,25 @@ void main() {
       );
 
       expect(list, hasLength(21 + 20 + 20));
-      final dark =
-          list.where((e) => (e['appearances'] as List?)?.any(
-                (a) => a['value'] == 'dark',
-              ) ??
-              false,);
+      final dark = list.where(
+        (e) =>
+            (e['appearances'] as List?)?.any(
+              (a) => a['value'] == 'dark',
+            ) ??
+            false,
+      );
       expect(dark, hasLength(20));
       expect(
         dark.every((e) => e['idiom'] == 'universal'),
         isTrue,
       );
-      final tinted =
-          list.where((e) => (e['appearances'] as List?)?.any(
-                (a) => a['value'] == 'tinted',
-              ) ??
-              false,);
+      final tinted = list.where(
+        (e) =>
+            (e['appearances'] as List?)?.any(
+              (a) => a['value'] == 'tinted',
+            ) ??
+            false,
+      );
       expect(tinted, hasLength(20));
       expect(
         tinted.every((e) => e['idiom'] == 'universal'),

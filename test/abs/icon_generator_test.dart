@@ -98,8 +98,7 @@ void main() {
       verify(mockGenerator.createIcons()).called(equals(1));
     });
 
-    test('a failing platform does not stop the remaining platforms',
-        () async {
+    test('a failing platform does not stop the remaining platforms', () async {
       final failingGenerator = MockIconGenerator();
       when(failingGenerator.platformName).thenReturn('Failing');
       when(failingGenerator.isEnabled).thenReturn(true);

@@ -41,8 +41,7 @@ void main() {
       prefixPath = path.join(d.sandbox, 'fli_test');
     });
 
-    IconGenerator generatorFor(Map<String, dynamic> web) =>
-        WebIconGenerator(
+    IconGenerator generatorFor(Map<String, dynamic> web) => WebIconGenerator(
           IconGeneratorContext(
             config: Config.fromJson(<String, dynamic>{'web': web}),
             prefixPath: prefixPath,

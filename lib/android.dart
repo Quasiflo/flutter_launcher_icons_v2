@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:image/image.dart';
@@ -66,7 +65,14 @@ Future<void> createDefaultIcons(
     final String iconPath = '$iconName.png';
     for (AndroidIconTemplate template in androidIcons) {
       concurrentIconUpdates.add(
-          writeResizedPng(template, image, iconPath, flavor, prefixPath: prefixPath),);
+        writeResizedPng(
+          template,
+          image,
+          iconPath,
+          flavor,
+          prefixPath: prefixPath,
+        ),
+      );
     }
     await removeStaleLegacyIconsForSwitch(
       androidManifestFile,
@@ -190,7 +196,8 @@ Future<void> createAdaptiveIcons(
     throw const InvalidConfigException(errorMissingImagePath);
   }
   final Image foregroundImage = await utils.decodeImageFile(
-      utils.withPrefix(prefixPath, foregroundImagePath),);
+    utils.withPrefix(prefixPath, foregroundImagePath),
+  );
 
   final concurrentImageUpdates = <Future<void>>[];
   // Create adaptive icon foreground images
@@ -251,7 +258,8 @@ Future<void> createAdaptiveMonochromeIcons(
     throw const InvalidConfigException(errorMissingImagePath);
   }
   final Image monochromeImage = await utils.decodeImageFile(
-      utils.withPrefix(prefixPath, monochromeImagePath),);
+    utils.withPrefix(prefixPath, monochromeImagePath),
+  );
 
   final concurrentIconUpdates = <Future<void>>[];
   // Create adaptive icon monochrome images
@@ -368,8 +376,12 @@ Future<void> createMipmapXmlFile(
       !config.hasAndroidAdaptiveRoundConfig) {
     // No adaptive icons requested: clear leftovers from a previous adaptive
     // configuration so they cannot shadow the fresh icons (#328).
-    await _removeStaleAdaptiveIcons(config, flavor,
-        logger: logger, prefixPath: prefixPath,);
+    await _removeStaleAdaptiveIcons(
+      config,
+      flavor,
+      logger: logger,
+      prefixPath: prefixPath,
+    );
     return;
   }
 
@@ -544,8 +556,11 @@ Future<void> updateColorsXmlFile(
       'Creating colors.xml file and adding it to your Android project',
       logger,
     );
-    await createNewColorsFile(backgroundConfig, flavor,
-        prefixPath: prefixPath,);
+    await createNewColorsFile(
+      backgroundConfig,
+      flavor,
+      prefixPath: prefixPath,
+    );
   }
 }
 
@@ -578,8 +593,11 @@ Future<void> _createAdaptiveBackgrounds(
 }
 
 /// Creates a colors.xml file if it was missing from android/app/src/main/res/values/colors.xml
-Future<void> createNewColorsFile(String backgroundColor, String? flavor,
-    {String prefixPath = '.',}) async {
+Future<void> createNewColorsFile(
+  String backgroundColor,
+  String? flavor, {
+  String prefixPath = '.',
+}) async {
   final colorsFile = await utils.createFileIfNotExist(
     utils.withPrefix(prefixPath, constants.androidColorsFile(flavor)),
   );
@@ -592,8 +610,7 @@ Future<void> updateColorsFile(File colorsFile, String backgroundColor) async {
   // Normalize bare hex colors (`ffffff` -> `#ffffff`, #673). Image paths
   // never reach this function (see createAdaptiveIcons), so a plain 6/8-digit
   // hex string here is always meant to be a color.
-  if (RegExp(r'^[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$')
-      .hasMatch(backgroundColor)) {
+  if (RegExp(r'^[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$').hasMatch(backgroundColor)) {
     backgroundColor = '#$backgroundColor';
   }
   // Write foreground color

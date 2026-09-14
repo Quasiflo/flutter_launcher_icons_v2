@@ -83,8 +83,7 @@ launcher_icons:
     });
 
     test('explicit -f flavor file runs only that flavor (#215)', () async {
-      final printed =
-          await runCli(['-f', 'launcher_icons-staging.yaml']);
+      final printed = await runCli(['-f', 'launcher_icons-staging.yaml']);
       expect(printed.any((line) => line.contains('Flavor: staging')), isTrue);
       expect(
         printed.any((line) => line.contains('Flavor: production')),

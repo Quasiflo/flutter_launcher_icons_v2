@@ -90,8 +90,7 @@ final macOSIconsDirPath =
 /// Relative path to the macos asset catalog: flavor runs create
 /// `AppIcon-<flavor>.appiconset` inside it, so validation only requires the
 /// catalog itself (never a pre-existing flavor set).
-final macOSAssetsDirPath =
-    path.join(macOSDirPath, 'Runner', 'Assets.xcassets');
+final macOSAssetsDirPath = path.join(macOSDirPath, 'Runner', 'Assets.xcassets');
 
 /// Relative path to macos contents.json
 final macOSContentsFilePath = path.join(macOSIconsDirPath, 'Contents.json');

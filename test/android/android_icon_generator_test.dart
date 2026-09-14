@@ -100,7 +100,14 @@ void main() {
         path.join(prefixPath, 'android', 'app', 'src', 'main'),
       ).create(recursive: true);
       await File(
-        path.join(prefixPath, 'android', 'app', 'src', 'main', 'AndroidManifest.xml'),
+        path.join(
+          prefixPath,
+          'android',
+          'app',
+          'src',
+          'main',
+          'AndroidManifest.xml',
+        ),
       ).writeAsString(_manifest);
 
       final generator = generatorFor(
@@ -123,7 +130,14 @@ void main() {
       );
       expect(launcher.existsSync(), isTrue);
       final manifest = await File(
-        path.join(prefixPath, 'android', 'app', 'src', 'main', 'AndroidManifest.xml'),
+        path.join(
+          prefixPath,
+          'android',
+          'app',
+          'src',
+          'main',
+          'AndroidManifest.xml',
+        ),
       ).readAsString();
       expect(manifest, contains('@mipmap/ic_launcher'));
       expect(manifest, isNot(contains('ic_launcher_old')));

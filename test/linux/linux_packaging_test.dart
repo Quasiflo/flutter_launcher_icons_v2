@@ -89,14 +89,12 @@ flutter:
         expect(image.height, equals(size));
       }
       // snap icon.
-      final snapIcon =
-          File('${tempDir.path}/snap/gui/test_app.png');
+      final snapIcon = File('${tempDir.path}/snap/gui/test_app.png');
       expect(snapIcon.existsSync(), isTrue);
       final snapImage = decodeImage(snapIcon.readAsBytesSync())!;
       expect(snapImage.width, equals(256));
       // snap desktop entry points at the snap gui art.
-      final snapDesktop =
-          File('${tempDir.path}/snap/gui/test_app.desktop');
+      final snapDesktop = File('${tempDir.path}/snap/gui/test_app.desktop');
       expect(snapDesktop.existsSync(), isTrue);
       final snapContent = snapDesktop.readAsStringSync();
       expect(snapContent, contains('Name=test_app'));
@@ -122,12 +120,10 @@ flutter:
 
     test('never overwrites existing packaging files', () async {
       await setUpProject();
-      final desktop =
-          File('${tempDir.path}/snap/gui/test_app.desktop');
+      final desktop = File('${tempDir.path}/snap/gui/test_app.desktop');
       await desktop.create(recursive: true);
       await desktop.writeAsString('[custom]\n');
-      final snapcraft =
-          File('${tempDir.path}/snap/snapcraft.yaml');
+      final snapcraft = File('${tempDir.path}/snap/snapcraft.yaml');
       await snapcraft.create(recursive: true);
       await snapcraft.writeAsString('custom: true\n');
       final hicolor = File(

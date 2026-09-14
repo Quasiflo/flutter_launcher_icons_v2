@@ -13,14 +13,12 @@ void main() {
   group('generateIconConfig specializations', () {
     Map<String, dynamic> layerFor(Map<String, dynamic> ios) {
       final config = Config.fromJson(<String, dynamic>{'ios': ios});
-      final groups =
-          generateIconConfig(config, 'icon.png')['groups'] as List;
+      final groups = generateIconConfig(config, 'icon.png')['groups'] as List;
       return (groups.first as Map<String, dynamic>)['layers'].first
           as Map<String, dynamic>;
     }
 
-    test('emits image-name-specializations for dark and tinted sources',
-        () {
+    test('emits image-name-specializations for dark and tinted sources', () {
       final layer = layerFor(<String, dynamic>{
         'generate': true,
         'image_path_liquid_glass_icon': 'icon.png',
