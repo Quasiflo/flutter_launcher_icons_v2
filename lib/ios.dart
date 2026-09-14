@@ -515,9 +515,47 @@ String _generateUniqueId(String fileName, String projectFile) {
   return id;
 }
 
+/// Resolves the project.pbxproj file to edit.
+///
+/// Prefers an explicit [xcodeprojPath], then the standard
+/// `ios/Runner.xcodeproj` location, then the first `*.xcodeproj` found under
+/// `ios/` so renamed Runner projects keep working (#543). Returns `null`
+/// when no project file exists.
+String? resolveIosPbxprojPath([String? xcodeprojPath]) {
+  if (xcodeprojPath != null) {
+    return '$xcodeprojPath/project.pbxproj';
+  }
+  if (File(iosConfigFile).existsSync()) {
+    return iosConfigFile;
+  }
+  final iosDir = Directory('ios');
+  if (iosDir.existsSync()) {
+    final candidates = iosDir
+        .listSync()
+        .whereType<Directory>()
+        .where((dir) => dir.path.endsWith('.xcodeproj'))
+        .toList()
+      ..sort((a, b) => a.path.compareTo(b.path));
+    for (final dir in candidates) {
+      final candidate = '${dir.path}/project.pbxproj';
+      if (File(candidate).existsSync()) {
+        return candidate;
+      }
+    }
+  }
+  return null;
+}
+
 /// Change the iOS launcher icon
-Future<void> changeIosLauncherIcon(String iconName, String? flavor) async {
-  final File iOSConfigFile = File(iosConfigFile);
+Future<void> changeIosLauncherIcon(
+  String iconName,
+  String? flavor, [
+  String? xcodeprojPath,
+]) async {
+  // Falls back to the standard location so a missing project still fails
+  // with the historical PathNotFoundException.
+  final resolvedPath = resolveIosPbxprojPath(xcodeprojPath) ?? iosConfigFile;
+  final File iOSConfigFile = File(resolvedPath);
   final List<String> lines = await iOSConfigFile.readAsLines();
 
   bool onConfigurationSection = false;
