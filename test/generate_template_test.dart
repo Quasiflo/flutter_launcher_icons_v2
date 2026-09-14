@@ -12,8 +12,8 @@ import 'package:test/test.dart';
 import '../bin/generate.dart' as generate;
 
 // The `:generate` template must cover every schema key the loader
-// validates: new keys without template coverage silently drift (#628
-// class of bug — the phantom `assets/icon/icon.png` heuristic exists
+// validates: new keys without template coverage silently drift
+// (fluttercommunity/flutter_launcher_icons#628 class of bug — the phantom
 // because template and schema already diverged once).
 void main() {
   group('configFileTemplate', () {

@@ -30,7 +30,7 @@ class WebIconGenerator extends IconGenerator {
   bool get isEnabled => context.webConfig?.generate ?? false;
 
   /// Web root directory honoring `output_path` (default `web`), so flavors
-  /// can target separate web roots (#426).
+  /// can target separate web roots (fluttercommunity/flutter_launcher_icons#426).
   String get _webDirPath => context.webConfig?.outputPath ?? 'web';
 
   /// All web file paths resolved under [_webDirPath].
@@ -200,7 +200,7 @@ class WebIconGenerator extends IconGenerator {
     await favIconFile.writeAsBytes(encodePng(favIcon));
     if (context.webConfig?.faviconIco ?? true) {
       // Browsers request /favicon.ico by default; emit the consensus
-      // multi-frame container alongside the PNG (#540).
+      // multi-frame container alongside the PNG (fluttercommunity/flutter_launcher_icons#540).
       final multi = await loadFavicon(_faviconIcoSizes.first);
       for (final frameSize in _faviconIcoSizes.skip(1)) {
         multi.addFrame(await loadFavicon(frameSize));

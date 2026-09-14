@@ -30,7 +30,7 @@ Image createResizedImage(int iconSize, Image image) {
   }
 }
 
-/// Prints a status bullet, routed through [logger] when provided (#552).
+/// Prints a status bullet, routed through [logger] when provided (fluttercommunity/flutter_launcher_icons#552).
 void printStatus(String message, [LILogger? logger]) {
   if (logger != null) {
     logger.info('• $message');

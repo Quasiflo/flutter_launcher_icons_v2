@@ -397,7 +397,7 @@ Future<void> createMipmapXmlFile(
       !config.hasAndroidAdaptiveMonochromeConfig &&
       !config.hasAndroidAdaptiveRoundConfig) {
     // No adaptive icons requested: clear leftovers from a previous adaptive
-    // configuration so they cannot shadow the fresh icons (#328).
+    // configuration so they cannot shadow the fresh icons (fluttercommunity/flutter_launcher_icons#328).
     await _removeStaleAdaptiveIcons(
       config,
       flavor,
@@ -495,7 +495,7 @@ Future<void> createMipmapXmlFile(
 }
 
 /// Deletes adaptive icon artifacts left behind by a previous adaptive
-/// configuration so they cannot shadow freshly generated icons (#328).
+/// configuration so they cannot shadow freshly generated icons (fluttercommunity/flutter_launcher_icons#328).
 ///
 /// Only tool-owned file names are removed (`colors.xml` is shared and left
 /// untouched). Both the default and the custom icon xml names are covered so
@@ -781,7 +781,7 @@ bool isAdaptiveIconConfigImageFile(String backgroundFile) {
 
 /// Returns true when the adaptive background is the `transparent` keyword
 /// (case-insensitive), meaning `@android:color/transparent` with no
-/// colors.xml entry (#535).
+/// colors.xml entry (fluttercommunity/flutter_launcher_icons#535).
 bool isTransparentAdaptiveBackground(String? backgroundConfig) {
   return backgroundConfig?.toLowerCase() == 'transparent';
 }

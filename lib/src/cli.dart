@@ -108,7 +108,7 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
   final String prefixPath = argResults[prefixOption];
 
   // An explicit `-f launcher_icons-<flavor>.yaml` runs only that
-  // flavor instead of looping over every discovered flavor (#215).
+  // flavor instead of looping over every discovered flavor (fluttercommunity/flutter_launcher_icons#215).
   // The file is loaded from the given path directly, so flavor configs in
   // subdirectories work too.
   final onlyFlavor = explicitFlavorFromArgs(argResults);
@@ -155,7 +155,7 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
 
   final flavors = await getFlavors(searchPath: argResults['flavor-path']);
   // An explicit `-f` for a non-flavor file is honored as-is instead of
-  // looping over discovered flavor files (#426). (An explicit flavor file is
+  // looping over discovered flavor files (fluttercommunity/flutter_launcher_icons#426). (An explicit flavor file is
   // already handled by the onlyFlavor branch above.) Suffixed
   // `launcher_icons-<flavor>:` sections inside the pinned file still count:
   // `-f` pins the file, not the absence of flavors.
@@ -392,7 +392,7 @@ Config? loadConfigFileFromArgResults(
   if (flutterLauncherIconsConfigs == null) {
     return null;
   }
-  // #628: an unedited `:generate` template still points at the phantom
+  // fluttercommunity/flutter_launcher_icons#628: an unedited `:generate` template still points at the phantom
   // `assets/icon/icon.png`. When the default config file is in play (not an
   // explicit `-f`) and none of its images exist while pubspec's do, the stale
   // template is shadowing the real config — warn and prefer pubspec.

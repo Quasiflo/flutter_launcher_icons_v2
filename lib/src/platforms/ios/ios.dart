@@ -26,7 +26,7 @@ class IosIconTemplate {
 /// details of the ios icons which need to be generated
 ///
 /// Covers the modern (Xcode 14+) universal set, including the 1x switcher
-/// sizes. The legacy iphone/ipad list was removed in v3 (#528): it emitted
+/// sizes. The legacy iphone/ipad list was removed in v3 (fluttercommunity/flutter_launcher_icons#528): it emitted
 /// obsolete sizes (57x57, 50x50, 72x72) that Xcode no longer references.
 List<IosIconTemplate> iosIcons = <IosIconTemplate>[
   IosIconTemplate(name: '-20x20@1x', size: 20),
@@ -74,7 +74,7 @@ Future<void> createIcons(
       filePath,
     ),
   );
-  // Single-size mode generates only the 1024px marketing icon (#592):
+  // Single-size mode generates only the 1024px marketing icon (fluttercommunity/flutter_launcher_icons#592):
   // dark/tinted variants are skipped entirely (no decode, no I/O).
   final bool singleSize = config.iosConfig?.singleSize == true;
   if (singleSize && (darkFilePath != null || tintedFilePath != null)) {
@@ -201,7 +201,7 @@ Future<void> createIcons(
   String iconName;
   String? darkIconName;
   String? tintedIconName;
-  // Single-size mode generates only the 1024px marketing icon (#592).
+  // Single-size mode generates only the 1024px marketing icon (fluttercommunity/flutter_launcher_icons#592).
   final List<IosIconTemplate> generateIosIcons = singleSize
       ? <IosIconTemplate>[
           IosIconTemplate(name: '-1024x1024@1x', size: 1024),
@@ -738,7 +738,7 @@ String _generateUniqueId(String fileName, String projectFile) {
 ///
 /// Prefers an explicit [xcodeprojPath], then the standard
 /// `ios/Runner.xcodeproj` location, then the first `*.xcodeproj` found under
-/// `ios/` so renamed Runner projects keep working (#543). Returns `null`
+/// `ios/` so renamed Runner projects keep working (fluttercommunity/flutter_launcher_icons#543). Returns `null`
 /// when no project file exists.
 String? resolveIosPbxprojPath([
   String? xcodeprojPath,
@@ -839,7 +839,7 @@ Future<void> changeIosLauncherIcon(
   if (flavor != null && !replacedAny) {
     // The flavor catalog was generated on disk but Xcode will keep building
     // the previous icon set. Warn loudly instead of reporting silent
-    // success (#341).
+    // success (fluttercommunity/flutter_launcher_icons#341).
     printStatus(
       '\nWARNING: No ASSETCATALOG_COMPILER_APPICON_NAME entry for "$flavor" '
       'configurations was found in project.pbxproj, so Xcode will keep using '
@@ -852,7 +852,7 @@ Future<void> changeIosLauncherIcon(
 
   final String entireFile = '${lines.join('\n')}\n';
   // Write via temp-file rename so a crash cannot leave a half-written,
-  // corrupt project file behind (#636).
+  // corrupt project file behind (fluttercommunity/flutter_launcher_icons#636).
   final tmpFile = File('${iOSConfigFile.path}.tmp');
   await tmpFile.writeAsString(entireFile);
   await tmpFile.rename(iOSConfigFile.path);
@@ -1182,7 +1182,7 @@ class ContentsInfoObject {
   }
 }
 
-/// Create a single-entry image list for `ios.single_size` mode (#592).
+/// Create a single-entry image list for `ios.single_size` mode (fluttercommunity/flutter_launcher_icons#592).
 List<Map<String, dynamic>> createSingleSizeImageList(String fileNamePrefix) {
   return <Map<String, dynamic>>[
     ContentsImageObject(

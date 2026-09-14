@@ -6,7 +6,7 @@ import 'package:launcher_icons/src/platforms/ios/ios.dart' as ios;
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
-// Regression tests for #514: `_alphaBlend` mixed up the background channels
+// Regression tests for fluttercommunity/flutter_launcher_icons#514: `_alphaBlend` mixed up the background channels
 // (bg.g/bg.a instead of bg.r/bg.g), tinting matted edges green.
 void main() {
   group('remove_alpha background blending', () {

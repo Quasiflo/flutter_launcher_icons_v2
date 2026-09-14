@@ -199,7 +199,7 @@ void main() {
       );
     });
 
-    test('should generate flavor icons into AppIcon-<flavor>.appiconset (#638)',
+    test('should generate flavor icons into AppIcon-<flavor>.appiconset (fluttercommunity/flutter_launcher_icons#638)',
         () async {
       final imageFile = File(path.join(assetPath, 'app_icon.png'));
       await d.dir('fli_test_flavor', [
@@ -284,7 +284,7 @@ void main() {
         reason: 'Fresh flavor icon set was not bootstrapped',
       );
     });
-    test('rounded config produces transparent corners end-to-end (#463)',
+    test('rounded config produces transparent corners end-to-end (fluttercommunity/flutter_launcher_icons#463)',
         () async {
       final imageFile = File(path.join(assetPath, 'app_icon.png'));
       await d.dir('fli_test_rounded', [

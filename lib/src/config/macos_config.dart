@@ -23,7 +23,7 @@ class MacOSConfig {
   @JsonKey(name: 'padding')
   final int padding;
 
-  /// Round the icon corners with an Apple-like mask (#463).
+  /// Round the icon corners with an Apple-like mask (fluttercommunity/flutter_launcher_icons#463).
   ///
   /// Disabled by default; macOS does not shape the artwork itself.
   @JsonKey(name: 'rounded_corners')

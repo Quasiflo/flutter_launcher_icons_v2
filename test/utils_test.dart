@@ -144,7 +144,7 @@ void main() {
     });
   });
 
-  // Regression tests for #615: indexed-color (palette) PNGs used to throw
+  // Regression tests for fluttercommunity/flutter_launcher_icons#615: indexed-color (palette) PNGs used to throw
   // RangeError in downstream pixel operations on older `image` versions.
   group('#decodeImageFile exotic PNG variants', () {
     test('decodes indexed-color PNG and survives icon ops', () async {

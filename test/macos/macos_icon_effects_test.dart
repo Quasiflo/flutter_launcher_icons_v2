@@ -26,7 +26,7 @@ void main() {
       );
     });
 
-    test('padding insets artwork on a transparent canvas (#655)', () async {
+    test('padding insets artwork on a transparent canvas (fluttercommunity/flutter_launcher_icons#655)', () async {
       final result = await buildMacOSIconImage(
         loaderFor(_solidRed()),
         64,
@@ -53,7 +53,7 @@ void main() {
       expect(result.height, equals(64));
     });
 
-    test('rounded corners mask the corners, keep edges (#463)', () async {
+    test('rounded corners mask the corners, keep edges (fluttercommunity/flutter_launcher_icons#463)', () async {
       final result = await buildMacOSIconImage(
         loaderFor(_solidRed()),
         64,
