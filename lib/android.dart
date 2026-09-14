@@ -127,7 +127,11 @@ Future<void> createAdaptiveIcons(
   }
 
   // Create adaptive icon background
-  if (isAdaptiveIconConfigImageFile(backgroundConfig)) {
+  if (isTransparentAdaptiveBackground(backgroundConfig)) {
+    utils.printStatus(
+      'Using transparent adaptive icon background (@android:color/transparent)',
+    );
+  } else if (isAdaptiveIconConfigImageFile(backgroundConfig)) {
     concurrentImageUpdates.add(
       _createAdaptiveBackgrounds(
         config,
@@ -193,7 +197,11 @@ Future<void> createMipmapXmlFile(
   final androidConfig = config.androidConfig!;
 
   if (config.hasAndroidAdaptiveConfig) {
-    if (isAdaptiveIconConfigImageFile(androidConfig.adaptiveIconBackground!)) {
+    final background = androidConfig.adaptiveIconBackground!;
+    if (isTransparentAdaptiveBackground(background)) {
+      xmlContent +=
+          '  <background android:drawable="@android:color/transparent"/>\n';
+    } else if (isAdaptiveIconConfigImageFile(background)) {
       xmlContent +=
           '  <background android:drawable="@drawable/ic_launcher_background"/>\n';
     } else {
@@ -525,6 +533,13 @@ bool isAdaptiveIconConfigImageFile(String backgroundFile) {
       normalizedPath.endsWith('.jpg') ||
       normalizedPath.endsWith('.jpeg') ||
       normalizedPath.endsWith('.webp');
+}
+
+/// Returns true when the adaptive background is the `transparent` keyword
+/// (case-insensitive), meaning `@android:color/transparent` with no
+/// colors.xml entry (#535).
+bool isTransparentAdaptiveBackground(String? backgroundConfig) {
+  return backgroundConfig?.toLowerCase() == 'transparent';
 }
 
 /// (NOTE THIS IS JUST USED FOR UNIT TEST)
