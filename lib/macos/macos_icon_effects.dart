@@ -37,10 +37,15 @@ Image buildMacOSIconImage(
   return canvas;
 }
 
-/// Masks the corners of [image] with an Apple-like rounded rectangle.
+/// Masks the corners of [image] with an Apple-like continuous corner.
 ///
 /// Returns an RGBA image; pixels outside the rounded shape become
 /// transparent. The input is left unmodified when it already fits.
+///
+/// The mask is a superellipse (|x|^4 + |y|^4 <= r^4) rather than a plain
+/// circular arc: Apple uses continuous-curvature ("squircle") corners, and
+/// the superellipse keeps more of the corner diagonal at the same 22.5%
+/// radius. Only `rounded_corners: true` output changes.
 Image applyRoundedCorners(Image image) {
   final size = image.width;
   assert(image.height == size, 'macOS icons must be square');
@@ -53,6 +58,7 @@ Image applyRoundedCorners(Image image) {
     canvas = canvas.clone();
   }
 
+  final r4 = (radius * radius * radius * radius).toDouble();
   bool inside(int x, int y) {
     final dx = x < radius
         ? (radius - 1 - x).toDouble()
@@ -67,7 +73,7 @@ Image applyRoundedCorners(Image image) {
     }
     final ox = nx < 0 ? 0.0 : nx;
     final oy = ny < 0 ? 0.0 : ny;
-    return ox * ox + oy * oy <= radius * radius;
+    return ox * ox * ox * ox + oy * oy * oy * oy <= r4;
   }
 
   for (var y = 0; y < size; y++) {
