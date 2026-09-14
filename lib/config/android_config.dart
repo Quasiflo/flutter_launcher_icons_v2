@@ -35,7 +35,10 @@ class AndroidConfig {
   @JsonKey(name: 'adaptive_icon_foreground_inset')
   final int adaptiveIconForegroundInset;
 
-  /// android adaptive_icon_background image
+  /// android adaptive_icon_background: color, image, or `transparent`.
+  ///
+  /// The keyword `transparent` (case-insensitive) maps to
+  /// `@android:color/transparent` with no colors.xml entry.
   @JsonKey(name: 'adaptive_icon_background')
   final String? adaptiveIconBackground;
 

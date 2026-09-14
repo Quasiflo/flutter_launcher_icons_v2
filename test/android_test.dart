@@ -238,6 +238,33 @@ android {
         ),
       );
     });
+
+    test('transparent background skips colors.xml, uses system color (#535)',
+        () async {
+      final config = Config.fromJson(<String, dynamic>{
+        'android': {
+          'generate': true,
+          'adaptive_icon_background': 'Transparent',
+          'adaptive_icon_foreground': 'app_icon.png',
+        },
+      });
+
+      await android.createAdaptiveIcons(config, null);
+      expect(File(androidColorsFile(null)).existsSync(), isFalse);
+
+      await android.createMipmapXmlFile(config, null);
+      final mipmapXml = File(
+        path.join(androidAdaptiveXmlFolder(null), androidDefaultIconName) +
+            '.xml',
+      ).readAsStringSync();
+      expect(
+        mipmapXml,
+        contains(
+          '<background android:drawable="@android:color/transparent"/>',
+        ),
+      );
+      expect(mipmapXml, isNot(contains('@color/ic_launcher_background')));
+    });
   });
 
   test('Correct number of adaptive foreground icons', () {
