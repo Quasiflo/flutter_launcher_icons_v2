@@ -112,5 +112,46 @@ void main() {
       expect(ico.width, equals(16));
       expect(ico.height, equals(16));
     });
+
+    test('honors output_path (#426)', () async {
+      await d.dir('fli_test', [
+        d.dir('web_prod', [
+          d.dir('icons'),
+          d.file('index.html', templates.webIndexTemplate),
+          d.file('manifest.json', templates.webManifestTemplate),
+        ]),
+      ]).create();
+      final outputConfig = Config.fromJson(<String, dynamic>{
+        'web': {
+          'generate': true,
+          'image_path': 'app_icon.png',
+          'output_path': 'web_prod',
+        },
+      });
+      final outputContext = IconGeneratorContext(
+        config: outputConfig,
+        prefixPath: prefixPath,
+        logger: FLILogger(false),
+      );
+      final outputGenerator = WebIconGenerator(outputContext);
+
+      expect(outputGenerator.validateRequirements(), isTrue);
+      await outputGenerator.createIcons();
+
+      await expectLater(
+        d.dir('fli_test', [
+          d.dir('web_prod', [
+            d.dir('icons', [
+              d.file('Icon-192.png', anything),
+              d.file('Icon-512.png', anything),
+            ]),
+            d.file('favicon.png', anything),
+            d.file('favicon.ico', anything),
+            d.file('manifest.json', anything),
+          ]),
+        ]).validate(),
+        completes,
+      );
+    });
   });
 }

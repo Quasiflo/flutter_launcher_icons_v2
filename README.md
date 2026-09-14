@@ -200,6 +200,7 @@ foreground of the Android 13+ themed icon. For more information see [Android Ada
   - `image_path`: Path to web icon.png
   - `image_path_favicon`: The location of the icon image file used to generate the favicon (optional - if not defined then falls back to using the web image_path then the global image_path)
   - `favicon_size`: Favicon size in pixels, *defaults to 16*
+  - `output_path`: Web root directory for generated files (default `web`). Set per flavor (e.g. `web_prod`) to keep flavor outputs separate.
   - `background_color`: Updates *background_color* in `web/manifest.json`
   - `theme_color`: Updates *theme_color* in `web/manifest.json`
 

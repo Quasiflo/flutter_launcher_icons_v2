@@ -49,6 +49,17 @@ class WebIconGenerator extends IconGenerator {
   @override
   bool get isEnabled => context.webConfig?.generate ?? false;
 
+  /// Web root directory honoring `output_path` (default `web`), so flavors
+  /// can target separate web roots (#426).
+  String get _webDirPath => context.webConfig?.outputPath ?? 'web';
+
+  /// All web file paths resolved under [_webDirPath].
+  String get _manifestFilePath => path.join(_webDirPath, 'manifest.json');
+  String get _indexFilePath => path.join(_webDirPath, 'index.html');
+  String get _faviconFilePath => path.join(_webDirPath, 'favicon.png');
+  String get _faviconIcoFilePath => path.join(_webDirPath, 'favicon.ico');
+  String get _iconsDirPath => path.join(_webDirPath, 'icons');
+
   @override
   Future<void> createIcons() async {
     final imgFilePath = path.join(
@@ -95,9 +106,9 @@ class WebIconGenerator extends IconGenerator {
     context.logger.verbose('Generating icons from $imgFilePath...');
     await _generateIcons(imgFile);
 
-    // update manifest.json in web/mainfest.json
+    // update manifest.json in <web root>/manifest.json
     context.logger.verbose(
-      'Updating ${path.join(context.prefixPath, constants.webManifestFilePath)}...',
+      'Updating ${path.join(context.prefixPath, _manifestFilePath)}...',
     );
     await _updateManifestFile();
 
@@ -126,9 +137,9 @@ class WebIconGenerator extends IconGenerator {
 
     // verify web platform related files and directories exists
     final entitesToCheck = [
-      path.join(context.prefixPath, constants.webDirPath),
-      path.join(context.prefixPath, constants.webManifestFilePath),
-      path.join(context.prefixPath, constants.webIndexFilePath),
+      path.join(context.prefixPath, _webDirPath),
+      path.join(context.prefixPath, _manifestFilePath),
+      path.join(context.prefixPath, _indexFilePath),
     ];
 
     // web platform related files must exist to continue
@@ -149,20 +160,20 @@ class WebIconGenerator extends IconGenerator {
       image,
     );
     final favIconFile = await utils.createFileIfNotExist(
-      path.join(context.prefixPath, constants.webFaviconFilePath),
+      path.join(context.prefixPath, _faviconFilePath),
     );
     await favIconFile.writeAsBytes(encodePng(favIcon));
     // Browsers request /favicon.ico by default; emit it alongside (#540).
     // index.html keeps pointing at favicon.png, either file now resolves.
     final favIcoFile = await utils.createFileIfNotExist(
-      path.join(context.prefixPath, constants.webFaviconIcoFilePath),
+      path.join(context.prefixPath, _faviconIcoFilePath),
     );
     await favIcoFile.writeAsBytes(encodeIco(favIcon));
   }
 
   Future<void> _generateIcons(Image image) async {
     final iconsDir = await utils.createDirIfNotExist(
-      path.join(context.prefixPath, constants.webIconsDirPath),
+      path.join(context.prefixPath, _iconsDirPath),
     );
     // generate icons
     for (final template in _webIconSizeTemplates) {
@@ -176,7 +187,7 @@ class WebIconGenerator extends IconGenerator {
 
   Future<void> _updateManifestFile() async {
     final manifestFile = await utils.createFileIfNotExist(
-      path.join(context.prefixPath, constants.webManifestFilePath),
+      path.join(context.prefixPath, _manifestFilePath),
     );
     final manifestConfig =
         jsonDecode(await manifestFile.readAsString()) as Map<String, dynamic>;
