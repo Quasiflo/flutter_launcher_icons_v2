@@ -9,6 +9,9 @@ import 'package:path/path.dart' as path;
 import 'custom_exceptions.dart';
 import 'logger.dart';
 
+/// Note: Do not change interpolation unless you end up with better results
+/// (see issue for result when using cubic interpolation)
+/// https://github.com/Quasiflo/launcher_icons/issues/101#issuecomment-495528733
 Image createResizedImage(int iconSize, Image image) {
   if (image.width >= iconSize) {
     return copyResize(
