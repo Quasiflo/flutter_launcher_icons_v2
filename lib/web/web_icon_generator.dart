@@ -18,6 +18,9 @@ class WebIconGenerator extends IconGenerator {
     WebIconTemplate(size: 512, maskable: true),
   ];
 
+  /// Consensus multi-frame favicon container.
+  static const _faviconIcoSizes = [16, 32, 48];
+
   /// Creates an instance of [WebIconGenerator].
   ///
   ///
@@ -149,6 +152,25 @@ class WebIconGenerator extends IconGenerator {
       return false;
     }
 
+    // background_color/theme_color land verbatim in manifest.json and the
+    // index block, so they must be valid CSS hex colors.
+    final backgroundColor = webConfig.backgroundColor;
+    if (backgroundColor != null && !utils.isHexColor(backgroundColor)) {
+      context.logger.error(
+        'Invalid web.background_color "$backgroundColor": '
+        'must be a hex color like "#ffffff".',
+      );
+      return false;
+    }
+    final themeColor = webConfig.themeColor;
+    if (themeColor != null && !utils.isHexColor(themeColor)) {
+      context.logger.error(
+        'Invalid web.theme_color "$themeColor": '
+        'must be a hex color like "#ffffff".',
+      );
+      return false;
+    }
+
     return true;
   }
 
@@ -162,12 +184,20 @@ class WebIconGenerator extends IconGenerator {
       path.join(context.prefixPath, _faviconFilePath),
     );
     await favIconFile.writeAsBytes(encodePng(favIcon));
-    // Browsers request /favicon.ico by default; emit it alongside (#540).
+    if (context.webConfig?.faviconIco ?? true) {
+      // Browsers request /favicon.ico by default; emit the consensus
+      // multi-frame container alongside the PNG (#540).
+      final multi =
+          utils.createResizedImage(_faviconIcoSizes.first, image);
+      for (final frameSize in _faviconIcoSizes.skip(1)) {
+        multi.addFrame(utils.createResizedImage(frameSize, image));
+      }
+      final favIcoFile = await utils.createFileIfNotExist(
+        path.join(context.prefixPath, _faviconIcoFilePath),
+      );
+      await favIcoFile.writeAsBytes(encodeIco(multi));
+    }
     // index.html keeps pointing at favicon.png, either file now resolves.
-    final favIcoFile = await utils.createFileIfNotExist(
-      path.join(context.prefixPath, _faviconIcoFilePath),
-    );
-    await favIcoFile.writeAsBytes(encodeIco(favIcon));
   }
 
   Future<void> _generateIcons(
@@ -298,9 +328,9 @@ class WebIconGenerator extends IconGenerator {
     final favSize =
         context.webConfig?.faviconSize ?? constants.kFaviconSize;
     final themeColor = context.webConfig?.themeColor;
+    final includeIco = context.webConfig?.faviconIco ?? true;
     final block = '''
-  <!--LI-->
-  <link rel="icon" type="image/x-icon" sizes="any" href="favicon.ico"/>
+  <!--LI-->${includeIco ? '\n  <link rel="icon" type="image/x-icon" sizes="any" href="favicon.ico"/>' : ''}
   <link rel="icon" type="image/png" sizes="${favSize}x$favSize" href="favicon.png"/>
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
   <link rel="manifest" href="manifest.json"/>${themeColor != null ? '\n  <meta name="theme-color" content="$themeColor"/>' : ''}

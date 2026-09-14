@@ -19,6 +19,7 @@ WebConfig _$WebConfigFromJson(Map json) => $checkedCreate(
               $checkedConvert('image_path_maskable', (v) => v as String?),
           faviconSize: $checkedConvert('favicon_size',
               (v) => (v as num?)?.toInt() ?? constants.kFaviconSize),
+          faviconIco: $checkedConvert('favicon_ico', (v) => v as bool? ?? true),
           outputPath:
               $checkedConvert('output_path', (v) => v as String? ?? 'web'),
           backgroundColor:
@@ -32,6 +33,7 @@ WebConfig _$WebConfigFromJson(Map json) => $checkedCreate(
         'imagePathFavicon': 'image_path_favicon',
         'imagePathMaskable': 'image_path_maskable',
         'faviconSize': 'favicon_size',
+        'faviconIco': 'favicon_ico',
         'outputPath': 'output_path',
         'backgroundColor': 'background_color',
         'themeColor': 'theme_color'
@@ -45,6 +47,7 @@ Map<String, dynamic> _$WebConfigToJson(WebConfig instance) => <String, dynamic>{
       'image_path_maskable': instance.imagePathMaskable,
       'output_path': instance.outputPath,
       'favicon_size': instance.faviconSize,
+      'favicon_ico': instance.faviconIco,
       'background_color': instance.backgroundColor,
       'theme_color': instance.themeColor,
     };
