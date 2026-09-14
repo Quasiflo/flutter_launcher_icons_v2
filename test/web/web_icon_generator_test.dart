@@ -4,6 +4,7 @@ import 'package:flutter_launcher_icons/abs/icon_generator.dart';
 import 'package:flutter_launcher_icons/config/config.dart';
 import 'package:flutter_launcher_icons/logger.dart';
 import 'package:flutter_launcher_icons/web/web_icon_generator.dart';
+import 'package:image/image.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 import 'package:test_descriptor/test_descriptor.dart' as d;
@@ -70,6 +71,32 @@ void main() {
         ]).validate(),
         completes,
       );
+    });
+
+    test('honors favicon_size (#614)', () async {
+      final sizedConfig = Config.fromJson(<String, dynamic>{
+        'web': {
+          'generate': true,
+          'image_path': 'app_icon.png',
+          'favicon_size': 32,
+        },
+      });
+      final sizedContext = IconGeneratorContext(
+        config: sizedConfig,
+        prefixPath: prefixPath,
+        logger: FLILogger(false),
+      );
+      final sizedGenerator = WebIconGenerator(sizedContext);
+
+      expect(sizedGenerator.validateRequirements(), isTrue);
+      await sizedGenerator.createIcons();
+
+      final favicon = decodeImage(
+        await File(path.join(prefixPath, 'web', 'favicon.png'))
+            .readAsBytes(),
+      )!;
+      expect(favicon.width, equals(32));
+      expect(favicon.height, equals(32));
     });
   });
 }

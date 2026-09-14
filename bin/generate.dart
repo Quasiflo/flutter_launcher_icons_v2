@@ -120,6 +120,7 @@ flutter_launcher_icons:
     generate: true
     image_path: "path/to/image.png"
     # image_path_favicon: "assets/icon/icon-favicon.png"
+    # favicon_size: 16
     background_color: "#hexcode"
     theme_color: "#hexcode"
 

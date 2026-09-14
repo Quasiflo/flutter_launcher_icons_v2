@@ -143,7 +143,11 @@ class WebIconGenerator extends IconGenerator {
   }
 
   Future<void> _generateFavicon(Image image) async {
-    final favIcon = utils.createResizedImage(constants.kFaviconSize, image);
+    final size = context.webConfig?.faviconSize ?? constants.kFaviconSize;
+    final favIcon = utils.createResizedImage(
+      size > 0 ? size : constants.kFaviconSize,
+      image,
+    );
     final favIconFile = await utils.createFileIfNotExist(
       path.join(context.prefixPath, constants.webFaviconFilePath),
     );

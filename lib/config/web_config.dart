@@ -1,3 +1,4 @@
+import 'package:flutter_launcher_icons/constants.dart' as constants;
 import 'package:json_annotation/json_annotation.dart';
 
 part 'web_config.g.dart';
@@ -19,6 +20,10 @@ class WebConfig {
   @JsonKey(name: 'image_path_favicon')
   final String? imagePathFavicon;
 
+  /// Favicon size in pixels (default 16, the `kFaviconSize` default).
+  @JsonKey(name: 'favicon_size')
+  final int faviconSize;
+
   /// manifest.json's background_color
   @JsonKey(name: 'background_color')
   final String? backgroundColor;
@@ -32,6 +37,7 @@ class WebConfig {
     this.generate = false,
     this.imagePath,
     this.imagePathFavicon,
+    this.faviconSize = constants.kFaviconSize,
     this.backgroundColor,
     this.themeColor,
   });
