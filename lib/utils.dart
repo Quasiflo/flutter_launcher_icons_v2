@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:image/image.dart';
 import 'package:path/path.dart' as path;
@@ -45,38 +44,12 @@ String generateError(Exception e, String? error) {
 // TODO(RatakondalaArun): Remove nullable return type
 // this can never return null value since it already throws exception
 Future<Image?> decodeImageFile(String filePath) async {
-  final Uint8List bytes;
-  if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
-    bytes = await _downloadImageBytes(filePath);
-  } else {
-    bytes = await File(filePath).readAsBytes();
-  }
+  final bytes = await File(filePath).readAsBytes();
   final image = decodeImage(bytes);
   if (image == null) {
     throw NoDecoderForImageFormatException(filePath);
   }
   return image;
-}
-
-/// Downloads image bytes for `http(s)://` image paths (#511).
-///
-/// Uses `dart:io` directly so no extra dependency is needed. A non-200
-/// response surfaces as [FileNotFoundException]; transport errors propagate
-/// unchanged.
-Future<Uint8List> _downloadImageBytes(String url) async {
-  final client = HttpClient();
-  try {
-    final request = await client.getUrl(Uri.parse(url));
-    final response = await request.close();
-    if (response.statusCode != HttpStatus.ok) {
-      throw FileNotFoundException('$url (HTTP ${response.statusCode})');
-    }
-    final builder = BytesBuilder();
-    await response.forEach(builder.add);
-    return builder.takeBytes();
-  } finally {
-    client.close();
-  }
 }
 
 /// Creates [File] in the given [filePath] if not exists
