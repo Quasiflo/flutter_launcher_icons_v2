@@ -188,6 +188,9 @@ Future<void> createMipmapXmlFile(
   // automatically taken as foreground)
   if (!config.hasAndroidAdaptiveConfig &&
       !config.hasAndroidAdaptiveMonochromeConfig) {
+    // No adaptive icons requested: clear leftovers from a previous adaptive
+    // configuration so they cannot shadow the fresh icons (#328).
+    await _removeStaleAdaptiveIcons(config, flavor);
     return;
   }
 
@@ -247,6 +250,42 @@ Future<void> createMipmapXmlFile(
   await mipmapXmlFile.writeAsString(
     xml_template.mipmapXmlFile.replaceAll('{{CONTENT}}', xmlContent),
   );
+}
+
+/// Deletes adaptive icon artifacts left behind by a previous adaptive
+/// configuration so they cannot shadow freshly generated icons (#328).
+///
+/// Only tool-owned file names are removed (`colors.xml` is shared and left
+/// untouched). Both the default and the custom icon xml names are covered so
+/// switching in either direction is cleaned up.
+Future<void> _removeStaleAdaptiveIcons(Config config, String? flavor) async {
+  final xmlNames = <String>{constants.androidDefaultIconName};
+  final customName = config.androidConfig?.iconName;
+  if (customName != null) {
+    xmlNames.add(customName);
+  }
+  final stalePaths = <String>[
+    for (final name in xmlNames)
+      constants.androidAdaptiveXmlFolder(flavor) + name + '.xml',
+    for (final template in adaptiveForegroundIcons)
+      for (final fileName in [
+        constants.androidAdaptiveForegroundFileName,
+        constants.androidAdaptiveBackgroundFileName,
+        constants.androidAdaptiveMonochromeFileName,
+      ])
+        constants.androidResFolder(flavor) +
+            template.directoryName +
+            '/' +
+            fileName,
+  ];
+  for (final filePath in stalePaths) {
+    final file = File(filePath);
+    // Using the sync method here due to `avoid_slow_async_io` lint suggestion.
+    if (file.existsSync()) {
+      utils.printStatus('Removing stale adaptive icon file $filePath');
+      await file.delete();
+    }
+  }
 }
 
 /// Retrieves the colors.xml file for the project.
