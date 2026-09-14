@@ -4,12 +4,12 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:launcher_icons/abs/icon_generator.dart';
-import 'package:launcher_icons/android.dart' as android_launcher_icons;
+import 'package:launcher_icons/android/android_icon_generator.dart';
 import 'package:launcher_icons/config/config.dart';
 import 'package:launcher_icons/constants.dart' as constants;
 import 'package:launcher_icons/constants.dart';
 import 'package:launcher_icons/custom_exceptions.dart';
-import 'package:launcher_icons/ios.dart' as ios_launcher_icons;
+import 'package:launcher_icons/ios/ios_icon_generator.dart';
 import 'package:launcher_icons/linux/linux_icon_generator.dart';
 import 'package:launcher_icons/logger.dart';
 import 'package:launcher_icons/macos/macos_icon_generator.dart';
@@ -64,7 +64,7 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
     ..addOption(
       prefixOption,
       abbr: 'p',
-      help: 'Generates config in the given path. Only Supports web platform',
+      help: 'Generates icons in the given path (project root by default)',
       defaultsTo: '.',
     )
     ..addOption(
@@ -192,50 +192,6 @@ Future<void> createIconsFromConfig(
     throw const InvalidConfigException(errorNoPlatformEnabled);
   }
 
-  final concurrentIconCreation = <Future<void>>[];
-  if (flutterConfigs.isNeedingNewAndroidIcon) {
-    concurrentIconCreation.add(
-      android_launcher_icons.createDefaultIcons(
-        flutterConfigs,
-        flavor,
-        logger: logger,
-      ),
-    );
-  }
-  if (flutterConfigs.hasAndroidAdaptiveConfig) {
-    concurrentIconCreation.add(
-      android_launcher_icons.createAdaptiveIcons(
-        flutterConfigs,
-        flavor,
-        logger: logger,
-      ),
-    );
-  }
-  if (flutterConfigs.hasAndroidAdaptiveMonochromeConfig) {
-    concurrentIconCreation.add(
-      android_launcher_icons.createAdaptiveMonochromeIcons(
-        flutterConfigs,
-        flavor,
-        logger: logger,
-      ),
-    );
-  }
-  await Future.wait(concurrentIconCreation);
-  if (flutterConfigs.isNeedingNewAndroidIcon) {
-    await android_launcher_icons.createMipmapXmlFile(
-      flutterConfigs,
-      flavor,
-      logger: logger,
-    );
-  }
-  if (flutterConfigs.isNeedingNewIOSIcon) {
-    await ios_launcher_icons.createIcons(
-      flutterConfigs,
-      flavor,
-      logger: logger,
-    );
-  }
-
   // Generates Icons for given platform
   await generateIconsFor(
     config: flutterConfigs,
@@ -244,6 +200,12 @@ Future<void> createIconsFromConfig(
     flavor: flavor,
     platforms: (context) {
       final platforms = <IconGenerator>[];
+      if (flutterConfigs.hasAndroidConfig) {
+        platforms.add(AndroidIconGenerator(context));
+      }
+      if (flutterConfigs.hasIOSConfig) {
+        platforms.add(IosIconGenerator(context));
+      }
       if (flutterConfigs.hasWebConfig) {
         platforms.add(WebIconGenerator(context));
       }

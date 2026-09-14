@@ -16,6 +16,7 @@ Future<void> generateLiquidGlassIcon(
   Config config,
   String iconName, {
   LILogger? logger,
+  String prefixPath = '.',
 }) async {
   if (!config.hasLiquidGlassIconConfig) {
     return;
@@ -36,7 +37,7 @@ Future<void> generateLiquidGlassIcon(
   }
 
   // Check if source image exists
-  final sourceImageFile = File(liquidGlassImagePath);
+  final sourceImageFile = File(withPrefix(prefixPath, liquidGlassImagePath));
   if (!sourceImageFile.existsSync()) {
     throw InvalidConfigException(
       'Liquid glass icon image not found at: $liquidGlassImagePath',
@@ -46,9 +47,12 @@ Future<void> generateLiquidGlassIcon(
   printStatus('Creating liquid glass .icon for $iconName', logger);
 
   // Create directory structure
-  final iconFolderPath = iosLiquidGlassIconPath(iconName);
-  final assetsFolderPath = iosLiquidGlassAssetsPath(iconName);
-  final configFilePath = iosLiquidGlassConfigPath(iconName);
+  final iconFolderPath =
+      withPrefix(prefixPath, iosLiquidGlassIconPath(iconName));
+  final assetsFolderPath =
+      withPrefix(prefixPath, iosLiquidGlassAssetsPath(iconName));
+  final configFilePath =
+      withPrefix(prefixPath, iosLiquidGlassConfigPath(iconName));
 
   await createDirIfNotExist(iconFolderPath);
   await createDirIfNotExist(assetsFolderPath);

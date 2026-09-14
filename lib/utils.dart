@@ -53,6 +53,13 @@ Future<Image> decodeImageFile(String filePath) async {
   return image;
 }
 
+/// Joins [prefixPath] with a project-relative [target] path.
+///
+/// The default `'.'` prefix leaves [target] untouched so default runs keep
+/// their historical relative paths; any other prefix is joined normally.
+String withPrefix(String prefixPath, String target) =>
+    prefixPath == '.' ? target : path.join(prefixPath, target);
+
 /// Creates [File] in the given [filePath] if not exists
 Future<File> createFileIfNotExist(String filePath) async {
   final file = File(path.joinAll(path.split(filePath)));
