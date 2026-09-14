@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=example_with_flavors
+Comment=example_with_flavors
+Exec=example_with_flavors
+Icon=${SNAP}/meta/gui/example_with_flavors.png
+Terminal=false
+Type=Application
+Categories=Utility;
