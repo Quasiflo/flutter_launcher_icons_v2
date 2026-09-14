@@ -4,6 +4,7 @@
     ".": {
       "release-type": "dart",
       "extra-label": "Bot 🤖",
+      "bump-minor-pre-major": true,
       "extra-files": [
         {
           "type": "generic",
