@@ -30,18 +30,18 @@ Dart, no build system beyond `pub`, one test command.
 
    ```shell
    dart pub get
-   dart analyze --fatal-infos
-   dart test
+   hk check --all
    ```
 
 ## Workflow
 
-- `dart analyze --fatal-infos` and `dart test` (everything, not a subset)
-  must pass. `hk check --all` runs those plus markdown and workflow linting.
-- Regenerate code after touching `@JsonSerializable` models with a plain
-  `dart run build_runner build` — codegen is scoped to the package by
-  [build.yaml](build.yaml), and `lib/src/version.dart` is hand-maintained, so
-  never delete or hand-edit it beyond the version string.
+- `hk check --all` verifies everything (format, lints, analyzer, markdown,
+  workflows). `hk fix --all` applies what it can — formatting, fixes, and
+  codegen — then re-run `hk check --all`.
+- Touched a `@JsonSerializable` model? `hk fix` regenerates the code for you.
+  Never run build_runner with `--delete-conflicting-outputs`, and never
+  delete `lib/src/version.dart` — it is hand-maintained, edit only its version
+  string.
 - New config key? Add it to the `:generate` template in `bin/generate.dart`
   (there is a drift test), document it in `README.md`, and cover it with a
   test. Behavior changes to an existing platform should also refresh the

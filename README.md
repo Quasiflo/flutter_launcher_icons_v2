@@ -16,10 +16,14 @@ replacing it.
 
 Add the dependency and generate a starter config:
 
+<!-- x-release-please-start-version -->
+
 ```yaml
 dev_dependencies:
-  launcher_icons: "^0.14.4" # x-release-please-version
+  launcher_icons: "^0.14.4"
 ```
+
+<!-- x-release-please-end -->
 
 ```shell
 dart run launcher_icons:generate
