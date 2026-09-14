@@ -1,0 +1,10 @@
+// * HK - Git Hook Configuration
+// This file ensures you are committing properly linted and formatted files which will pass ci
+
+amends "package://github.com/jdx/hk/releases/download/v2.0.0/hk@2.0.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.0.0/hk@2.0.0#/Builtins.pkl"
+
+steps {
+  ["rumdl"] = Builtins.rumdl
+  ["zizmor"] = Builtins.zizmor
+}
