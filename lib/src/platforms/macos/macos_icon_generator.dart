@@ -2,12 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:image/image.dart';
-import 'package:launcher_icons/abs/icon_generator.dart';
-import 'package:launcher_icons/constants.dart' as constants;
-import 'package:launcher_icons/ios.dart' as ios;
-import 'package:launcher_icons/macos/macos_icon_effects.dart' as effects;
-import 'package:launcher_icons/macos/macos_icon_template.dart';
-import 'package:launcher_icons/utils.dart' as utils;
+import 'package:launcher_icons/src/core/constants.dart' as constants;
+import 'package:launcher_icons/src/core/icon_generator.dart';
+import 'package:launcher_icons/src/core/utils.dart' as utils;
+import 'package:launcher_icons/src/platforms/ios/ios.dart' as ios;
+import 'package:launcher_icons/src/platforms/macos/macos_icon_effects.dart'
+    as effects;
+import 'package:launcher_icons/src/platforms/macos/macos_icon_template.dart';
 import 'package:path/path.dart' as path;
 
 /// A [IconGenerator] implementation for macos

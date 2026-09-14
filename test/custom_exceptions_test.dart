@@ -1,4 +1,4 @@
-import 'package:launcher_icons/custom_exceptions.dart';
+import 'package:launcher_icons/src/core/custom_exceptions.dart';
 import 'package:test/test.dart';
 
 void main() {

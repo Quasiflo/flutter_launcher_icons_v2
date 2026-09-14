@@ -3,12 +3,12 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:image/image.dart' hide decodeImageFile;
-import 'package:launcher_icons/config/config.dart';
-import 'package:launcher_icons/constants.dart';
-import 'package:launcher_icons/custom_exceptions.dart';
-import 'package:launcher_icons/ios_liquid_glass_icon_generator.dart';
-import 'package:launcher_icons/logger.dart';
-import 'package:launcher_icons/utils.dart';
+import 'package:launcher_icons/src/config/config.dart';
+import 'package:launcher_icons/src/core/constants.dart';
+import 'package:launcher_icons/src/core/custom_exceptions.dart';
+import 'package:launcher_icons/src/core/logger.dart';
+import 'package:launcher_icons/src/core/utils.dart';
+import 'package:launcher_icons/src/platforms/ios/liquid_glass_icon_generator.dart';
 import 'package:path/path.dart' as path;
 
 /// File to handle the creation of icons for iOS platform

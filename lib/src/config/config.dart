@@ -2,15 +2,15 @@ import 'dart:io';
 
 import 'package:checked_yaml/checked_yaml.dart' as yaml;
 import 'package:json_annotation/json_annotation.dart';
-import 'package:launcher_icons/config/android_config.dart';
-import 'package:launcher_icons/config/ios_config.dart';
-import 'package:launcher_icons/config/linux_config.dart';
-import 'package:launcher_icons/config/macos_config.dart';
-import 'package:launcher_icons/config/web_config.dart';
-import 'package:launcher_icons/config/windows_config.dart';
-import 'package:launcher_icons/constants.dart' as constants;
-import 'package:launcher_icons/custom_exceptions.dart';
-import 'package:launcher_icons/utils.dart' as utils;
+import 'package:launcher_icons/src/config/android_config.dart';
+import 'package:launcher_icons/src/config/ios_config.dart';
+import 'package:launcher_icons/src/config/linux_config.dart';
+import 'package:launcher_icons/src/config/macos_config.dart';
+import 'package:launcher_icons/src/config/web_config.dart';
+import 'package:launcher_icons/src/config/windows_config.dart';
+import 'package:launcher_icons/src/core/constants.dart' as constants;
+import 'package:launcher_icons/src/core/custom_exceptions.dart';
+import 'package:launcher_icons/src/core/utils.dart' as utils;
 import 'package:path/path.dart' as path;
 
 part 'config.g.dart';

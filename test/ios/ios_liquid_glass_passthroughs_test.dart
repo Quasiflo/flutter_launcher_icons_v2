@@ -1,6 +1,6 @@
-import 'package:launcher_icons/config/config.dart';
-import 'package:launcher_icons/custom_exceptions.dart';
-import 'package:launcher_icons/ios_liquid_glass_icon_generator.dart';
+import 'package:launcher_icons/src/config/config.dart';
+import 'package:launcher_icons/src/core/custom_exceptions.dart';
+import 'package:launcher_icons/src/platforms/ios/liquid_glass_icon_generator.dart';
 import 'package:test/test.dart';
 
 // Pass-throughs for Icon Composer engine features: group lighting,

@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:launcher_icons/custom_exceptions.dart';
-import 'package:launcher_icons/utils.dart' as utils;
+import 'package:launcher_icons/src/core/custom_exceptions.dart';
+import 'package:launcher_icons/src/core/utils.dart' as utils;
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 import 'package:test_descriptor/test_descriptor.dart' as d;

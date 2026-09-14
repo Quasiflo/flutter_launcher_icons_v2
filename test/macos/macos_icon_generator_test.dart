@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:image/image.dart';
-import 'package:launcher_icons/abs/icon_generator.dart';
-import 'package:launcher_icons/config/config.dart';
-import 'package:launcher_icons/config/macos_config.dart';
-import 'package:launcher_icons/logger.dart';
-import 'package:launcher_icons/macos/macos_icon_generator.dart';
+import 'package:launcher_icons/src/config/config.dart';
+import 'package:launcher_icons/src/config/macos_config.dart';
+import 'package:launcher_icons/src/core/icon_generator.dart';
+import 'package:launcher_icons/src/core/logger.dart';
+import 'package:launcher_icons/src/platforms/macos/macos_icon_generator.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:path/path.dart' as path;

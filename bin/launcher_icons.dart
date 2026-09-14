@@ -1,5 +1,5 @@
-import 'package:launcher_icons/constants.dart';
-import 'package:launcher_icons/main.dart' as launcher_icons;
+import 'package:launcher_icons/src/cli.dart' as launcher_icons;
+import 'package:launcher_icons/src/core/constants.dart';
 import 'package:launcher_icons/src/version.dart';
 
 void main(List<String> arguments) {

@@ -5,9 +5,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 
 import 'package:cli_util/cli_logging.dart' as _i2;
-import 'package:launcher_icons/config/config.dart' as _i3;
-import 'package:launcher_icons/config/macos_config.dart' as _i4;
-import 'package:launcher_icons/logger.dart' as _i5;
+import 'package:launcher_icons/src/config/config.dart' as _i3;
+import 'package:launcher_icons/src/config/macos_config.dart' as _i4;
+import 'package:launcher_icons/src/core/logger.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint

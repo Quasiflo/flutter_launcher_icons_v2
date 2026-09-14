@@ -1,19 +1,19 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:launcher_icons/abs/icon_generator.dart';
-import 'package:launcher_icons/android/android_icon_generator.dart';
-import 'package:launcher_icons/config/config.dart';
-import 'package:launcher_icons/constants.dart' as constants;
-import 'package:launcher_icons/constants.dart';
-import 'package:launcher_icons/custom_exceptions.dart';
-import 'package:launcher_icons/ios/ios_icon_generator.dart';
-import 'package:launcher_icons/linux/linux_icon_generator.dart';
-import 'package:launcher_icons/logger.dart';
-import 'package:launcher_icons/macos/macos_icon_generator.dart';
-import 'package:launcher_icons/utils.dart' as utils;
-import 'package:launcher_icons/web/web_icon_generator.dart';
-import 'package:launcher_icons/windows/windows_icon_generator.dart';
+import 'package:launcher_icons/src/config/config.dart';
+import 'package:launcher_icons/src/core/constants.dart' as constants;
+import 'package:launcher_icons/src/core/constants.dart';
+import 'package:launcher_icons/src/core/custom_exceptions.dart';
+import 'package:launcher_icons/src/core/icon_generator.dart';
+import 'package:launcher_icons/src/core/logger.dart';
+import 'package:launcher_icons/src/core/utils.dart' as utils;
+import 'package:launcher_icons/src/platforms/android/android_icon_generator.dart';
+import 'package:launcher_icons/src/platforms/ios/ios_icon_generator.dart';
+import 'package:launcher_icons/src/platforms/linux/linux_icon_generator.dart';
+import 'package:launcher_icons/src/platforms/macos/macos_icon_generator.dart';
+import 'package:launcher_icons/src/platforms/web/web_icon_generator.dart';
+import 'package:launcher_icons/src/platforms/windows/windows_icon_generator.dart';
 import 'package:path/path.dart' as path;
 
 /// CLI option name for the config file path (`-f`).

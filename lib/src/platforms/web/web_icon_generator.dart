@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:image/image.dart';
+import 'package:launcher_icons/src/core/constants.dart' as constants;
+import 'package:launcher_icons/src/core/icon_generator.dart';
+import 'package:launcher_icons/src/core/utils.dart' as utils;
 import 'package:path/path.dart' as path;
 
-import '../abs/icon_generator.dart';
-import '../constants.dart' as constants;
-import '../utils.dart' as utils;
 import 'web_template.dart';
 
 /// Generates Web icons for flutter

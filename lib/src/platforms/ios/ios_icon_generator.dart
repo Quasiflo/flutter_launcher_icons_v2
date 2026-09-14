@@ -1,6 +1,6 @@
-import 'package:launcher_icons/abs/icon_generator.dart';
-import 'package:launcher_icons/ios.dart' as ios;
-import 'package:launcher_icons/utils.dart' as utils;
+import 'package:launcher_icons/src/core/icon_generator.dart';
+import 'package:launcher_icons/src/core/utils.dart' as utils;
+import 'package:launcher_icons/src/platforms/ios/ios.dart' as ios;
 
 /// An implementation of [IconGenerator] for iOS.
 class IosIconGenerator extends IconGenerator {

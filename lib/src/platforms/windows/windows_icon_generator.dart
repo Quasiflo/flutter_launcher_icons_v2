@@ -1,7 +1,7 @@
 import 'package:image/image.dart';
-import 'package:launcher_icons/abs/icon_generator.dart';
-import 'package:launcher_icons/constants.dart' as constants;
-import 'package:launcher_icons/utils.dart' as utils;
+import 'package:launcher_icons/src/core/constants.dart' as constants;
+import 'package:launcher_icons/src/core/icon_generator.dart';
+import 'package:launcher_icons/src/core/utils.dart' as utils;
 import 'package:path/path.dart' as path;
 
 /// A Implementation of [IconGenerator] for Windows

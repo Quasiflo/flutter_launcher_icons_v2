@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:launcher_icons/android.dart' as android;
-import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/src/config/config.dart';
+import 'package:launcher_icons/src/platforms/android/android.dart' as android;
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 

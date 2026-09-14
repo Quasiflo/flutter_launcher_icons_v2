@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:launcher_icons/abs/icon_generator.dart';
-import 'package:launcher_icons/config/config.dart';
-import 'package:launcher_icons/logger.dart';
-import 'package:launcher_icons/macos/macos_icon_generator.dart';
+import 'package:launcher_icons/src/config/config.dart';
+import 'package:launcher_icons/src/core/icon_generator.dart';
+import 'package:launcher_icons/src/core/logger.dart';
+import 'package:launcher_icons/src/platforms/macos/macos_icon_generator.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 

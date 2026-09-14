@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:launcher_icons/constants.dart' as constants;
+import 'package:launcher_icons/src/core/constants.dart' as constants;
 
 part 'web_config.g.dart';
 

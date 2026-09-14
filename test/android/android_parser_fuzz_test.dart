@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:launcher_icons/android.dart' as android;
+import 'package:launcher_icons/src/platforms/android/android.dart' as android;
 import 'package:test/test.dart';
 
 // Malformed-input coverage for the line-oriented parsers: XML comments,
