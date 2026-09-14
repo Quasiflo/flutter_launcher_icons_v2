@@ -80,6 +80,19 @@ String withPrefix(String prefixPath, String target) =>
   );
 }
 
+/// Whether [color] is a valid CSS hex color: `#rgb`, `#rgba`, `#rrggbb`,
+/// or `#rrggbbaa`.
+bool isHexColor(String color) {
+  if (!color.startsWith('#')) {
+    return false;
+  }
+  final hex = color.substring(1);
+  if (![3, 4, 6, 8].contains(hex.length)) {
+    return false;
+  }
+  return int.tryParse(hex, radix: 16) != null;
+}
+
 /// Creates [File] in the given [filePath] if not exists
 Future<File> createFileIfNotExist(String filePath) async {
   final file = File(path.joinAll(path.split(filePath)));

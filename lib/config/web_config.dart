@@ -40,6 +40,13 @@ class WebConfig {
   @JsonKey(name: 'favicon_size')
   final int faviconSize;
 
+  /// Whether to emit `favicon.ico` alongside `favicon.png` (default true).
+  ///
+  /// Browsers request `/favicon.ico` by default; set to `false` to opt out
+  /// and ship the PNG only.
+  @JsonKey(name: 'favicon_ico')
+  final bool faviconIco;
+
   /// manifest.json's background_color
   @JsonKey(name: 'background_color')
   final String? backgroundColor;
@@ -55,6 +62,7 @@ class WebConfig {
     this.imagePathFavicon,
     this.imagePathMaskable,
     this.faviconSize = constants.kFaviconSize,
+    this.faviconIco = true,
     this.outputPath = 'web',
     this.backgroundColor,
     this.themeColor,
