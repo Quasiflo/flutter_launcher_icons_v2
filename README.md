@@ -171,6 +171,7 @@ foreground of the Android 13+ themed icon. For more information see [Android Ada
   - `generate`: Specifies whether to generate icons for iOS platform or not
   - `image_path`: The location of the icon image file specific for iOS platform (optional - if not defined then the image_path is used)
   - `icon_name`: Custom icon set name (e.g. `"My-Launcher-Icon"`). When specified, a new launcher icon is generated without removing the old default existing Flutter launcher icon. When omitted, the default icon is overridden.
+  - `single_size`: When `true`, generates only the single 1024px universal icon instead of the full icon set. Dark/tinted variants are ignored in this mode, *defaults to false*.
 - `remove_alpha`: Removes alpha channel for iOS icons (blended against `background_color`)
 - `image_path_dark_transparent`: The location of the dark mode icon image file specific for iOS 18+ platform. *Note: Apple recommends this icon to be transparent. For more information see [Apple Human Interface Guidelines for App Icons](https://developer.apple.com/design/human-interface-guidelines/app-icons#iOS-iPadOS)*
 - `image_path_tinted_grayscale`: The location of the tinted mode icon image file specific for iOS 18+ platform. *Note: This icon should be an grayscale image. Use `desaturate_tinted_to_grayscale: true` to automatically desaturate the image provided here.*

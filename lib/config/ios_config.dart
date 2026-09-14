@@ -11,6 +11,11 @@ class IOSConfig {
   /// Specifies whether to generate icons for iOS
   final bool generate;
 
+  /// When true, generates only the single 1024px universal icon instead of
+  /// the full icon set. Dark/tinted variants are ignored in this mode.
+  @JsonKey(name: 'single_size')
+  final bool singleSize;
+
   /// Image path for iOS (falls back to the global `image_path`)
   @JsonKey(name: 'image_path')
   final String? imagePath;
@@ -85,6 +90,7 @@ class IOSConfig {
   /// Creates a instance of [IOSConfig]
   const IOSConfig({
     this.generate = false,
+    this.singleSize = false,
     this.imagePath,
     this.iconName,
     this.imagePathDarkTransparent,

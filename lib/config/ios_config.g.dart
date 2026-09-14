@@ -12,6 +12,8 @@ IOSConfig _$IOSConfigFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = IOSConfig(
           generate: $checkedConvert('generate', (v) => v as bool? ?? false),
+          singleSize:
+              $checkedConvert('single_size', (v) => v as bool? ?? false),
           imagePath: $checkedConvert('image_path', (v) => v as String?),
           iconName: $checkedConvert('icon_name', (v) => v as String?),
           imagePathDarkTransparent: $checkedConvert(
@@ -49,6 +51,7 @@ IOSConfig _$IOSConfigFromJson(Map json) => $checkedCreate(
         return val;
       },
       fieldKeyMap: const {
+        'singleSize': 'single_size',
         'imagePath': 'image_path',
         'iconName': 'icon_name',
         'imagePathDarkTransparent': 'image_path_dark_transparent',
@@ -71,6 +74,7 @@ IOSConfig _$IOSConfigFromJson(Map json) => $checkedCreate(
 
 Map<String, dynamic> _$IOSConfigToJson(IOSConfig instance) => <String, dynamic>{
       'generate': instance.generate,
+      'single_size': instance.singleSize,
       'image_path': instance.imagePath,
       'icon_name': instance.iconName,
       'image_path_dark_transparent': instance.imagePathDarkTransparent,
