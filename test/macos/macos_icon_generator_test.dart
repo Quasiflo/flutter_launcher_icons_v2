@@ -249,6 +249,41 @@ void main() {
         isFalse,
       );
     });
+    test('flavor bootstraps a missing icon set from scratch', () async {
+      final imageFile = File(path.join(assetPath, 'app_icon.png'));
+      await d.dir('fli_test_fresh', [
+        d.dir('macos/Runner/Assets.xcassets'),
+        d.file('launcher_icons.yaml', templates.liConfigTemplate),
+        d.file('app_icon.png', imageFile.readAsBytesSync()),
+      ]).create();
+      final freshPrefix = path.join(d.sandbox, 'fli_test_fresh');
+      final freshConfig = Config.loadConfigFromPath(
+        'launcher_icons.yaml',
+        freshPrefix,
+      )!;
+      final freshGenerator = MacOSIconGenerator(
+        IconGeneratorContext(
+          config: freshConfig,
+          prefixPath: freshPrefix,
+          logger: LILogger(false),
+          flavor: 'fresh',
+        ),
+      );
+
+      expect(freshGenerator.validateRequirements(), isTrue);
+      await freshGenerator.createIcons();
+
+      await expectLater(
+        d.dir('fli_test_fresh', [
+          d.dir('macos/Runner/Assets.xcassets/AppIcon-fresh.appiconset', [
+            d.file('Contents.json', anything),
+            d.file('app_icon_16.png', anything),
+          ]),
+        ]).validate(),
+        completes,
+        reason: 'Fresh flavor icon set was not bootstrapped',
+      );
+    });
     test('rounded config produces transparent corners end-to-end (#463)',
         () async {
       final imageFile = File(path.join(assetPath, 'app_icon.png'));

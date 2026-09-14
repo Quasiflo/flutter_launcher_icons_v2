@@ -192,12 +192,17 @@ class MacOSIconGenerator extends IconGenerator {
           jsonDecode(contentsFilePath.readAsStringSync()) as Map<String, dynamic>;
     } on FormatException catch (_) {
       contentsConfig = null;
+    } on FileSystemException catch (_) {
+      // No pre-existing set (e.g. a brand-new flavor): start fresh.
+      contentsConfig = null;
     }
     if (contentsConfig == null) {
-      context.logger.info(
-        'WARNING: ${_contentsFilePath()} is not valid JSON; '
-        'writing a fresh image list.',
-      );
+      if (contentsFilePath.existsSync()) {
+        context.logger.info(
+          'WARNING: ${_contentsFilePath()} is not valid JSON; '
+          'writing a fresh image list.',
+        );
+      }
       contentsConfig = {
         'info': {'version': 1, 'author': 'xcode'},
       };
