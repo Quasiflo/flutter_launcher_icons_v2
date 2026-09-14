@@ -429,7 +429,13 @@ Future<int> minSdk() async {
 
 /// Retrieves the minSdk value from [File]
 Future<int?> _getMinSdkFromFile(File file) async {
-  final List<String> lines = await file.readAsLines();
+  // Missing or unreadable files fall through to the default (#644).
+  List<String> lines;
+  try {
+    lines = await file.readAsLines();
+  } on FileSystemException {
+    return null;
+  }
   for (String line in lines) {
     if (line.contains('minSdkVersion')) {
       if (line.contains('//') &&
@@ -449,7 +455,13 @@ Future<int?> _getMinSdkFromFile(File file) async {
 /// A helper function to [_getMinSdkFlutterGradle]
 /// which retrives value of `flutter.sdk` from `local.properties` file
 Future<String?> _getFlutterSdkPathFromLocalProperties(File file) async {
-  final List<String> lines = await file.readAsLines();
+  // Missing or unreadable files fall through to the default (#644).
+  List<String> lines;
+  try {
+    lines = await file.readAsLines();
+  } on FileSystemException {
+    return null;
+  }
   for (String line in lines) {
     if (!line.contains('flutter.sdk=')) {
       continue;
@@ -478,7 +490,13 @@ Future<int?> _getMinSdkFlutterGradle(File localPropertiesFile) async {
   final flutterGradleFile =
       File(path.join(flutterRoot, constants.androidFlutterGradlePath));
 
-  final List<String> lines = await flutterGradleFile.readAsLines();
+  // The SDK layout may not contain this file (#644).
+  List<String> lines;
+  try {
+    lines = await flutterGradleFile.readAsLines();
+  } on FileSystemException {
+    return null;
+  }
   for (String line in lines) {
     if (!line.contains('static int minSdkVersion =')) {
       continue;

@@ -8,6 +8,52 @@ import 'package:test/test.dart';
 
 // unit tests for android.dart
 void main() {
+  group('minSdk fallback', () {
+    late String originalDir;
+    late String sandboxDir;
+
+    setUp(() {
+      originalDir = Directory.current.path;
+      sandboxDir = path.join(
+        '.dart_tool',
+        'flutter_launcher_icons',
+        'test',
+        'android_minsdk',
+      );
+      final sandbox = Directory(sandboxDir);
+      if (sandbox.existsSync()) {
+        sandbox.deleteSync(recursive: true);
+      }
+      sandbox.createSync(recursive: true);
+      Directory.current = sandboxDir;
+    });
+
+    tearDown(() {
+      Directory.current = originalDir;
+    });
+
+    test('returns default when android files are absent', () async {
+      expect(await android.minSdk(), equals(androidDefaultAndroidMinSDK));
+    });
+
+    test('reads minSdkVersion from build.gradle when present', () async {
+      // NOTE: CWD is already the sandbox here (see setUp), so all paths
+      // below are relative to it.
+      final gradleFile = File(
+        path.join('android', 'app', 'build.gradle'),
+      );
+      await gradleFile.create(recursive: true);
+      await gradleFile.writeAsString('''
+android {
+    defaultConfig {
+        minSdkVersion 24
+    }
+}
+''');
+      expect(await android.minSdk(), equals(24));
+    });
+  });
+
   test('Adaptive icon mipmap path is correct', () {
     const String path1 = 'android/app/src/main/res/';
     const String path2 = 'mipmap-anydpi-v26/';
