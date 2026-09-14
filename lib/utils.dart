@@ -60,6 +60,26 @@ Future<Image> decodeImageFile(String filePath) async {
 String withPrefix(String prefixPath, String target) =>
     prefixPath == '.' ? target : path.join(prefixPath, target);
 
+/// Parses a `#rrggbb` (or `rrggbb`) hex color into its channels.
+///
+/// Only the 6-digit form is accepted; anything else throws
+/// [InvalidConfigException].
+({int r, int g, int b}) parseHexColor(String hexColor) {
+  final cleanHex =
+      hexColor.startsWith('#') ? hexColor.substring(1) : hexColor;
+  final hexValue = int.tryParse(cleanHex, radix: 16);
+  if (cleanHex.length != 6 || hexValue == null) {
+    throw InvalidConfigException(
+      'Invalid hex color "$hexColor": expected 6 hex digits (e.g. "#ffffff")',
+    );
+  }
+  return (
+    r: (hexValue >> 16) & 0xff,
+    g: (hexValue >> 8) & 0xff,
+    b: hexValue & 0xff,
+  );
+}
+
 /// Creates [File] in the given [filePath] if not exists
 Future<File> createFileIfNotExist(String filePath) async {
   final file = File(path.joinAll(path.split(filePath)));
