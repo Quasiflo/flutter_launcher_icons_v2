@@ -121,6 +121,7 @@ flutter_launcher_icons:
     image_path: "path/to/image.png"
     # image_path_favicon: "assets/icon/icon-favicon.png"
     # favicon_size: 16
+    # output_path: "web" # custom web root, e.g. per flavor
     background_color: "#hexcode"
     theme_color: "#hexcode"
 

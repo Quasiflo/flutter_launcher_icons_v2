@@ -20,6 +20,13 @@ class WebConfig {
   @JsonKey(name: 'image_path_favicon')
   final String? imagePathFavicon;
 
+  /// Output directory for web icons (default `web`).
+  ///
+  /// Lets flavors (or custom setups) target different web roots, e.g.
+  /// `output_path: web_prod`.
+  @JsonKey(name: 'output_path')
+  final String outputPath;
+
   /// Favicon size in pixels (default 16, the `kFaviconSize` default).
   @JsonKey(name: 'favicon_size')
   final int faviconSize;
@@ -38,6 +45,7 @@ class WebConfig {
     this.imagePath,
     this.imagePathFavicon,
     this.faviconSize = constants.kFaviconSize,
+    this.outputPath = 'web',
     this.backgroundColor,
     this.themeColor,
   });
