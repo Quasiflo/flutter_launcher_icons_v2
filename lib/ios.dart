@@ -933,8 +933,8 @@ Color _alphaBlend(Color fg, ColorUint8 bg) {
   } else {
     final invAlpha = 0xff - fg.a;
     return ColorUint8.rgba(
-      (fg.a * fg.r + invAlpha * bg.g) ~/ 0xff,
-      (fg.a * fg.g + invAlpha * bg.a) ~/ 0xff,
+      (fg.a * fg.r + invAlpha * bg.r) ~/ 0xff,
+      (fg.a * fg.g + invAlpha * bg.g) ~/ 0xff,
       (fg.a * fg.b + invAlpha * bg.b) ~/ 0xff,
       0xff,
     );
