@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:args/args.dart';
 import 'package:flutter_launcher_icons/android.dart' as android;
 import 'package:flutter_launcher_icons/config/config.dart';
@@ -11,6 +13,20 @@ import 'package:test_descriptor/test_descriptor.dart' as d;
 
 // Unit tests for main.dart
 void main() {
+  test('iOS single-size list contains one 1024 entry (#592)', () {
+    final list = ios.createSingleSizeImageList('AppIcon');
+    expect(list.length, equals(1));
+    expect(list.single['size'], equals('1024x1024'));
+    expect(list.single['filename'], equals('AppIcon-1024x1024@1x.png'));
+  });
+
+  test('generateContentsFileAsString honors single-size (#592)', () {
+    final decoded = jsonDecode(
+      ios.generateContentsFileAsString('AppIcon', 'AppIcon-Dark', null, true),
+    ) as Map<String, dynamic>;
+    expect((decoded['images'] as List).length, equals(1));
+  });
+
   test('iOS icon list is correct size', () {
     expect(ios.iosIcons.length, 20);
   });

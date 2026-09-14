@@ -66,6 +66,7 @@ void main() {
           configs.iosConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
+            'single_size': false,
             'image_path': 'assets/images/icon-1024x1024.png',
             'icon_name': null,
             'image_path_dark_transparent': null,
@@ -240,6 +241,7 @@ void main() {
           configs.iosConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
+            'single_size': false,
             'image_path': 'assets/images/icon-1024x1024.png',
             'icon_name': null,
             'image_path_dark_transparent': null,

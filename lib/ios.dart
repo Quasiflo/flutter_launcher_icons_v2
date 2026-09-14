@@ -117,7 +117,13 @@ Future<void> createIcons(Config config, String? flavor) async {
   String iconName;
   String? darkIconName;
   String? tintedIconName;
-  final List<IosIconTemplate> generateIosIcons = iosIcons;
+  // Single-size mode generates only the 1024px marketing icon (#592).
+  final List<IosIconTemplate> generateIosIcons =
+      config.iosConfig?.singleSize == true
+          ? <IosIconTemplate>[
+              IosIconTemplate(name: '-1024x1024@1x', size: 1024),
+            ]
+          : iosIcons;
   final String? customIconName = config.iosConfig?.iconName;
   final concurrentIconUpdates = <Future<void>>[];
   // The name of the icon catalog the generated icons are written to. The
@@ -170,7 +176,12 @@ Future<void> createIcons(Config config, String? flavor) async {
     }
     iconName = iosDefaultIconName;
     await changeIosLauncherIcon(catalogName, flavor);
-    await modifyContentsFile(catalogName, darkIconName, tintedIconName);
+    await modifyContentsFile(
+      catalogName,
+      darkIconName,
+      tintedIconName,
+      config.iosConfig?.singleSize ?? false,
+    );
   } else if (customIconName != null) {
     // If a custom icon_name is configured then the user has specified a new icon to be created
     // and for the old icon file to be kept
@@ -216,7 +227,12 @@ Future<void> createIcons(Config config, String? flavor) async {
     }
     iconName = newIconName;
     await changeIosLauncherIcon(iconName, flavor);
-    await modifyContentsFile(iconName, darkIconName, tintedIconName);
+    await modifyContentsFile(
+      iconName,
+      darkIconName,
+      tintedIconName,
+      config.iosConfig?.singleSize ?? false,
+    );
   }
   // Otherwise the user wants the new icon to use the default icons name and
   // update config file to use it
@@ -245,7 +261,12 @@ Future<void> createIcons(Config config, String? flavor) async {
     await changeIosLauncherIcon('AppIcon', flavor);
     // Still need to modify the Contents.json file
     // since the user could have added dark and tinted icons
-    await modifyDefaultContentsFile(iconName, darkIconName, tintedIconName);
+    await modifyDefaultContentsFile(
+      iconName,
+      darkIconName,
+      tintedIconName,
+      config.iosConfig?.singleSize ?? false,
+    );
   }
   await Future.wait(concurrentIconUpdates);
 
@@ -533,14 +554,19 @@ Future<void> changeIosLauncherIcon(String iconName, String? flavor) async {
 Future<void> modifyContentsFile(
   String newIconName,
   String? darkIconName,
-  String? tintedIconName,
-) async {
+  String? tintedIconName, [
+  bool singleSize = false,
+]) async {
   final String newContentsFilename =
       iosAssetFolder + newIconName + '.appiconset/Contents.json';
   final contentsJsonFile =
       await File(newContentsFilename).create(recursive: true);
-  final String contentsFileContent =
-      generateContentsFileAsString(newIconName, darkIconName, tintedIconName);
+  final String contentsFileContent = generateContentsFileAsString(
+    newIconName,
+    darkIconName,
+    tintedIconName,
+    singleSize,
+  );
   await contentsJsonFile.writeAsString(contentsFileContent);
 }
 
@@ -548,22 +574,30 @@ Future<void> modifyContentsFile(
 Future<void> modifyDefaultContentsFile(
   String newIconName,
   String? darkIconName,
-  String? tintedIconName,
-) async {
+  String? tintedIconName, [
+  bool singleSize = false,
+]) async {
   const String newIconFolder =
       iosAssetFolder + 'AppIcon.appiconset/Contents.json';
   final contentsJsonFile = await File(newIconFolder).create(recursive: true);
-  final String contentsFileContent =
-      generateContentsFileAsString(newIconName, darkIconName, tintedIconName);
+  final String contentsFileContent = generateContentsFileAsString(
+    newIconName,
+    darkIconName,
+    tintedIconName,
+    singleSize,
+  );
   await contentsJsonFile.writeAsString(contentsFileContent);
 }
 
 String generateContentsFileAsString(
   String newIconName,
   String? darkIconName,
-  String? tintedIconName,
-) {
-  final imageList = createImageList(newIconName, darkIconName, tintedIconName);
+  String? tintedIconName, [
+  bool singleSize = false,
+]) {
+  final imageList = singleSize
+      ? createSingleSizeImageList(newIconName)
+      : createImageList(newIconName, darkIconName, tintedIconName);
   final Map<String, dynamic> contentJson = <String, dynamic>{
     'images': imageList,
     'info': ContentsInfoObject(version: 1, author: 'xcode').toJson(),
@@ -630,6 +664,19 @@ class ContentsInfoObject {
       'author': author,
     };
   }
+}
+
+/// Create a single-entry image list for `ios.single_size` mode (#592).
+List<Map<String, dynamic>> createSingleSizeImageList(String fileNamePrefix) {
+  return <Map<String, dynamic>>[
+    ContentsImageObject(
+      size: '1024x1024',
+      idiom: 'universal',
+      filename: '$fileNamePrefix-1024x1024@1x.png',
+      platform: 'ios',
+      scale: '1x',
+    ).toJson(),
+  ];
 }
 
 /// Create the image list for the Contents.json file for Xcode versions Xcode 14 and above
