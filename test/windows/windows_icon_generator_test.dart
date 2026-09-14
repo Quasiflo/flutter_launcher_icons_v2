@@ -86,20 +86,15 @@ void main() {
             .thenReturn(path.join(prefixPath, 'app_icon.png'));
       });
 
-      test('should return false when windows config is not provided', () {
+      test('isEnabled is false when windows config is not provided', () {
         when(mockConfig.windowsConfig).thenReturn(null);
-        expect(generator.validateRequirements(), isFalse);
-        verify(mockConfig.windowsConfig).called(equals(1));
+        expect(generator.isEnabled, isFalse);
       });
 
-      test(
-          'should return false when windowsConfig is not null but windows.generate is false',
-          () {
+      test('isEnabled is false when windows.generate is false', () {
         when(mockConfig.windowsConfig).thenReturn(mockWindowsConfig);
         when(mockWindowsConfig.generate).thenReturn(false);
-        expect(generator.validateRequirements(), isFalse);
-        verify(mockConfig.windowsConfig).called(equals(1));
-        verify(mockWindowsConfig.generate).called(equals(1));
+        expect(generator.isEnabled, isFalse);
       });
 
       test('should return false when windows.image_path and imagePath is null',

@@ -100,23 +100,6 @@ flutter:
       });
     });
 
-    test('validateRequirements returns false when generate is false', () {
-      const config = Config(
-        imagePath: 'assets/images/icon.png',
-        linuxConfig: LinuxConfig(generate: false),
-      );
-
-      final testContext = IconGeneratorContext(
-        config: config,
-        logger: LILogger(false),
-        prefixPath: tempDir.path,
-      );
-
-      final testGenerator = LinuxIconGenerator(testContext);
-
-      expect(testGenerator.validateRequirements(), isFalse);
-    });
-
     test('validateRequirements returns false when no image path provided', () {
       const config = Config(
         linuxConfig: LinuxConfig(generate: true),

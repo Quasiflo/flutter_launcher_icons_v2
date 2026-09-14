@@ -68,27 +68,15 @@ class MacOSIconGenerator extends IconGenerator {
 
   @override
   bool validateRequirements() {
+    // The generate flag is enforced by [isEnabled]; only filesystem and
+    // config preconditions are checked here.
     context.logger.verbose('Checking $platformName config...');
-    final macOSConfig = context.macOSConfig;
-
-    if (macOSConfig == null || !macOSConfig.generate) {
-      context.logger
-        ..verbose(
-          '$platformName config is missing or "flutter_icons.macos.generate" is false. Skipped...',
-        )
-        ..verbose(macOSConfig);
-      return false;
-    }
+    final macOSConfig = context.macOSConfig!;
 
     if (macOSConfig.imagePath == null && context.config.imagePath == null) {
-      context.logger
-        ..verbose({
-          'launcher_icons.macos.image_path': macOSConfig.imagePath,
-          'launcher_icons.image_path': context.config.imagePath,
-        })
-        ..error(
-          'Missing image_path. Either provide "launcher_icons.macos.image_path" or "launcher_icons.image_path"',
-        );
+      context.logger.error(
+        'Missing image_path. Either provide "launcher_icons.macos.image_path" or "launcher_icons.image_path"',
+      );
 
       return false;
     }

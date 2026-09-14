@@ -60,20 +60,15 @@ void main() {
             .thenReturn(path.join(prefixPath, 'app_icon.png'));
       });
 
-      test('should return false when macos config is not provided', () {
+      test('isEnabled is false when macos config is not provided', () {
         when(mockConfig.macOSConfig).thenReturn(null);
-        expect(generator.validateRequirements(), isFalse);
-        verify(mockConfig.macOSConfig).called(equals(1));
+        expect(generator.isEnabled, isFalse);
       });
 
-      test(
-          'should return false when macosConfig is not null but macos.generate is false',
-          () {
+      test('isEnabled is false when macos.generate is false', () {
         when(mockConfig.macOSConfig).thenReturn(mockMacOSConfig);
         when(mockMacOSConfig.generate).thenReturn(false);
-        expect(generator.validateRequirements(), isFalse);
-        verify(mockConfig.macOSConfig).called(equals(1));
-        verify(mockMacOSConfig.generate).called(equals(1));
+        expect(generator.isEnabled, isFalse);
       });
 
       test('should return false when macos.image_path and imagePath is null',

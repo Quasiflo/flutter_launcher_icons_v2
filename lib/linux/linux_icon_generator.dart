@@ -36,14 +36,10 @@ class LinuxIconGenerator extends IconGenerator {
 
   @override
   bool validateRequirements() {
+    // The generate flag is enforced by [isEnabled]; only filesystem and
+    // config preconditions are checked here.
     context.logger.verbose('Validating Linux config...');
-    final linuxConfig = context.linuxConfig;
-    if (linuxConfig == null || !linuxConfig.generate) {
-      context.logger.error(
-        'Linux config is not provided or linux.generate is false. Skipped...',
-      );
-      return false;
-    }
+    final linuxConfig = context.linuxConfig!;
 
     if (linuxConfig.imagePath == null && context.config.imagePath == null) {
       context.logger.error(
