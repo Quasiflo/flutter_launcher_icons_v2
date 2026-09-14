@@ -175,5 +175,27 @@ void main() {
         contains('ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-production;'),
       );
     });
+
+    test('explicit xcodeproj path wins over the default (#637)', () async {
+      await writePbxproj('Runner.xcodeproj');
+      final custom =
+          File(path.join('ios', 'Custom.xcodeproj', 'project.pbxproj'));
+      await custom.parent.create(recursive: true);
+      await custom.writeAsString(_fixture);
+      await ios.changeIosLauncherIcon(
+        'AppIcon-Custom',
+        null,
+        'ios/Custom.xcodeproj',
+      );
+      expect(
+        await custom.readAsString(),
+        contains('ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-Custom;'),
+      );
+      // Default project left untouched.
+      final standard = await File(
+        path.join('ios', 'Runner.xcodeproj', 'project.pbxproj'),
+      ).readAsString();
+      expect(standard, equals('// !\$*UTF8*\$!\n{}\n'));
+    });
   });
 }

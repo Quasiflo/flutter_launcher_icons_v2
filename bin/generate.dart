@@ -100,6 +100,7 @@ flutter_launcher_icons:
     generate: true
     # image_path: "assets/icon/icon-ios.png"
     # icon_name: "My-Launcher-Icon" # generate a new icon without removing the old default
+    # xcodeproj_path: "ios/Runner.xcodeproj" # set when the Xcode project was renamed
     remove_alpha: true
     # image_path_dark_transparent: "assets/icon/icon_dark.png"
     # image_path_tinted_grayscale: "assets/icon/icon_tinted.png"

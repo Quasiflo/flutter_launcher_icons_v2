@@ -27,6 +27,11 @@ class IOSConfig {
   @JsonKey(name: 'icon_name')
   final String? iconName;
 
+  /// Custom path to the `.xcodeproj` directory (default
+  /// `ios/Runner.xcodeproj`). Set this when the Xcode project was renamed.
+  @JsonKey(name: 'xcodeproj_path')
+  final String? xcodeprojPath;
+
   /// IOS image_path_dark_transparent
   @JsonKey(name: 'image_path_dark_transparent')
   final String? imagePathDarkTransparent;
@@ -93,6 +98,7 @@ class IOSConfig {
     this.singleSize = false,
     this.imagePath,
     this.iconName,
+    this.xcodeprojPath,
     this.imagePathDarkTransparent,
     this.imagePathTintedGrayscale,
     this.imagePathLiquidGlassIcon,
