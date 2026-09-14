@@ -11,16 +11,6 @@ String androidColorsFile(String? flavor) =>
     "android/app/src/${flavor ?? 'main'}/res/values/colors.xml";
 
 const String androidManifestFile = 'android/app/src/main/AndroidManifest.xml';
-const String androidGradleFile = 'android/app/build.gradle';
-const String androidLocalPropertiesFile = 'android/local.properties';
-
-/// Relative path to flutter.gradle from flutter sdk path
-const String androidFlutterGradlePath =
-    'packages/flutter_tools/gradle/flutter.gradle';
-
-/// Default min_sdk value for android
-/// https://github.com/flutter/flutter/blob/master/packages/flutter_tools/gradle/flutter.gradle#L35-L37
-const int androidDefaultAndroidMinSDK = 21;
 const String androidFileName = 'ic_launcher.png';
 const String androidAdaptiveForegroundFileName = 'ic_launcher_foreground.png';
 const String androidAdaptiveBackgroundFileName = 'ic_launcher_background.png';
@@ -108,12 +98,6 @@ const String errorMissingPlatform =
 const String errorNoPlatformEnabled =
     'No platform enabled within config to generate icons for. '
     'Set "generate: true" for at least one platform.';
-const String errorMissingRegularAndroid =
-    'Adaptive icon config found but no regular Android config. '
-    'Below API 26 the regular Android config is required';
-const String errorMissingMinSdk =
-    'Cannot not find minSdk from android/app/build.gradle or android/local.properties'
-    ' Specify minSdk in your flutter_launcher_config.yaml with "min_sdk_android"';
 const String errorIncorrectIconName =
     'The icon name must contain only lowercase a-z, 0-9, or underscore: '
     'E.g. "ic_my_new_icon"';

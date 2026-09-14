@@ -46,7 +46,6 @@ launcher_icons:
     generate: true
     # image_path: "assets/icon/icon-android.png"
     # icon_name: "launcher_icon" # generate a new icon without removing the old default
-    min_sdk: 21 # android min sdk min:16, default 21
     # adaptive_icon_background: "assets/icon/background.png"  # color or png/jpg/jpeg/webp image
     # adaptive_icon_foreground: "assets/icon/foreground.png"
     # adaptive_icon_foreground_inset: 16
@@ -154,7 +153,6 @@ the Windows `.ico`.
   - `generate`: Specifies whether to generate icons for Android platform or not
   - `image_path`: The location of the icon image file specific for Android platform (optional - if not defined then the image_path is used)
   - `icon_name`: Custom icon name (e.g. `"ic_launcher"`). When specified, a new launcher icon is generated without removing the old default existing Flutter launcher icon (also updates `AndroidManifest.xml`). When omitted, the default icon is overridden.
-  - `min_sdk`: Specify android min sdk value
 **The next attributes are only used when generating Android launcher icon**
 - `adaptive_icon_background`: The color (E.g. `"#ffffff"`), the keyword `"transparent"` (maps to `@android:color/transparent` with no `colors.xml` entry), or image asset (png, jpg, jpeg, or webp - E.g. `"assets/images/christmas-background.png"`) which will
 be used to fill out the background of the adaptive icon.

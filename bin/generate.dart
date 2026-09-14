@@ -90,7 +90,6 @@ launcher_icons:
     generate: true
     # image_path: "assets/icon/icon-android.png"
     # icon_name: "launcher_icon" # generate a new icon without removing the old default
-    min_sdk: 21 # android min sdk min:16, default 21
     # adaptive_icon_background: "assets/icon/background.png"  # color or png/jpg/jpeg/webp image
     # adaptive_icon_foreground: "assets/icon/foreground.png"
     # adaptive_icon_foreground_inset: 16
