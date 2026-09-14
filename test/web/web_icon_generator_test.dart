@@ -62,6 +62,7 @@ void main() {
             ]),
             // this favicon get created in fs
             d.file('favicon.png', anything),
+            d.file('favicon.ico', anything),
             d.file('index.html', anything),
             // this manifest.json get updated in fs
             d.file('manifest.json', anything),
@@ -97,6 +98,19 @@ void main() {
       )!;
       expect(favicon.width, equals(32));
       expect(favicon.height, equals(32));
+    });
+
+    test('emits a decodable favicon.ico alongside favicon.png (#540)',
+        () async {
+      expect(generator.validateRequirements(), isTrue);
+      await generator.createIcons();
+
+      final ico = decodeIco(
+        await File(path.join(prefixPath, 'web', 'favicon.ico'))
+            .readAsBytes(),
+      )!;
+      expect(ico.width, equals(16));
+      expect(ico.height, equals(16));
     });
   });
 }

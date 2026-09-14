@@ -60,6 +60,9 @@ String webManifestFilePath = path.join(webDirPath, 'manifest.json');
 /// Relative favicon.png path
 String webFaviconFilePath = path.join(webDirPath, 'favicon.png');
 
+/// Relative favicon.ico path (browsers request /favicon.ico by default)
+String webFaviconIcoFilePath = path.join(webDirPath, 'favicon.ico');
+
 /// Relative index.html file path
 String webIndexFilePath = path.join(webDirPath, 'index.html');
 
