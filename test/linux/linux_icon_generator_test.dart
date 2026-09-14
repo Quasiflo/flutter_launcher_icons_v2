@@ -50,7 +50,11 @@ void main() {
 
       final iconFile = File('${tempDir.path}/$iconPath');
       await iconFile.parent.create(recursive: true);
-      await iconFile.writeAsBytes([0]); // dummy data
+      // Real decodable bytes: the generator renders PNGs from the source.
+      await iconFile.writeAsBytes(
+        File('${Directory.current.path}/test/assets/app_icon.png')
+            .readAsBytesSync(),
+      );
 
       final pubspecFile = File('${tempDir.path}/pubspec.yaml');
       await pubspecFile.writeAsString('''
@@ -218,11 +222,15 @@ flutter:
         // Create my_application.cc file
         myAppFile = File('${tempDir.path}/linux/runner/my_application.cc');
 
-        // Create test icon file in assets
+        // Create test icon file in assets (real decodable bytes: the
+        // generator renders PNGs from the source).
         final assetsDir = Directory('${tempDir.path}/assets/images');
         await assetsDir.create(recursive: true);
         final iconFile = File('${tempDir.path}/assets/images/icon.png');
-        await iconFile.writeAsBytes([0]); // dummy data
+        await iconFile.writeAsBytes(
+          File('${Directory.current.path}/test/assets/app_icon.png')
+              .readAsBytesSync(),
+        );
       });
 
       // Canonical expectations for the default icon path.
@@ -401,11 +409,15 @@ static void my_application_activate(GApplication* application) {
 
         final testGenerator = LinuxIconGenerator(testContext);
 
-        // Create custom icon file
+        // Create custom icon file (real decodable bytes: the generator
+        // renders PNGs from the source).
         final iconsDir = Directory('${tempDir.path}/assets/icons');
         await iconsDir.create(recursive: true);
         final customIconFile = File('${tempDir.path}/assets/icons/custom.png');
-        await customIconFile.writeAsBytes([0]);
+        await customIconFile.writeAsBytes(
+          File('${Directory.current.path}/test/assets/app_icon.png')
+              .readAsBytesSync(),
+        );
 
         const originalContent = '''
 #include "my_application.h"

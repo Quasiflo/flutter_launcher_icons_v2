@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:image/image.dart';
 import 'package:launcher_icons/abs/icon_generator.dart';
 import 'package:launcher_icons/constants.dart' as constants;
 import 'package:launcher_icons/custom_exceptions.dart';
@@ -7,8 +8,11 @@ import 'package:launcher_icons/utils.dart' as utils;
 import 'package:path/path.dart' as path;
 import 'package:yaml/yaml.dart';
 
-/// A Implementation of [IconGenerator] for Linux
+/// A Implementation of [LinuxIconGenerator] for Linux
 class LinuxIconGenerator extends IconGenerator {
+  /// hicolor theme sizes (conventional full set).
+  static const _hicolorSizes = [16, 22, 24, 32, 48, 64, 128, 256, 512];
+
   /// Creates a instance of [LinuxIconGenerator]
   LinuxIconGenerator(IconGeneratorContext context) : super(context, 'Linux');
 
@@ -27,9 +31,164 @@ class LinuxIconGenerator extends IconGenerator {
     // handle), so an absolute host path would not be portable.
     // Bundling is enforced by validateRequirements() via _hasPubspecAsset.
 
-    // Update my_application.cc file with the icon path
+    // Update my_application.cc file with the icon path (X11 window icon).
     await _updateMyApplicationFile(iconPath);
+
+    // Real launcher deliverables for Wayland/desktop/snap. Everything is
+    // strictly only-if-absent: existing files are never overwritten.
+    await _generatePackagingFiles(iconPath);
   }
+
+  /// Generates the real launcher deliverables: the hicolor PNG tree, the
+  /// freedesktop + snap `.desktop` entries, the snap icon, and
+  /// `snap/snapcraft.yaml` — all keyed off the pubspec name/version.
+  ///
+  /// Every file is strictly only-if-absent: pre-existing files are left
+  /// untouched (with a warning) so user edits are never clobbered.
+  Future<void> _generatePackagingFiles(String iconPath) async {
+    final image = await utils.decodeImageFile(
+      path.join(context.prefixPath, iconPath),
+    );
+    final appName = _readAppName();
+    final appVersion = _readAppVersion();
+
+    for (final size in _hicolorSizes) {
+      await _writeBytesIfAbsent(
+        path.join(
+          'share',
+          'icons',
+          'hicolor',
+          '${size}x$size',
+          'apps',
+          '$appName.png',
+        ),
+        encodePng(utils.createResizedImage(size, image)),
+      );
+    }
+    await _writeBytesIfAbsent(
+      path.join('snap', 'gui', '$appName.png'),
+      encodePng(utils.createResizedImage(256, image)),
+    );
+    await _writeStringIfAbsent(
+      path.join('share', 'applications', '$appName.desktop'),
+      _desktopFile(appName, 'Icon=$appName'),
+    );
+    await _writeStringIfAbsent(
+      path.join('snap', 'gui', '$appName.desktop'),
+      _desktopFile(appName, 'Icon=\${SNAP}/meta/gui/$appName.png'),
+    );
+    await _writeStringIfAbsent(
+      path.join('snap', 'snapcraft.yaml'),
+      _snapcraftFile(appName, appVersion),
+    );
+  }
+
+  /// Writes [bytes] to [relativePath] (under [prefixPath]) unless the file
+  /// already exists, in which case it warns and leaves it untouched.
+  Future<void> _writeBytesIfAbsent(String relativePath, List<int> bytes) async {
+    final file = File(path.join(context.prefixPath, relativePath));
+    if (file.existsSync()) {
+      context.logger.verbose('$relativePath already exists, skipping.');
+      return;
+    }
+    await file.create(recursive: true);
+    await file.writeAsBytes(bytes);
+    context.logger.verbose('Created $relativePath.');
+  }
+
+  /// String variant of [_writeBytesIfAbsent].
+  Future<void> _writeStringIfAbsent(
+    String relativePath,
+    String content,
+  ) async {
+    final file = File(path.join(context.prefixPath, relativePath));
+    if (file.existsSync()) {
+      context.logger.verbose('$relativePath already exists, skipping.');
+      return;
+    }
+    await file.create(recursive: true);
+    await file.writeAsString(content);
+    context.logger.verbose('Created $relativePath.');
+  }
+
+  /// Reads the pubspec `name` (fallback `app`).
+  String _readAppName() {
+    final yamlDoc = _readPubspec();
+    final name = yamlDoc?['name'];
+    if (name is String && name.isNotEmpty) {
+      return name;
+    }
+    return 'app';
+  }
+
+  /// Reads the pubspec `version` with any build number stripped (fallback
+  /// `0.0.1`).
+  String _readAppVersion() {
+    final yamlDoc = _readPubspec();
+    final version = yamlDoc?['version'];
+    if (version is String && version.isNotEmpty) {
+      return version.split('+').first;
+    }
+    return '0.0.1';
+  }
+
+  /// Parses prefix `pubspec.yaml`, or returns null when missing/unparseable.
+  Map<dynamic, dynamic>? _readPubspec() {
+    final pubspecFile = File(path.join(context.prefixPath, 'pubspec.yaml'));
+    if (!pubspecFile.existsSync()) {
+      return null;
+    }
+    try {
+      return loadYaml(pubspecFile.readAsStringSync())
+          as Map<dynamic, dynamic>?;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// freedesktop desktop entry with the given `Icon=` line.
+  String _desktopFile(String appName, String iconLine) => '''
+[Desktop Entry]
+Name=$appName
+Comment=$appName
+Exec=$appName
+$iconLine
+Terminal=false
+Type=Application
+Categories=Utility;
+''';
+
+  /// Minimal snap packaging template off the pubspec name/version.
+  String _snapcraftFile(String appName, String appVersion) => '''
+name: $appName
+version: $appVersion
+summary: $appName
+description: $appName
+
+confinement: strict
+base: core22
+grade: stable
+
+slots:
+  dbus-$appName: # adjust accordingly to your app name
+    interface: dbus
+    bus: session
+    name: org.example.$appName # adjust accordingly to your app name
+
+apps:
+  $appName:
+    command: $appName
+    extensions: [gnome] # gnome includes the libraries required by flutter
+    plugs:
+    - network
+    slots:
+      - dbus-$appName
+parts:
+  $appName:
+    source: .
+    plugin: flutter
+    flutter-target: lib/main.dart # The main entry-point file of the application
+''';
 
   @override
   bool validateRequirements() {
