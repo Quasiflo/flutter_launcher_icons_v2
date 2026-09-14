@@ -158,6 +158,18 @@ class Config {
         linuxConfig != null;
   }
 
+  /// Checks if at least one platform section has `generate: true`.
+  /// Presence alone is not intent: an all-`generate: false` config must fail
+  /// loudly instead of exiting successfully with no work done.
+  bool get hasEnabledPlatform {
+    return isNeedingNewAndroidIcon ||
+        isNeedingNewIOSIcon ||
+        (webConfig?.generate ?? false) ||
+        (windowsConfig?.generate ?? false) ||
+        (macOSConfig?.generate ?? false) ||
+        (linuxConfig?.generate ?? false);
+  }
+
   /// Whether or not configuration for generating Android icons exist
   bool get hasAndroidConfig => androidConfig != null;
 

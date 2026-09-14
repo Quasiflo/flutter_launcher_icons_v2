@@ -188,8 +188,8 @@ Future<void> createIconsFromConfig(
   String prefixPath, [
   String? flavor,
 ]) async {
-  if (!flutterConfigs.hasPlatformConfig) {
-    throw const InvalidConfigException(errorMissingPlatform);
+  if (!flutterConfigs.hasEnabledPlatform) {
+    throw const InvalidConfigException(errorNoPlatformEnabled);
   }
 
   final concurrentIconCreation = <Future<void>>[];
