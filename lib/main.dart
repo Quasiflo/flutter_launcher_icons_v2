@@ -129,8 +129,10 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
   if (!hasFlavors) {
     // Load configs from given file(defaults to ./flutter_launcher_icons.yaml) or from ./pubspec.yaml
 
-    final flutterLauncherIconsConfigs =
-        loadConfigFileFromArgResults(argResults);
+    final flutterLauncherIconsConfigs = loadConfigFileFromArgResults(
+      argResults,
+      explicitFile: isFileOptionExplicit(arguments),
+    );
     if (flutterLauncherIconsConfigs == null) {
       throw NoConfigFoundException(
         'No configuration found in $defaultConfigFile or in ${constants.pubspecFilePath}. '
@@ -240,13 +242,68 @@ Future<void> createIconsFromConfig(
 }
 
 Config? loadConfigFileFromArgResults(
-  ArgResults argResults,
-) {
+  ArgResults argResults, {
+  bool explicitFile = false,
+}) {
   final String prefixPath = argResults[prefixOption];
+  final String filePath = argResults[fileOption] as String;
   final flutterLauncherIconsConfigs = Config.loadConfigFromPath(
-        argResults[fileOption],
+        filePath,
         prefixPath,
       ) ??
       Config.loadConfigFromPubSpec(prefixPath);
+  if (flutterLauncherIconsConfigs == null) {
+    return null;
+  }
+  // #628: an unedited `:generate` template still points at the phantom
+  // `assets/icon/icon.png`. When the default config file is in play (not an
+  // explicit `-f`) and none of its images exist while pubspec's do, the stale
+  // template is shadowing the real config — warn and prefer pubspec.
+  // An explicitly requested file is always honored, with a warning.
+  if (filePath == defaultConfigFile) {
+    final pubspecConfigs = Config.loadConfigFromPubSpec(prefixPath);
+    if (pubspecConfigs != null &&
+        !_hasExistingImage(flutterLauncherIconsConfigs, prefixPath) &&
+        _hasExistingImage(pubspecConfigs, prefixPath)) {
+      stderr.writeln(
+        'Warning: $defaultConfigFile looks like an unedited generated template '
+        '(its icon files were not found) while pubspec.yaml declares icons that exist. ' +
+            (explicitFile
+                ? 'Continuing with $defaultConfigFile as requested.'
+                : 'Using pubspec.yaml instead. '
+                    'Delete $defaultConfigFile or pass -f to be explicit.'),
+      );
+      if (!explicitFile) {
+        return pubspecConfigs;
+      }
+    }
+  }
   return flutterLauncherIconsConfigs;
+}
+
+/// Whether `-f`/`--file` was explicitly passed on the command line.
+bool isFileOptionExplicit(List<String> arguments) {
+  return arguments.any(
+    (arg) =>
+        arg == '-f' ||
+        arg == '--file' ||
+        arg.startsWith('--file=') ||
+        arg.startsWith('-f='),
+  );
+}
+
+/// Whether any image referenced by [config] exists under [prefixPath].
+bool _hasExistingImage(Config config, String prefixPath) {
+  final candidates = <String?>[
+    config.imagePath,
+    config.androidConfig?.imagePath,
+    config.iosConfig?.imagePath,
+    config.webConfig?.imagePath,
+    config.windowsConfig?.imagePath,
+    config.macOSConfig?.imagePath,
+    config.linuxConfig?.imagePath,
+  ];
+  return candidates
+      .whereType<String>()
+      .any((image) => File(path.join(prefixPath, image)).existsSync());
 }
