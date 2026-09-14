@@ -50,3 +50,16 @@ class FileNotFoundException extends LIException {
   /// Name of the file
   final String fileName;
 }
+
+/// Exception to be thrown when one or more platforms fail during
+/// [generateIconsFor]. Every enabled platform still runs; the names of the
+/// failed platforms are collected here so the CLI can report them together
+/// and exit non-zero.
+class IconGenerationException extends LIException {
+  /// Constructs instance with the names of the failed platforms
+  IconGenerationException(this.failedPlatforms)
+      : super('Icon generation failed for: ${failedPlatforms.join(', ')}');
+
+  /// Names of the platforms that failed
+  final List<String> failedPlatforms;
+}

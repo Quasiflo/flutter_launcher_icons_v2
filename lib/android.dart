@@ -145,8 +145,15 @@ Future<void> createAdaptiveIcons(
       ),
     );
   } else {
-    await updateColorsXmlFile(backgroundConfig, flavor,
-        logger: logger, prefixPath: prefixPath,);
+    // colors.xml has a single writer (this branch) and is awaited before the
+    // foreground/background fan-out below, so no locking is needed despite
+    // the concurrent PNG writes.
+    await updateColorsXmlFile(
+      backgroundConfig,
+      flavor,
+      logger: logger,
+      prefixPath: prefixPath,
+    );
   }
   await Future.wait(concurrentImageUpdates);
 }

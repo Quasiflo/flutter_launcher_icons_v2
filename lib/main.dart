@@ -114,6 +114,10 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
         onlyFlavor,
       );
       print('\n✓ Successfully generated launcher icons');
+    } on IconGenerationException catch (e) {
+      stderr.writeln('\n✕ Could not generate launcher icons');
+      stderr.writeln(e);
+      exit(1);
     } catch (e) {
       stderr.writeln('\n✕ Could not generate launcher icons');
       stderr.writeln(e);
@@ -150,6 +154,10 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
         prefixPath,
       );
       print('\n✓ Successfully generated launcher icons');
+    } on IconGenerationException catch (e) {
+      stderr.writeln('\n✕ Could not generate launcher icons');
+      stderr.writeln(e);
+      exit(1);
     } catch (e) {
       stderr.writeln('\n✕ Could not generate launcher icons');
       stderr.writeln(e);
@@ -174,6 +182,10 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
         );
       }
       print('\n✓ Successfully generated launcher icons for flavors');
+    } on IconGenerationException catch (e) {
+      stderr.writeln('\n✕ Could not generate launcher icons for flavors');
+      stderr.writeln(e);
+      exit(1);
     } catch (e) {
       stderr.writeln('\n✕ Could not generate launcher icons for flavors');
       stderr.writeln(e);

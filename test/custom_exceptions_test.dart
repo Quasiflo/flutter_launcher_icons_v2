@@ -9,6 +9,10 @@ void main() {
       expect(const NoConfigFoundException(), isA<LIException>());
       expect(const NoDecoderForImageFormatException(), isA<LIException>());
       expect(const FileNotFoundException('x'), isA<LIException>());
+      expect(
+        IconGenerationException(const ['Android']),
+        isA<LIException>(),
+      );
       expect(const InvalidConfigException(), isA<Exception>());
     });
 
