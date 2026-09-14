@@ -84,7 +84,7 @@ void main() {
       final contents = jsonDecode(
         File(path.join(catalog.path, 'Contents.json')).readAsStringSync(),
       ) as Map<String, dynamic>;
-      expect((contents['images'] as List), hasLength(1));
+      expect(contents['images'] as List, hasLength(1));
     });
   });
 }
