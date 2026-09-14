@@ -82,6 +82,17 @@ void main() {
       final result = applyRoundedCorners(_solidRed());
       expect(result.numChannels, equals(4));
     });
+
+    test('squircle keeps the diagonal a circular arc would cut', () {
+      // 64px icon, 22.5% radius (14px): pixel (3,3) sits outside the
+      // circular arc (dx^2+dy^2 = 200 > 14^2) but inside the continuous
+      // corner (|dx|^4+|dy|^4 = 20000 < 14^4).
+      final result = applyRoundedCorners(_solidRed());
+      expect(result.getPixel(3, 3).a, equals(255));
+      // Genuine corners stay transparent.
+      expect(result.getPixel(0, 0).a, equals(0));
+      expect(result.getPixel(63, 63).a, equals(0));
+    });
   });
 
   group('MacOSConfig effects fields', () {
