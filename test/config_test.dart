@@ -50,6 +50,8 @@ void main() {
                 'assets/images/christmas-background.png',
             'adaptive_icon_monochrome':
                 'assets/images/icon-monochrome-432x432.png',
+            'adaptive_icon_round': null,
+            'play_store_icon': false,
           }),
         );
         // ios configs
@@ -228,6 +230,8 @@ void main() {
                 'assets/images/christmas-background.png',
             'adaptive_icon_monochrome':
                 'assets/images/icon-monochrome-432x432.png',
+            'adaptive_icon_round': null,
+            'play_store_icon': false,
           }),
         );
         // ios configs

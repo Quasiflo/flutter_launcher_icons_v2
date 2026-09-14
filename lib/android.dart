@@ -60,7 +60,13 @@ Future<void> createDefaultIcons(
           writeResizedPng(template, image, iconPath, flavor, prefixPath: prefixPath),);
     }
     await overwriteAndroidManifestWithNewLauncherIcon(
-        iconName, androidManifestFile,);
+      iconName,
+      androidManifestFile,
+      roundIconName: config.hasAndroidAdaptiveRoundConfig
+          ? androidAdaptiveRoundXmlName(config)
+          : null,
+      logger: logger,
+    );
   } else {
     utils.printStatus(
       'Overwriting the default Android launcher icon with a new icon',
@@ -80,6 +86,10 @@ Future<void> createDefaultIcons(
     await overwriteAndroidManifestWithNewLauncherIcon(
       constants.androidDefaultIconName,
       androidManifestFile,
+      roundIconName: config.hasAndroidAdaptiveRoundConfig
+          ? androidAdaptiveRoundXmlName(config)
+          : null,
+      logger: logger,
     );
   }
   await Future.wait(concurrentIconUpdates);
@@ -190,6 +200,87 @@ Future<void> createAdaptiveMonochromeIcons(
   await Future.wait(concurrentIconUpdates);
 }
 
+/// Round-icon resource name: `<custom>_round` for custom icons,
+/// `ic_launcher_round` otherwise.
+String androidAdaptiveRoundXmlName(Config config) {
+  final customName = config.androidConfig?.iconName;
+  return customName != null
+      ? '${customName}_round'
+      : constants.androidAdaptiveRoundIconName;
+}
+
+Future<void> createAdaptiveRoundIcons(
+  Config config,
+  String? flavor, {
+  LILogger? logger,
+  String prefixPath = '.',
+}) async {
+  utils.printStatus('Creating adaptive round icons Android', logger);
+
+  final String? roundImagePath = config.androidConfig?.adaptiveIconRound;
+  if (roundImagePath == null) {
+    throw const InvalidConfigException(errorMissingImagePath);
+  }
+  if (!config.hasAndroidAdaptiveConfig) {
+    throw const InvalidConfigException(
+      'Invalid `adaptive_icon_round`: requires `adaptive_icon_background` '
+      'and `adaptive_icon_foreground`.',
+    );
+  }
+  final Image roundImage = await utils.decodeImageFile(
+    utils.withPrefix(prefixPath, roundImagePath),
+  );
+
+  final concurrentIconUpdates = <Future<void>>[];
+  // Create adaptive icon round images
+  for (AndroidIconTemplate androidIcon in adaptiveForegroundIcons) {
+    concurrentIconUpdates.add(
+      writeResizedPng(
+        androidIcon,
+        roundImage,
+        constants.androidAdaptiveRoundFileName,
+        flavor,
+        prefixPath: prefixPath,
+      ),
+    );
+  }
+  await Future.wait(concurrentIconUpdates);
+}
+
+/// Emits the 512x512 Play Store upload icon next to the project.
+///
+/// This is a store-upload artifact, never an `android/res` deliverable.
+Future<void> createPlayStoreIcon(
+  Config config,
+  String prefixPath, [
+  LILogger? logger,
+]) async {
+  final String? filePath = config.getImagePathAndroid();
+  if (filePath == null) {
+    throw const InvalidConfigException(errorMissingImagePath);
+  }
+  final Image image = await utils.decodeImageFile(
+    utils.withPrefix(prefixPath, filePath),
+  );
+  final bytes = encodePng(utils.createResizedImage(512, image));
+  final outFile = await utils.createFileIfNotExist(
+    utils.withPrefix(prefixPath, constants.androidPlayStoreIconFile),
+  );
+  await outFile.writeAsBytes(bytes);
+  utils.printStatus(
+    'Created Play Store icon ${constants.androidPlayStoreIconFile} '
+    '(${bytes.length ~/ 1024}KB)',
+    logger,
+  );
+  if (bytes.length > 1024 * 1024) {
+    utils.printStatus(
+      'WARNING: Play Store icon exceeds the 1024KB upload budget; '
+      'use a simpler source image.',
+      logger,
+    );
+  }
+}
+
 Future<void> createMipmapXmlFile(
   Config config,
   String? flavor, {
@@ -201,7 +292,8 @@ Future<void> createMipmapXmlFile(
   // `adaptive_icon_monochrome` are specified (The `image_path` is not
   // automatically taken as foreground)
   if (!config.hasAndroidAdaptiveConfig &&
-      !config.hasAndroidAdaptiveMonochromeConfig) {
+      !config.hasAndroidAdaptiveMonochromeConfig &&
+      !config.hasAndroidAdaptiveRoundConfig) {
     // No adaptive icons requested: clear leftovers from a previous adaptive
     // configuration so they cannot shadow the fresh icons (#328).
     await _removeStaleAdaptiveIcons(config, flavor,
@@ -278,6 +370,22 @@ Future<void> createMipmapXmlFile(
   await mipmapXmlFile.writeAsString(
     xml_template.mipmapXmlFile.replaceAll('{{CONTENT}}', xmlContent),
   );
+
+  if (config.hasAndroidAdaptiveRoundConfig) {
+    // The round icon is a separate adaptive-icon resource with the same
+    // layers, wired via android:roundIcon.
+    final roundXmlFile = await utils.createFileIfNotExist(
+      utils.withPrefix(
+        prefixPath,
+        constants.androidAdaptiveXmlFolder(flavor) +
+            androidAdaptiveRoundXmlName(config) +
+            '.xml',
+      ),
+    );
+    await roundXmlFile.writeAsString(
+      xml_template.mipmapXmlFile.replaceAll('{{CONTENT}}', xmlContent),
+    );
+  }
 }
 
 /// Deletes adaptive icon artifacts left behind by a previous adaptive
@@ -303,11 +411,17 @@ Future<void> _removeStaleAdaptiveIcons(
         prefixPath,
         constants.androidAdaptiveXmlFolder(flavor) + name + '.xml',
       ),
+    for (final name in xmlNames)
+      utils.withPrefix(
+        prefixPath,
+        constants.androidAdaptiveXmlFolder(flavor) + name + '_round.xml',
+      ),
     for (final template in adaptiveForegroundIcons)
       for (final fileName in [
         constants.androidAdaptiveForegroundFileName,
         constants.androidAdaptiveBackgroundFileName,
         constants.androidAdaptiveMonochromeFileName,
+        constants.androidAdaptiveRoundFileName,
       ])
         utils.withPrefix(
           prefixPath,
@@ -464,23 +578,41 @@ Future<void> writeResizedPng(
 /// Note: default iconName = "ic_launcher"
 Future<void> overwriteAndroidManifestWithNewLauncherIcon(
   String iconName,
-  File androidManifestFile,
-) async {
+  File androidManifestFile, {
+  String? roundIconName,
+  LILogger? logger,
+}) async {
   // we do not use `file.readAsLines()` here because that always gets rid of the last empty newline
   final List<String> oldManifestLines =
       (await androidManifestFile.readAsString()).split('\n');
   final List<String> transformedLines =
-      _transformAndroidManifestWithNewLauncherIcon(oldManifestLines, iconName);
+      _transformAndroidManifestWithNewLauncherIcon(
+    oldManifestLines,
+    iconName,
+    roundIconName,
+  );
   await androidManifestFile.writeAsString(transformedLines.join('\n'));
+  if (roundIconName == null &&
+      oldManifestLines.any((line) => line.contains('android:roundIcon'))) {
+    utils.printStatus(
+      'WARNING: AndroidManifest.xml has a pre-existing android:roundIcon '
+      'that may shadow themed icons. Configure `android.adaptive_icon_round` '
+      'to regenerate it, or remove the attribute.',
+      logger,
+    );
+  }
 }
 
-/// Updates only the line containing android:icon with the specified iconName
+/// Updates only the line containing android:icon with the specified iconName,
+/// wiring android:roundIcon alongside it when [roundIconName] is given
 List<String> _transformAndroidManifestWithNewLauncherIcon(
   List<String> oldManifestLines,
-  String iconName,
-) {
+  String iconName, [
+  String? roundIconName,
+]) {
   return oldManifestLines.map((String line) {
-    if (line.contains('android:icon')) {
+    var result = line;
+    if (result.contains('android:icon')) {
       // Using RegExp replace the value of android:icon to point to the new icon
       // anything but a quote of any length: [^"]*
       // an escaped quote: \\" (escape slash, because it exists regex)
@@ -488,13 +620,29 @@ List<String> _transformAndroidManifestWithNewLauncherIcon(
       // repeat as often as wanted with no quote at start: [^"]*(\"[^"]*)*
       // escaping the slash to place in string: [^"]*(\\"[^"]*)*"
       // result: any string which does only include escaped quotes
-      return line.replaceAll(
+      result = result.replaceAll(
         RegExp(r'android:icon="[^"]*(\\"[^"]*)*"'),
         'android:icon="@mipmap/$iconName"',
       );
-    } else {
-      return line;
     }
+    if (roundIconName != null) {
+      if (result.contains('android:roundIcon')) {
+        result = result.replaceAll(
+          RegExp(r'android:roundIcon="[^"]*(\\"[^"]*)*"'),
+          'android:roundIcon="@mipmap/$roundIconName"',
+        );
+      } else if (result.contains('android:icon')) {
+        final roundAttr = ' android:roundIcon="@mipmap/$roundIconName"';
+        if (result.trimRight().endsWith('>')) {
+          final idx = result.lastIndexOf('>');
+          result =
+              '${result.substring(0, idx)}$roundAttr${result.substring(idx)}';
+        } else {
+          result = '$result$roundAttr';
+        }
+      }
+    }
+    return result;
   }).toList();
 }
 

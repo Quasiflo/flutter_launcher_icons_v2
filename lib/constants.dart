@@ -15,6 +15,10 @@ const String androidFileName = 'ic_launcher.png';
 const String androidAdaptiveForegroundFileName = 'ic_launcher_foreground.png';
 const String androidAdaptiveBackgroundFileName = 'ic_launcher_background.png';
 const String androidAdaptiveMonochromeFileName = 'ic_launcher_monochrome.png';
+const String androidAdaptiveRoundFileName = 'ic_launcher_round.png';
+const String androidAdaptiveRoundIconName = 'ic_launcher_round';
+/// Play Store upload sidecar, written next to the project (never res/).
+const String androidPlayStoreIconFile = 'play_store_icon.png';
 String androidAdaptiveXmlFolder(String? flavor) =>
     androidResFolder(flavor) + 'mipmap-anydpi-v26/';
 const String androidDefaultIconName = 'ic_launcher';
