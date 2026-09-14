@@ -10,8 +10,10 @@ class WindowsIconGenerator extends IconGenerator {
   WindowsIconGenerator(IconGeneratorContext context)
       : super(context, 'Windows');
 
-  // Minimal, sensible defaults for Windows ICOs.
-  static const List<int> _icoSizes = [16, 24, 32, 48, 256];
+  // Minimal, sensible defaults for Windows ICOs: the Win32 required sets
+  // (app icons + Classic Mode) plus 40/64 for classic-set completeness
+  // and Alt+Tab crispness. PNG-compressed frames keep the uplift small.
+  static const List<int> _icoSizes = [16, 24, 32, 40, 48, 64, 256];
 
   @override
   bool get isEnabled => context.windowsConfig?.generate ?? false;
@@ -26,6 +28,14 @@ class WindowsIconGenerator extends IconGenerator {
     context.logger
         .verbose('Decoding and loading image file from $imgFilePath...');
     final imgFile = await utils.decodeImageFile(imgFilePath);
+
+    if (imgFile.width < 256) {
+      context.logger.info(
+        'WARNING: Source image is ${imgFile.width}px wide; the 256px ICO '
+        'frame will be linearly upscaled and may look soft. '
+        'Use a source of at least 256px for the crispest icon.',
+      );
+    }
 
     context.logger.verbose('Generating icon from $imgFilePath...');
     await _generateIcon(imgFile);
@@ -75,9 +85,15 @@ class WindowsIconGenerator extends IconGenerator {
         multi.addFrame(resized);
       }
     }
-    final favIconFile = await utils.createFileIfNotExist(
-      path.join(context.prefixPath, constants.windowsIconFilePath),
+    // Per-flavor names (icon_filename) let sequential flavor runs target
+    // distinct resources; the default stays the Runner.rc contract.
+    final iconFile = await utils.createFileIfNotExist(
+      path.join(
+        context.prefixPath,
+        constants.windowsResourcesDirPath,
+        context.windowsConfig?.iconFilename ?? 'app_icon.ico',
+      ),
     );
-    await favIconFile.writeAsBytes(encodeIco(multi!));
+    await iconFile.writeAsBytes(encodeIco(multi!));
   }
 }
