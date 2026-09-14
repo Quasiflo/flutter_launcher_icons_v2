@@ -160,8 +160,50 @@ class MacOSIconGenerator extends IconGenerator {
   void _updateContentsFile() {
     final contentsFilePath =
         File(path.join(context.prefixPath, _contentsFilePath()));
-    final contentsConfig =
-        jsonDecode(contentsFilePath.readAsStringSync()) as Map<String, dynamic>;
+    Map<String, dynamic>? contentsConfig;
+    try {
+      contentsConfig =
+          jsonDecode(contentsFilePath.readAsStringSync()) as Map<String, dynamic>;
+    } on FormatException catch (_) {
+      contentsConfig = null;
+    }
+    if (contentsConfig == null) {
+      context.logger.info(
+        'WARNING: ${_contentsFilePath()} is not valid JSON; '
+        'writing a fresh image list.',
+      );
+      contentsConfig = {
+        'info': {'version': 1, 'author': 'xcode'},
+      };
+    } else {
+      // A pre-existing Contents.json may carry entries from another
+      // platform or stale sizes (8x8, 64x64, 1024x1024/idiom:mac) — a
+      // real-world corruption class. Warn rather than crash, then refresh
+      // the tool-owned images list below.
+      final existing = contentsConfig['images'];
+      if (existing is List) {
+        final foreign = <String>[];
+        for (final entry in existing) {
+          if (entry is! Map) {
+            continue;
+          }
+          final idiom = entry['idiom'];
+          final size = entry['size'];
+          if (idiom != 'mac' ||
+              size == '8x8' ||
+              size == '64x64' ||
+              size == '1024x1024') {
+            foreign.add('${size ?? '?'}${idiom == null ? '' : '/$idiom'}');
+          }
+        }
+        if (foreign.isNotEmpty) {
+          context.logger.info(
+            'WARNING: ${_contentsFilePath()} contains non-mac entries '
+            '(${foreign.join(', ')}); replacing the image list.',
+          );
+        }
+      }
+    }
     contentsConfig
       ..remove('images')
       ..['images'] = _iconSizeTemplates
