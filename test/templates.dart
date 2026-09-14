@@ -22,7 +22,6 @@ flutter_launcher_icons:
   windows:
     generate: true
     image_path: "app_icon.png"
-    icon_size: 48
   macos:
     generate: true
     image_path: "app_icon.png"
@@ -49,7 +48,6 @@ flutter_launcher_icons:
   windows:
     generate: true
     image_path: "app_icon.png"
-    icon_size: 48
 ''';
 
 const invalidfliConfigTemplate = r'''
@@ -134,7 +132,6 @@ flutter_launcher_icons:
   windows:
     generate: true
     image_path: "app_icon.png"
-    icon_size: 48
   macos:
     generate: true
     image_path: "app_icon.png"
@@ -201,7 +198,6 @@ flutter_launcher_icons:
   windows:
     generate: true
     image_path: "app_icon.png"
-    icon_size: 48
 ''';
 
 const webManifestTemplate = r'''

@@ -13,16 +13,14 @@ WindowsConfig _$WindowsConfigFromJson(Map json) => $checkedCreate(
         final val = WindowsConfig(
           generate: $checkedConvert('generate', (v) => v as bool? ?? false),
           imagePath: $checkedConvert('image_path', (v) => v as String?),
-          iconSize: $checkedConvert('icon_size', (v) => (v as num?)?.toInt()),
         );
         return val;
       },
-      fieldKeyMap: const {'imagePath': 'image_path', 'iconSize': 'icon_size'},
+      fieldKeyMap: const {'imagePath': 'image_path'},
     );
 
 Map<String, dynamic> _$WindowsConfigToJson(WindowsConfig instance) =>
     <String, dynamic>{
       'generate': instance.generate,
       'image_path': instance.imagePath,
-      'icon_size': instance.iconSize,
     };

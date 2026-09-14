@@ -73,12 +73,6 @@ class Config {
         configContent,
         (Map<dynamic, dynamic>? json) {
           if (json != null) {
-            // if we have flutter_icons configuration ...
-            if (json['flutter_icons'] != null) {
-              stderr.writeln('\n⚠ Warning: flutter_icons has been deprecated '
-                  'please use flutter_launcher_icons instead in your yaml files');
-              return Config.fromJson(json['flutter_icons']);
-            }
             // if we have flutter_launcher_icons configuration ...
             if (json['flutter_launcher_icons'] != null) {
               return Config.fromJson(json['flutter_launcher_icons']);
