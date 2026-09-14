@@ -4,7 +4,24 @@
 amends "package://github.com/jdx/hk/releases/download/v2.0.0/hk@2.0.0#/Config.pkl"
 import "package://github.com/jdx/hk/releases/download/v2.0.0/hk@2.0.0#/Builtins.pkl"
 
+local dart_globs = List("**/*.dart", "**/analysis_options.yaml", "**/pubspec.yaml")
+
 steps {
   ["rumdl"] = Builtins.rumdl
   ["zizmor"] = Builtins.zizmor
+  ["dart_fix"] {
+    glob = dart_globs
+    check = "dart fix --dry-run"
+    fix = "dart fix --apply"
+  }
+  ["dart_format"] {
+    glob = List("**/*.dart")
+    check = "dart format --output=none --set-exit-if-changed {{files}}"
+    fix = "dart format {{files}}"
+    batch = true
+  }
+  ["dart_analyze"] {
+    glob = dart_globs
+    check = "dart analyze --fatal-infos"
+  }
 }
