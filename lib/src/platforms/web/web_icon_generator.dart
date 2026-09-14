@@ -55,28 +55,39 @@ class WebIconGenerator extends IconGenerator {
     // load and decode the image file
     context.logger
         .verbose('Decoding and loading image file at $imgFilePath...');
-    final imgFile = await utils.decodeImageFile(imgFilePath);
+    final perSize = context.config.svgRasterizePerSize;
+    final loadBase = await utils.sizeImageLoaderFor(
+      imgFilePath,
+      perSize: perSize,
+      logger: context.logger,
+    );
 
     // resolve the favicon image path and file, which is either one explicitly
     // provided or the same as the image file loaded above
     late final String faviconImgFilePath;
-    late final Image faviconImgFile;
+    late final utils.SizeImageLoader loadFavicon;
     final faviconImagePathOverride = context.webConfig!.imagePathFavicon;
     if (faviconImagePathOverride != null) {
       // favicon override was specified, construct the full path and decode
       faviconImgFilePath =
           path.join(context.prefixPath, faviconImagePathOverride);
-      final faviconImageFile = await utils.decodeImageFile(faviconImgFilePath);
-      faviconImgFile = faviconImageFile;
+      loadFavicon = await utils.sizeImageLoaderFor(
+        faviconImgFilePath,
+        perSize: perSize,
+        logger: context.logger,
+      );
     } else {
       // no favicon override, use the fallback image file
       faviconImgFilePath = imgFilePath;
-      faviconImgFile = imgFile;
+      loadFavicon = loadBase;
     }
 
     // resolve the maskable image: a dedicated source when provided,
     // otherwise the base image with padded derivation at write time.
-    late final Image maskableImgFile;
+    // The derivation logo always comes from a 1024 render so the ~80%
+    // downscale starts at full quality in both raster modes.
+    utils.SizeImageLoader? loadMaskable;
+    Image? deriveLogo;
     final maskableImagePathOverride = context.webConfig!.imagePathMaskable;
     final deriveMaskable = maskableImagePathOverride == null;
     if (maskableImagePathOverride != null) {
@@ -85,10 +96,14 @@ class WebIconGenerator extends IconGenerator {
       context.logger.verbose(
         'Decoding and loading maskable image file at $maskableImgFilePath...',
       );
-      maskableImgFile = await utils.decodeImageFile(maskableImgFilePath);
+      loadMaskable = await utils.sizeImageLoaderFor(
+        maskableImgFilePath,
+        perSize: perSize,
+        logger: context.logger,
+      );
     } else {
-      maskableImgFile = imgFile;
-      if (imgFile.hasAlpha) {
+      deriveLogo = await loadBase(utils.svgMasterSize);
+      if (deriveLogo.hasAlpha) {
         context.logger.info(
           'WARNING: Base image has transparency; deriving maskable icons '
           'by centering the logo at ~80% on the opaque background_color. '
@@ -100,11 +115,11 @@ class WebIconGenerator extends IconGenerator {
 
     // generate favicon in web/favicon.png
     context.logger.verbose('Generating favicon from $faviconImgFilePath...');
-    await _generateFavicon(faviconImgFile);
+    await _generateFavicon(loadFavicon);
 
     // generate icons in web/icons/
     context.logger.verbose('Generating icons from $imgFilePath...');
-    await _generateIcons(imgFile, maskableImgFile, deriveMaskable);
+    await _generateIcons(loadBase, loadMaskable, deriveLogo, deriveMaskable);
 
     // update manifest.json in <web root>/manifest.json
     context.logger.verbose(
@@ -114,7 +129,7 @@ class WebIconGenerator extends IconGenerator {
 
     // iOS Safari needs an explicit opaque 180px touch icon.
     context.logger.verbose('Generating apple-touch-icon from $imgFilePath...');
-    await _generateAppleTouchIcon(imgFile);
+    await _generateAppleTouchIcon(loadBase);
 
     // make the generated files discoverable from index.html
     context.logger.verbose(
@@ -174,11 +189,10 @@ class WebIconGenerator extends IconGenerator {
     return true;
   }
 
-  Future<void> _generateFavicon(Image image) async {
+  Future<void> _generateFavicon(utils.SizeImageLoader loadFavicon) async {
     final size = context.webConfig?.faviconSize ?? constants.kFaviconSize;
-    final favIcon = utils.createResizedImage(
+    final favIcon = await loadFavicon(
       size > 0 ? size : constants.kFaviconSize,
-      image,
     );
     final favIconFile = await utils.createFileIfNotExist(
       path.join(context.prefixPath, _faviconFilePath),
@@ -187,9 +201,9 @@ class WebIconGenerator extends IconGenerator {
     if (context.webConfig?.faviconIco ?? true) {
       // Browsers request /favicon.ico by default; emit the consensus
       // multi-frame container alongside the PNG (#540).
-      final multi = utils.createResizedImage(_faviconIcoSizes.first, image);
+      final multi = await loadFavicon(_faviconIcoSizes.first);
       for (final frameSize in _faviconIcoSizes.skip(1)) {
-        multi.addFrame(utils.createResizedImage(frameSize, image));
+        multi.addFrame(await loadFavicon(frameSize));
       }
       final favIcoFile = await utils.createFileIfNotExist(
         path.join(context.prefixPath, _faviconIcoFilePath),
@@ -200,8 +214,9 @@ class WebIconGenerator extends IconGenerator {
   }
 
   Future<void> _generateIcons(
-    Image image,
-    Image maskableImage,
+    utils.SizeImageLoader loadBase,
+    utils.SizeImageLoader? loadMaskable,
+    Image? deriveLogo,
     bool deriveMaskable,
   ) async {
     final iconsDir = await utils.createDirIfNotExist(
@@ -211,11 +226,11 @@ class WebIconGenerator extends IconGenerator {
     for (final template in _webIconSizeTemplates) {
       final Image resizedImg;
       if (template.maskable && deriveMaskable) {
-        resizedImg = _buildPaddedMaskable(maskableImage, template.size);
+        resizedImg = _buildPaddedMaskable(deriveLogo!, template.size);
       } else if (template.maskable) {
-        resizedImg = utils.createResizedImage(template.size, maskableImage);
+        resizedImg = await loadMaskable!(template.size);
       } else {
-        resizedImg = utils.createResizedImage(template.size, image);
+        resizedImg = await loadBase(template.size);
       }
       final iconFile = await utils.createFileIfNotExist(
         path.join(context.prefixPath, iconsDir.path, template.iconFile),
@@ -275,9 +290,11 @@ class WebIconGenerator extends IconGenerator {
 
   /// Generates an opaque 180x180 `apple-touch-icon.png` by flattening the
   /// source onto `background_color` (white fallback).
-  Future<void> _generateAppleTouchIcon(Image source) async {
+  Future<void> _generateAppleTouchIcon(
+    utils.SizeImageLoader loadBase,
+  ) async {
     const size = 180;
-    final resized = utils.createResizedImage(size, source);
+    final resized = await loadBase(size);
     final rgba =
         resized.numChannels == 4 ? resized : resized.convert(numChannels: 4);
 

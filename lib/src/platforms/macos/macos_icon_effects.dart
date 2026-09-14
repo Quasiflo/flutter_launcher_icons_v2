@@ -1,5 +1,4 @@
 import 'package:image/image.dart';
-import 'package:launcher_icons/src/core/utils.dart' as utils;
 
 /// Apple-like corner radius as a fraction of the icon size.
 ///
@@ -7,23 +6,23 @@ import 'package:launcher_icons/src/core/utils.dart' as utils;
 /// rectangle with this radius is a close, cheap approximation.
 const double macOSCornerRadiusFraction = 0.225;
 
-/// Builds one macOS icon of [size] pixels from [source].
+/// Builds one macOS icon of [size] pixels, loading artwork at [artworkSize]
+/// through [loadArtwork] (so vector sources rasterize at exact pixels).
 ///
-/// When [paddingPercent] is 0 the source is resized straight to [size]
-/// (historical behavior, byte-identical). Otherwise the artwork is resized
-/// to the inner area and centered on a transparent canvas, leaving a
-/// safe-area margin of [paddingPercent]% on every side. When
+/// When [paddingPercent] is 0 the artwork fills [size] (historical behavior,
+/// byte-identical). Otherwise the artwork is centered on a transparent canvas,
+/// leaving a safe-area margin of [paddingPercent]% on every side. When
 /// [roundedCorners] is true the canvas corners are masked off.
-Image buildMacOSIconImage(
-  Image source,
+Future<Image> buildMacOSIconImage(
+  Future<Image> Function(int) loadArtwork,
   int size, {
   int paddingPercent = 0,
   bool roundedCorners = false,
-}) {
+}) async {
   final maxPad = (size - 1) ~/ 2;
   final pad = (size * paddingPercent / 100).round().clamp(0, maxPad).toInt();
   final artworkSize = size - 2 * pad;
-  final artwork = utils.createResizedImage(artworkSize, source);
+  final artwork = await loadArtwork(artworkSize);
 
   Image canvas = artwork;
   if (artworkSize < size) {

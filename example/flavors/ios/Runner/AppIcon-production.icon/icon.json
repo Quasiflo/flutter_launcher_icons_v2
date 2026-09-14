@@ -20,15 +20,15 @@
                     },
                     "image-name-specializations": [
                         {
-                            "value": "icon-prod-glass.png"
+                            "value": "icon-prod-glass.svg"
                         },
                         {
                             "appearance": "dark",
-                            "value": "icon-prod-glass-dark.png"
+                            "value": "icon-prod-glass-dark.svg"
                         },
                         {
                             "appearance": "tinted",
-                            "value": "icon-prod-glass-tinted.png"
+                            "value": "icon-prod-glass-tinted.svg"
                         }
                     ]
                 }

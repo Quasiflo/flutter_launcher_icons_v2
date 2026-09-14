@@ -54,8 +54,11 @@ Future<void> createDefaultIcons(
   if (filePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
-  final Image image =
-      await utils.decodeImageFile(utils.withPrefix(prefixPath, filePath));
+  final loadSize = await utils.sizeImageLoaderFor(
+    utils.withPrefix(prefixPath, filePath),
+    perSize: config.svgRasterizePerSize,
+    logger: logger,
+  );
   final File androidManifestFile =
       File(utils.withPrefix(prefixPath, constants.androidManifestFile));
   final concurrentIconUpdates = <Future<void>>[];
@@ -66,12 +69,14 @@ Future<void> createDefaultIcons(
     final String iconPath = '$iconName.png';
     for (AndroidIconTemplate template in androidIcons) {
       concurrentIconUpdates.add(
-        writeResizedPng(
-          template,
-          image,
-          iconPath,
-          flavor,
-          prefixPath: prefixPath,
+        loadSize(template.size).then(
+          (image) => writeResizedPng(
+            template,
+            image,
+            iconPath,
+            flavor,
+            prefixPath: prefixPath,
+          ),
         ),
       );
     }
@@ -97,12 +102,14 @@ Future<void> createDefaultIcons(
     );
     for (AndroidIconTemplate template in androidIcons) {
       concurrentIconUpdates.add(
-        writeResizedPng(
-          template,
-          image,
-          constants.androidFileName,
-          flavor,
-          prefixPath: prefixPath,
+        loadSize(template.size).then(
+          (image) => writeResizedPng(
+            template,
+            image,
+            constants.androidFileName,
+            flavor,
+            prefixPath: prefixPath,
+          ),
         ),
       );
     }
@@ -196,20 +203,24 @@ Future<void> createAdaptiveIcons(
   if (backgroundConfig == null || foregroundImagePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
-  final Image foregroundImage = await utils.decodeImageFile(
+  final loadForegroundSize = await utils.sizeImageLoaderFor(
     utils.withPrefix(prefixPath, foregroundImagePath),
+    perSize: config.svgRasterizePerSize,
+    logger: logger,
   );
 
   final concurrentImageUpdates = <Future<void>>[];
   // Create adaptive icon foreground images
   for (AndroidIconTemplate androidIcon in adaptiveForegroundIcons) {
     concurrentImageUpdates.add(
-      writeResizedPng(
-        androidIcon,
-        foregroundImage,
-        constants.androidAdaptiveForegroundFileName,
-        flavor,
-        prefixPath: prefixPath,
+      loadForegroundSize(androidIcon.size).then(
+        (foregroundImage) => writeResizedPng(
+          androidIcon,
+          foregroundImage,
+          constants.androidAdaptiveForegroundFileName,
+          flavor,
+          prefixPath: prefixPath,
+        ),
       ),
     );
   }
@@ -258,20 +269,24 @@ Future<void> createAdaptiveMonochromeIcons(
   if (monochromeImagePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
-  final Image monochromeImage = await utils.decodeImageFile(
+  final loadMonochromeSize = await utils.sizeImageLoaderFor(
     utils.withPrefix(prefixPath, monochromeImagePath),
+    perSize: config.svgRasterizePerSize,
+    logger: logger,
   );
 
   final concurrentIconUpdates = <Future<void>>[];
   // Create adaptive icon monochrome images
   for (AndroidIconTemplate androidIcon in adaptiveForegroundIcons) {
     concurrentIconUpdates.add(
-      writeResizedPng(
-        androidIcon,
-        monochromeImage,
-        constants.androidAdaptiveMonochromeFileName,
-        flavor,
-        prefixPath: prefixPath,
+      loadMonochromeSize(androidIcon.size).then(
+        (monochromeImage) => writeResizedPng(
+          androidIcon,
+          monochromeImage,
+          constants.androidAdaptiveMonochromeFileName,
+          flavor,
+          prefixPath: prefixPath,
+        ),
       ),
     );
   }
@@ -306,20 +321,24 @@ Future<void> createAdaptiveRoundIcons(
       'and `adaptive_icon_foreground`.',
     );
   }
-  final Image roundImage = await utils.decodeImageFile(
+  final loadRoundSize = await utils.sizeImageLoaderFor(
     utils.withPrefix(prefixPath, roundImagePath),
+    perSize: config.svgRasterizePerSize,
+    logger: logger,
   );
 
   final concurrentIconUpdates = <Future<void>>[];
   // Create adaptive icon round images
   for (AndroidIconTemplate androidIcon in adaptiveForegroundIcons) {
     concurrentIconUpdates.add(
-      writeResizedPng(
-        androidIcon,
-        roundImage,
-        constants.androidAdaptiveRoundFileName,
-        flavor,
-        prefixPath: prefixPath,
+      loadRoundSize(androidIcon.size).then(
+        (roundImage) => writeResizedPng(
+          androidIcon,
+          roundImage,
+          constants.androidAdaptiveRoundFileName,
+          flavor,
+          prefixPath: prefixPath,
+        ),
       ),
     );
   }
@@ -338,10 +357,12 @@ Future<void> createPlayStoreIcon(
   if (filePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
-  final Image image = await utils.decodeImageFile(
+  final loadSize = await utils.sizeImageLoaderFor(
     utils.withPrefix(prefixPath, filePath),
+    perSize: config.svgRasterizePerSize,
+    logger: logger,
   );
-  final bytes = encodePng(utils.createResizedImage(512, image));
+  final bytes = encodePng(await loadSize(512));
   final outFile = await utils.createFileIfNotExist(
     utils.withPrefix(prefixPath, constants.androidPlayStoreIconFile),
   );
@@ -573,20 +594,24 @@ Future<void> _createAdaptiveBackgrounds(
   String prefixPath = '.',
 }) async {
   final String filePath = adaptiveIconBackgroundImagePath;
-  final Image image =
-      await utils.decodeImageFile(utils.withPrefix(prefixPath, filePath));
+  final loadSize = await utils.sizeImageLoaderFor(
+    utils.withPrefix(prefixPath, filePath),
+    perSize: config.svgRasterizePerSize,
+  );
 
   final concurrentImageUpdates = <Future<void>>[];
   // creates a png image (ic_adaptive_background.png) for the adaptive icon background in each of the locations
   // it is required
   for (AndroidIconTemplate androidIcon in adaptiveForegroundIcons) {
     concurrentImageUpdates.add(
-      writeResizedPng(
-        androidIcon,
-        image,
-        constants.androidAdaptiveBackgroundFileName,
-        flavor,
-        prefixPath: prefixPath,
+      loadSize(androidIcon.size).then(
+        (image) => writeResizedPng(
+          androidIcon,
+          image,
+          constants.androidAdaptiveBackgroundFileName,
+          flavor,
+          prefixPath: prefixPath,
+        ),
       ),
     );
   }

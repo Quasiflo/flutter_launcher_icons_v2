@@ -19,15 +19,15 @@
                     },
                     "image-name-specializations": [
                         {
-                            "value": "icon-dev.png"
+                            "value": "icon-dev.svg"
                         },
                         {
                             "appearance": "dark",
-                            "value": "icon-dev-dark.png"
+                            "value": "icon-dev-dark.svg"
                         },
                         {
                             "appearance": "tinted",
-                            "value": "icon-dev-tinted.png"
+                            "value": "icon-dev-tinted.svg"
                         }
                     ]
                 }

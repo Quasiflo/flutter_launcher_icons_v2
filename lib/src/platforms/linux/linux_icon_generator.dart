@@ -46,8 +46,10 @@ class LinuxIconGenerator extends IconGenerator {
   /// Every file is strictly only-if-absent: pre-existing files are left
   /// untouched (with a warning) so user edits are never clobbered.
   Future<void> _generatePackagingFiles(String iconPath) async {
-    final image = await utils.decodeImageFile(
+    final loadSize = await utils.sizeImageLoaderFor(
       path.join(context.prefixPath, iconPath),
+      perSize: context.config.svgRasterizePerSize,
+      logger: context.logger,
     );
     final appName = _readAppName();
     final appVersion = _readAppVersion();
@@ -62,12 +64,12 @@ class LinuxIconGenerator extends IconGenerator {
           'apps',
           '$appName.png',
         ),
-        encodePng(utils.createResizedImage(size, image)),
+        encodePng(await loadSize(size)),
       );
     }
     await _writeBytesIfAbsent(
       path.join('snap', 'gui', '$appName.png'),
-      encodePng(utils.createResizedImage(256, image)),
+      encodePng(await loadSize(256)),
     );
     await _writeStringIfAbsent(
       path.join('share', 'applications', '$appName.desktop'),

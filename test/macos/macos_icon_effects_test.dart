@@ -11,10 +11,13 @@ Image _solidRed([int size = 64]) {
 }
 
 void main() {
+  Future<Image> Function(int) loaderFor(Image source) =>
+      (size) async => utils.createResizedImage(size, source);
+
   group('buildMacOSIconImage', () {
-    test('defaults resize straight through (historical behavior)', () {
+    test('defaults resize straight through (historical behavior)', () async {
       final source = _solidRed();
-      final result = buildMacOSIconImage(source, 64);
+      final result = await buildMacOSIconImage(loaderFor(source), 64);
       expect(result.width, equals(64));
       expect(result.height, equals(64));
       expect(
@@ -23,8 +26,12 @@ void main() {
       );
     });
 
-    test('padding insets artwork on a transparent canvas (#655)', () {
-      final result = buildMacOSIconImage(_solidRed(), 64, paddingPercent: 25);
+    test('padding insets artwork on a transparent canvas (#655)', () async {
+      final result = await buildMacOSIconImage(
+        loaderFor(_solidRed()),
+        64,
+        paddingPercent: 25,
+      );
       expect(result.width, equals(64));
       expect(result.height, equals(64));
       // 25% of 64 = 16px margin: corners stay transparent...
@@ -36,14 +43,22 @@ void main() {
       expect(center.r, equals(255));
     });
 
-    test('extreme padding clamps instead of crashing', () {
-      final result = buildMacOSIconImage(_solidRed(), 64, paddingPercent: 90);
+    test('extreme padding clamps instead of crashing', () async {
+      final result = await buildMacOSIconImage(
+        loaderFor(_solidRed()),
+        64,
+        paddingPercent: 90,
+      );
       expect(result.width, equals(64));
       expect(result.height, equals(64));
     });
 
-    test('rounded corners mask the corners, keep edges (#463)', () {
-      final result = buildMacOSIconImage(_solidRed(), 64, roundedCorners: true);
+    test('rounded corners mask the corners, keep edges (#463)', () async {
+      final result = await buildMacOSIconImage(
+        loaderFor(_solidRed()),
+        64,
+        roundedCorners: true,
+      );
       expect(result.getPixel(0, 0).a, equals(0));
       expect(result.getPixel(63, 0).a, equals(0));
       expect(result.getPixel(0, 63).a, equals(0));
@@ -55,9 +70,9 @@ void main() {
       }
     });
 
-    test('padding and rounding compose', () {
-      final result = buildMacOSIconImage(
-        _solidRed(),
+    test('padding and rounding compose', () async {
+      final result = await buildMacOSIconImage(
+        loaderFor(_solidRed()),
         64,
         paddingPercent: 10,
         roundedCorners: true,

@@ -27,18 +27,31 @@ class WindowsIconGenerator extends IconGenerator {
 
     context.logger
         .verbose('Decoding and loading image file from $imgFilePath...');
-    final imgFile = await utils.decodeImageFile(imgFilePath);
-
-    if (imgFile.width < 256) {
-      context.logger.info(
-        'WARNING: Source image is ${imgFile.width}px wide; the 256px ICO '
-        'frame will be linearly upscaled and may look soft. '
-        'Use a source of at least 256px for the crispest icon.',
+    final bool svgInput = utils.isSvgPath(imgFilePath);
+    final perSize = context.config.svgRasterizePerSize && svgInput;
+    utils.SizeImageLoader loadSize;
+    if (perSize) {
+      loadSize = await utils.sizeImageLoaderFor(
+        imgFilePath,
+        perSize: true,
+        logger: context.logger,
       );
+    } else {
+      final imgFile = await utils.decodeImageFile(imgFilePath);
+
+      if (!svgInput && imgFile.width < 256) {
+        context.logger.info(
+          'WARNING: Source image is ${imgFile.width}px wide; the 256px ICO '
+          'frame will be linearly upscaled and may look soft. '
+          'Use a source of at least 256px for the crispest icon.',
+        );
+      }
+
+      loadSize = (size) async => utils.createResizedImage(size, imgFile);
     }
 
     context.logger.verbose('Generating icon from $imgFilePath...');
-    await _generateIcon(imgFile);
+    await _generateIcon(loadSize);
   }
 
   @override
@@ -74,11 +87,11 @@ class WindowsIconGenerator extends IconGenerator {
     return true;
   }
 
-  Future<void> _generateIcon(Image image) async {
+  Future<void> _generateIcon(utils.SizeImageLoader loadSize) async {
     // Build a multi-frame ICO: one frame per target size.
     Image? multi;
     for (final sz in _icoSizes) {
-      final resized = utils.createResizedImage(sz, image);
+      final resized = await loadSize(sz);
       if (multi == null) {
         multi = resized;
       } else {

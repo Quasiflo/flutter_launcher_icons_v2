@@ -34,6 +34,7 @@ class Config {
     this.windowsConfig,
     this.macOSConfig,
     this.linuxConfig,
+    this.svgRasterizePerSize = false,
   });
 
   /// Creates [Config] for given [flavor] and [prefixPath]
@@ -168,6 +169,15 @@ class Config {
   /// Linux platform config
   @JsonKey(name: 'linux')
   final LinuxConfig? linuxConfig;
+
+  /// Rasterize SVG sources separately at every output size (default false).
+  ///
+  /// Off: each SVG rasterizes once at 1024px and every size downscales from
+  /// that master — as crisp for icon art and far faster. On: every output
+  /// size gets its own vector rasterization (crisper pixel-aligned edges,
+  /// much slower on large sets like iOS).
+  @JsonKey(name: 'svg_rasterize_per_size')
+  final bool svgRasterizePerSize;
 
   /// Creates [Config] icons from [json]
   ///

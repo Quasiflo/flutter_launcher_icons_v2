@@ -61,6 +61,7 @@ Future<void> generateLiquidGlassIcon(
     if (darkSource != null) darkSource,
     if (tintedSource != null) tintedSource,
   };
+  final wantedBasenames = <String>{};
   for (final source in sources) {
     final sourceImageFile = File(withPrefix(prefixPath, source));
     if (!sourceImageFile.existsSync()) {
@@ -68,9 +69,21 @@ Future<void> generateLiquidGlassIcon(
         'Liquid glass icon image not found at: $source',
       );
     }
-    final destinationImagePath =
-        path.join(assetsFolderPath, path.basename(source));
-    await sourceImageFile.copy(destinationImagePath);
+    final basename = path.basename(source);
+    wantedBasenames.add(basename);
+    await sourceImageFile.copy(path.join(assetsFolderPath, basename));
+  }
+  // Sweep layers orphaned by source switches (e.g. PNG replaced by SVG):
+  // the Assets folder is fully tool-owned.
+  for (final entity in Directory(assetsFolderPath).listSync()) {
+    if (entity is File &&
+        !wantedBasenames.contains(path.basename(entity.path))) {
+      printStatus(
+        'Removing orphaned liquid glass asset ${path.basename(entity.path)}',
+        logger,
+      );
+      await entity.delete();
+    }
   }
 
   // Generate icon.json
