@@ -105,14 +105,24 @@ Future<void> createIcons(Config config, String? flavor,
     }
   }
 
-  if (config.iosConfig?.removeAlpha == true && image.hasAlpha) {
-    final backgroundColor = _getBackgroundColor(config);
-    final pixel = image.getPixel(0, 0);
-    do {
-      pixel.set(_alphaBlend(pixel, backgroundColor));
-    } while (pixel.moveNext());
-
-    image = image.convert(numChannels: 3);
+  // remove_alpha mattes the base image onto the background color. The dark
+  // variant intentionally keeps its transparency (Apple: the system
+  // background shows through), while the tinted variant is forced opaque
+  // like the base image.
+  if (config.iosConfig?.removeAlpha == true) {
+    if (image.hasAlpha) {
+      image = _removeAlphaChannel(image, config);
+    }
+    if (darkImage != null && darkImage.hasAlpha) {
+      printStatus(
+        'Keeping transparency in the iOS dark variant '
+        '(the system background shows through)',
+        logger,
+      );
+    }
+    if (tintedImage != null && tintedImage.hasAlpha) {
+      tintedImage = _removeAlphaChannel(tintedImage, config);
+    }
   }
   if (image.hasAlpha) {
     printStatus(
@@ -948,20 +958,20 @@ List<Map<String, dynamic>> createImageList(
 
 ColorUint8 _getBackgroundColor(Config config) {
   final backgroundColor = config.iosConfig?.backgroundColor ?? '#ffffff';
-  final backgroundColorHex = backgroundColor.startsWith('#')
-      ? backgroundColor.substring(1)
-      : backgroundColor;
-  if (backgroundColorHex.length != 6) {
-    throw Exception('background_color_ios hex should be 6 characters long');
-  }
+  final (:r, :g, :b) = parseHexColor(backgroundColor);
+  return ColorUint8.rgba(r, g, b, 0xff);
+}
 
-  final backgroundByte = int.parse(backgroundColorHex, radix: 16);
-  return ColorUint8.rgba(
-    (backgroundByte >> 16) & 0xff,
-    (backgroundByte >> 8) & 0xff,
-    (backgroundByte >> 0) & 0xff,
-    0xff,
-  );
+/// Mattes [source] onto the configured background color, returning an
+/// opaque 3-channel image.
+Image _removeAlphaChannel(Image source, Config config) {
+  final backgroundColor = _getBackgroundColor(config);
+  final pixel = source.getPixel(0, 0);
+  do {
+    pixel.set(_alphaBlend(pixel, backgroundColor));
+  } while (pixel.moveNext());
+
+  return source.convert(numChannels: 3);
 }
 
 Color _alphaBlend(Color fg, ColorUint8 bg) {

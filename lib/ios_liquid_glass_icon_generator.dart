@@ -126,25 +126,9 @@ Map<String, dynamic> generateIconConfig(Config config, String imageFileName) {
 /// Convert hex color to Display P3 format (as used by Apple Icon Composer)
 @visibleForTesting
 String convertHexToDisplayP3(String hexColor) {
-  // Remove # if present
-  final cleanHex = hexColor.startsWith('#') ? hexColor.substring(1) : hexColor;
+  final (:r, :g, :b) = parseHexColor(hexColor);
 
-  if (cleanHex.length != 6) {
-    throw InvalidConfigException(
-      'background_color_ios hex should be 6 characters long, got: $hexColor',
-    );
-  }
-
-  try {
-    final hexValue = int.parse(cleanHex, radix: 16);
-    final r = ((hexValue >> 16) & 0xff) / 255.0;
-    final g = ((hexValue >> 8) & 0xff) / 255.0;
-    final b = (hexValue & 0xff) / 255.0;
-
-    return 'display-p3:${r.toStringAsFixed(5)},${g.toStringAsFixed(5)},${b.toStringAsFixed(5)},1.00000';
-  } catch (e) {
-    throw InvalidConfigException(
-      'Invalid hex color format for background_color_ios: $hexColor',
-    );
-  }
+  return 'display-p3:${(r / 255).toStringAsFixed(5)},'
+      '${(g / 255).toStringAsFixed(5)},'
+      '${(b / 255).toStringAsFixed(5)},1.00000';
 }
