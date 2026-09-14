@@ -127,7 +127,7 @@ Shown below is the full list of attributes which you can specify within your Flu
 
 ### Global
 
-- `image_path`: The location of the icon image file which you want to use as the app launcher icon.
+- `image_path`: The location of the icon image file which you want to use as the app launcher icon. Local paths and `http(s)://` URLs are both accepted.
 
 ### Source image
 
