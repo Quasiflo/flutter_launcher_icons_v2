@@ -67,13 +67,24 @@ Future<void> createIcons(Config config, String? flavor,
   // but bad path is a hard error rather than a silent skip.
   Image image = await decodeImageFile(withPrefix(prefixPath, filePath));
 
+  // Single-size mode generates only the 1024px marketing icon (#592):
+  // dark/tinted variants are skipped entirely (no decode, no I/O).
+  final bool singleSize = config.iosConfig?.singleSize == true;
+  if (singleSize &&
+      (darkFilePath != null || tintedFilePath != null)) {
+    printStatus(
+      'Dark/tinted variants are ignored in single-size mode',
+      logger,
+    );
+  }
+
   Image? darkImage;
-  if (darkFilePath != null) {
+  if (darkFilePath != null && !singleSize) {
     darkImage = await decodeImageFile(withPrefix(prefixPath, darkFilePath));
   }
 
   Image? tintedImage;
-  if (tintedFilePath != null) {
+  if (tintedFilePath != null && !singleSize) {
     tintedImage =
         await decodeImageFile(withPrefix(prefixPath, tintedFilePath));
     if (config.iosConfig!.desaturateTintedToGrayscale) {
@@ -113,9 +124,8 @@ Future<void> createIcons(Config config, String? flavor,
   String? darkIconName;
   String? tintedIconName;
   // Single-size mode generates only the 1024px marketing icon (#592).
-  final List<IosIconTemplate> generateIosIcons =
-      config.iosConfig?.singleSize == true
-          ? <IosIconTemplate>[
+  final List<IosIconTemplate> generateIosIcons = singleSize
+      ? <IosIconTemplate>[
               IosIconTemplate(name: '-1024x1024@1x', size: 1024),
             ]
           : iosIcons;
@@ -184,7 +194,7 @@ Future<void> createIcons(Config config, String? flavor,
       catalogName,
       darkIconName,
       tintedIconName,
-      config.iosConfig?.singleSize ?? false,
+      singleSize,
       prefixPath,
     );
   } else if (customIconName != null) {
@@ -248,7 +258,7 @@ Future<void> createIcons(Config config, String? flavor,
       iconName,
       darkIconName,
       tintedIconName,
-      config.iosConfig?.singleSize ?? false,
+      singleSize,
       prefixPath,
     );
   }
@@ -296,7 +306,7 @@ Future<void> createIcons(Config config, String? flavor,
       iconName,
       darkIconName,
       tintedIconName,
-      config.iosConfig?.singleSize ?? false,
+      singleSize,
       prefixPath,
     );
   }
