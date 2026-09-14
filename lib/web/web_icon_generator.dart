@@ -110,18 +110,14 @@ class WebIconGenerator extends IconGenerator {
 
   @override
   bool validateRequirements() {
-    // check if web config exists
+    // The generate flag is enforced by [isEnabled]; only filesystem and
+    // config preconditions are checked here.
     context.logger.verbose('Checking webconfig...');
-    final webConfig = context.webConfig;
-    if (webConfig == null || !webConfig.generate) {
-      context.logger.verbose(
-        'Web config is not provided or generate is false. Skipped...',
-      );
-      return false;
-    }
+    final webConfig = context.webConfig!;
     if (webConfig.imagePath == null && context.config.imagePath == null) {
-      context.logger
-          .verbose('Invalid config. Either provide web.imagePath or imagePath');
+      context.logger.error(
+        'Invalid config. Either provide web.imagePath or imagePath',
+      );
       return false;
     }
 
@@ -138,6 +134,7 @@ class WebIconGenerator extends IconGenerator {
       context.logger.error(
         '$failedEntityPath this file or folder is required to generate web icons',
       );
+      return false;
     }
 
     return true;

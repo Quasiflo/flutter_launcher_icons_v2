@@ -33,14 +33,10 @@ class WindowsIconGenerator extends IconGenerator {
 
   @override
   bool validateRequirements() {
+    // The generate flag is enforced by [isEnabled]; only filesystem and
+    // config preconditions are checked here.
     context.logger.verbose('Validating windows config...');
-    final windowsConfig = context.windowsConfig;
-    if (windowsConfig == null || !windowsConfig.generate) {
-      context.logger.error(
-        'Windows config is not provided or windows.generate is false. Skipped...',
-      );
-      return false;
-    }
+    final windowsConfig = context.windowsConfig!;
 
     if (windowsConfig.imagePath == null && context.config.imagePath == null) {
       context.logger.error(
