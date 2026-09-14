@@ -46,10 +46,7 @@ Future<void> createDefaultIcons(
   if (filePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
-  final Image? image = await utils.decodeImageFile(filePath);
-  if (image == null) {
-    return;
-  }
+  final Image image = await utils.decodeImageFile(filePath);
   final File androidManifestFile = File(constants.androidManifestFile);
   final concurrentIconUpdates = <Future<void>>[];
   if (config.isCustomAndroidFile) {
@@ -110,11 +107,8 @@ Future<void> createAdaptiveIcons(
   if (backgroundConfig == null || foregroundImagePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
-  final Image? foregroundImage =
+  final Image foregroundImage =
       await utils.decodeImageFile(foregroundImagePath);
-  if (foregroundImage == null) {
-    return;
-  }
 
   final concurrentImageUpdates = <Future<void>>[];
   // Create adaptive icon foreground images
@@ -162,11 +156,8 @@ Future<void> createAdaptiveMonochromeIcons(
   if (monochromeImagePath == null) {
     throw const InvalidConfigException(errorMissingImagePath);
   }
-  final Image? monochromeImage =
+  final Image monochromeImage =
       await utils.decodeImageFile(monochromeImagePath);
-  if (monochromeImage == null) {
-    return;
-  }
 
   final concurrentIconUpdates = <Future<void>>[];
   // Create adaptive icon monochrome images
@@ -338,10 +329,7 @@ Future<void> _createAdaptiveBackgrounds(
   String? flavor,
 ) async {
   final String filePath = adaptiveIconBackgroundImagePath;
-  final Image? image = await utils.decodeImageFile(filePath);
-  if (image == null) {
-    return;
-  }
+  final Image image = await utils.decodeImageFile(filePath);
 
   final concurrentImageUpdates = <Future<void>>[];
   // creates a png image (ic_adaptive_background.png) for the adaptive icon background in each of the locations

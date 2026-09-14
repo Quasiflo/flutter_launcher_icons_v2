@@ -5,7 +5,6 @@ import 'package:path/path.dart' as path;
 
 import '../abs/icon_generator.dart';
 import '../constants.dart' as constants;
-import '../custom_exceptions.dart';
 import '../utils.dart' as utils;
 import 'web_template.dart';
 
@@ -71,10 +70,6 @@ class WebIconGenerator extends IconGenerator {
     context.logger
         .verbose('Decoding and loading image file at $imgFilePath...');
     final imgFile = await utils.decodeImageFile(imgFilePath);
-    if (imgFile == null) {
-      context.logger.error('Image File not found at give path $imgFilePath...');
-      throw FileNotFoundException(imgFilePath);
-    }
 
     // resolve the favicon image path and file, which is either one explicitly
     // provided or the same as the image file loaded above
@@ -86,11 +81,6 @@ class WebIconGenerator extends IconGenerator {
       faviconImgFilePath =
           path.join(context.prefixPath, faviconImagePathOverride);
       final faviconImageFile = await utils.decodeImageFile(faviconImgFilePath);
-      if (faviconImageFile == null) {
-        context.logger
-            .error('Image File not found at give path $faviconImgFilePath...');
-        throw FileNotFoundException(faviconImgFilePath);
-      }
       faviconImgFile = faviconImageFile;
     } else {
       // no favicon override, use the fallback image file

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:image/image.dart';
 import 'package:launcher_icons/abs/icon_generator.dart';
 import 'package:launcher_icons/constants.dart' as constants;
-import 'package:launcher_icons/custom_exceptions.dart';
 import 'package:launcher_icons/macos/macos_icon_effects.dart'
     as effects;
 import 'package:launcher_icons/macos/macos_icon_template.dart';
@@ -60,10 +59,6 @@ class MacOSIconGenerator extends IconGenerator {
     context.logger
         .verbose('Decoding and loading image file at $imgFilePath...');
     final imgFile = await utils.decodeImageFile(imgFilePath);
-    if (imgFile == null) {
-      context.logger.error('Image File not found at give path $imgFilePath...');
-      throw FileNotFoundException(imgFilePath);
-    }
 
     context.logger.verbose('Generating icons $imgFilePath...');
     await _generateIcons(imgFile);
