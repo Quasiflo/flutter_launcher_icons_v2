@@ -191,13 +191,16 @@ Future<void> createIcons(Config config, String? flavor,
     // If a custom icon_name is configured then the user has specified a new icon to be created
     // and for the old icon file to be kept
     final String newIconName = customIconName;
+    // Like the flavor flow, a custom name gets its own catalog so the
+    // folder matches APPICON_NAME (<custom>.appiconset, not AppIcon).
+    catalogName = newIconName;
     printStatus('Adding new iOS launcher icon', logger);
     for (IosIconTemplate template in generateIosIcons) {
       concurrentIconUpdates.add(
         saveNewIcons(
           template: template,
           image: image,
-          catalogName: 'AppIcon',
+          catalogName: catalogName,
           iconName: newIconName,
           prefixPath: prefixPath,
         ),
@@ -211,7 +214,7 @@ Future<void> createIcons(Config config, String? flavor,
           saveNewIcons(
             template: template,
             image: darkImage,
-            catalogName: 'AppIcon',
+            catalogName: catalogName,
             iconName: darkIconName,
             prefixPath: prefixPath,
           ),
@@ -226,7 +229,7 @@ Future<void> createIcons(Config config, String? flavor,
           saveNewIcons(
             template: template,
             image: tintedImage,
-            catalogName: 'AppIcon',
+            catalogName: catalogName,
             iconName: tintedIconName,
             prefixPath: prefixPath,
           ),
