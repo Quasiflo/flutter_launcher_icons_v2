@@ -32,6 +32,15 @@ class IOSConfig {
   @JsonKey(name: 'xcodeproj_path')
   final String? xcodeprojPath;
 
+  /// Flavor wiring mode: `pbxproj` (default) rewrites
+  /// `ASSETCATALOG_COMPILER_APPICON_NAME` per build configuration in
+  /// `project.pbxproj` (the Flutter docs flow); `xcconfig` instead removes
+  /// those lines for the flavor's configurations and writes
+  /// `ios/Flutter/<flavor>-<Mode>.xcconfig` overrides (assign them as the
+  /// base configuration files in Xcode once).
+  @JsonKey(name: 'flavor_mode')
+  final String flavorMode;
+
   /// IOS image_path_dark_transparent
   @JsonKey(name: 'image_path_dark_transparent')
   final String? imagePathDarkTransparent;
@@ -134,6 +143,7 @@ class IOSConfig {
     this.imagePath,
     this.iconName,
     this.xcodeprojPath,
+    this.flavorMode = 'pbxproj',
     this.imagePathDarkTransparent,
     this.imagePathTintedGrayscale,
     this.imagePathLiquidGlassIcon,

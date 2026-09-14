@@ -17,6 +17,8 @@ IOSConfig _$IOSConfigFromJson(Map json) => $checkedCreate(
           imagePath: $checkedConvert('image_path', (v) => v as String?),
           iconName: $checkedConvert('icon_name', (v) => v as String?),
           xcodeprojPath: $checkedConvert('xcodeproj_path', (v) => v as String?),
+          flavorMode:
+              $checkedConvert('flavor_mode', (v) => v as String? ?? 'pbxproj'),
           imagePathDarkTransparent: $checkedConvert(
               'image_path_dark_transparent', (v) => v as String?),
           imagePathTintedGrayscale: $checkedConvert(
@@ -72,6 +74,7 @@ IOSConfig _$IOSConfigFromJson(Map json) => $checkedCreate(
         'imagePath': 'image_path',
         'iconName': 'icon_name',
         'xcodeprojPath': 'xcodeproj_path',
+        'flavorMode': 'flavor_mode',
         'imagePathDarkTransparent': 'image_path_dark_transparent',
         'imagePathTintedGrayscale': 'image_path_tinted_grayscale',
         'imagePathLiquidGlassIcon': 'image_path_liquid_glass_icon',
@@ -104,6 +107,7 @@ Map<String, dynamic> _$IOSConfigToJson(IOSConfig instance) => <String, dynamic>{
       'image_path': instance.imagePath,
       'icon_name': instance.iconName,
       'xcodeproj_path': instance.xcodeprojPath,
+      'flavor_mode': instance.flavorMode,
       'image_path_dark_transparent': instance.imagePathDarkTransparent,
       'image_path_tinted_grayscale': instance.imagePathTintedGrayscale,
       'image_path_liquid_glass_icon': instance.imagePathLiquidGlassIcon,
