@@ -1,11 +1,11 @@
-# Flavors example
+# Flavors Example
 
 A complete, runnable Flutter app (fresh `flutter create` template) with two
 flavors — **development** and **production** — and a `launcher_icons-*` config
 that fills in **every option for every platform**. Generated outputs are
 checked in, so you can inspect exactly what each key produces.
 
-## Run the icon generation
+## Run the Icon Generation
 
 ```shell
 cd example/flavors
@@ -16,14 +16,14 @@ dart run launcher_icons -f launcher_icons-production.yaml
 
 The flavor is discovered from the file name (`launcher_icons-<flavor>.yaml`).
 
-## Run the app
+## Run the App
 
 ```shell
 flutter run --flavor development -t lib/main_development.dart
 flutter run --flavor production -t lib/main_production.dart
 ```
 
-## What each flavor shows off
+## What Each Flavor Shows Off
 
 | Area | development (transparency showcase) | production (opaque + glass showcase) |
 | --- | --- | --- |
@@ -39,7 +39,7 @@ flutter run --flavor production -t lib/main_production.dart
 catalog is always `AppIcon-<flavor>` (iOS/macOS) / `src/<flavor>/res`
 (Android), so a custom name would be ignored.
 
-## Native flavor wiring (current Flutter pattern)
+## Native Flavor Wiring (Current Flutter Pattern)
 
 - **pubspec**: `flutter.default-flavor: development`.
 - **Android** (`android/app/build.gradle.kts`): `productFlavors` with
@@ -58,7 +58,7 @@ catalog is always `AppIcon-<flavor>` (iOS/macOS) / `src/<flavor>/res`
   `output_path`. Serve that directory when building
   (`flutter build web` serves `web/` unless reconfigured).
 
-## Regenerating from scratch
+## Regenerating from Scratch
 
 Delete the generated outputs (or run the two commands above — every writer
 is idempotent) and re-run. The per-platform sources live under
