@@ -7,8 +7,9 @@
 import 'package:cli_util/cli_logging.dart' as _i2;
 import 'package:launcher_icons/config/config.dart' as _i3;
 import 'package:launcher_icons/config/windows_config.dart' as _i4;
-import 'package:launcher_icons/logger.dart' as _i5;
+import 'package:launcher_icons/logger.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -163,6 +164,15 @@ class MockWindowsConfig extends _i1.Mock implements _i4.WindowsConfig {
       ) as bool);
 
   @override
+  String get iconFilename => (super.noSuchMethod(
+        Invocation.getter(#iconFilename),
+        returnValue: _i5.dummyValue<String>(
+          this,
+          Invocation.getter(#iconFilename),
+        ),
+      ) as String);
+
+  @override
   Map<String, dynamic> toJson() => (super.noSuchMethod(
         Invocation.method(
           #toJson,
@@ -175,7 +185,7 @@ class MockWindowsConfig extends _i1.Mock implements _i4.WindowsConfig {
 /// A class which mocks [LILogger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLILogger extends _i1.Mock implements _i5.LILogger {
+class MockLILogger extends _i1.Mock implements _i6.LILogger {
   MockLILogger() {
     _i1.throwOnMissingStub(this);
   }
