@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:args/args.dart';
 import 'package:flutter_launcher_icons/android.dart' as android;
 import 'package:flutter_launcher_icons/config/config.dart';
@@ -9,6 +7,7 @@ import 'package:flutter_launcher_icons/main.dart' show defaultConfigFile;
 import 'package:flutter_launcher_icons/main.dart' as main_dart;
 import 'package:path/path.dart' show join;
 import 'package:test/test.dart';
+import 'package:test_descriptor/test_descriptor.dart' as d;
 
 // Unit tests for main.dart
 void main() {
@@ -70,77 +69,76 @@ void main() {
         abbr: 'p',
         defaultsTo: '.',
       );
-    final String testDir =
-        join('.dart_tool', 'flutter_launcher_icons', 'test', 'config_file');
 
-    late String currentDirectory;
-    Future<void> setCurrentDirectory(String path) async {
-      path = join(testDir, path);
-      await Directory(path).create(recursive: true);
-      Directory.current = path;
+    // NOTE: these tests never change the process working directory (see the
+    // test-isolation note in TODO.md §9). Every fixture lives in an absolute
+    // test_descriptor sandbox passed via `-p`.
+    Future<String> createCase(
+      String name,
+      List<d.Descriptor> contents,
+    ) async {
+      await d.dir(name, contents).create();
+      return join(d.sandbox, name);
     }
 
-    setUp(() {
-      currentDirectory = Directory.current.path;
-    });
-    tearDown(() {
-      Directory.current = currentDirectory;
-    });
-
     test('default', () async {
-      await setCurrentDirectory('default');
-      await File('flutter_launcher_icons.yaml').writeAsString('''
+      final dir = await createCase('default', [
+        d.file('flutter_launcher_icons.yaml', '''
 flutter_launcher_icons:
   android:
     generate: true
   ios:
     generate: false
-''');
-      final ArgResults argResults = parser.parse(<String>[]);
+'''),
+      ]);
+      final ArgResults argResults = parser.parse(<String>['-p', dir]);
       final Config? config = main_dart.loadConfigFileFromArgResults(argResults);
       expect(config, isNotNull);
       expect(config!.androidConfig!.generate, isTrue);
     });
     test('default_use_pubspec', () async {
-      await setCurrentDirectory('pubspec_only');
-      await File('pubspec.yaml').writeAsString('''
+      final dir = await createCase('pubspec_only', [
+        d.file('pubspec.yaml', '''
 flutter_launcher_icons:
   android:
     generate: true
   ios:
     generate: false
-''');
-      ArgResults argResults = parser.parse(<String>[]);
+'''),
+      ]);
+      ArgResults argResults = parser.parse(<String>['-p', dir]);
       final Config? config = main_dart.loadConfigFileFromArgResults(argResults);
       expect(config, isNotNull);
       expect(config!.iosConfig!.generate, isFalse);
 
       // read pubspec if provided file is not found
-      argResults = parser.parse(<String>['-f', defaultConfigFile]);
+      argResults =
+          parser.parse(<String>['-f', defaultConfigFile, '-p', dir]);
       expect(main_dart.loadConfigFileFromArgResults(argResults), isNotNull);
     });
 
     group('stale template shadowing (#628)', () {
-      Future<void> writeStaleYamlAndRealPubspec() async {
-        await File('flutter_launcher_icons.yaml').writeAsString('''
+      Future<String> writeStaleYamlAndRealPubspec(String name) async {
+        return createCase(name, [
+          d.file('flutter_launcher_icons.yaml', '''
 flutter_launcher_icons:
   image_path: "assets/icon/icon.png"
   android:
     generate: true
-''');
-        await File('pubspec.yaml').writeAsString('''
+'''),
+          d.file('pubspec.yaml', '''
 flutter_launcher_icons:
   image_path: "real.png"
   android:
     generate: true
-''');
-        await File('real.png').writeAsBytes([0]);
+'''),
+          d.file('real.png', 'png-bytes'),
+        ]);
       }
 
       test('prefers pubspec when default file is a stale template', () async {
-        await setCurrentDirectory('stale_template');
-        await writeStaleYamlAndRealPubspec();
-        final ArgResults argResults = parser.parse(<String>[]);
+        final dir = await writeStaleYamlAndRealPubspec('stale_template');
+        final ArgResults argResults = parser.parse(<String>['-p', dir]);
         final Config? config =
             main_dart.loadConfigFileFromArgResults(argResults);
         expect(config, isNotNull);
@@ -148,10 +146,10 @@ flutter_launcher_icons:
       });
 
       test('explicit -f still honors the given file', () async {
-        await setCurrentDirectory('stale_template_explicit');
-        await writeStaleYamlAndRealPubspec();
+        final dir =
+            await writeStaleYamlAndRealPubspec('stale_template_explicit');
         final ArgResults argResults = parser.parse(
-          <String>['-f', 'flutter_launcher_icons.yaml'],
+          <String>['-f', 'flutter_launcher_icons.yaml', '-p', dir],
         );
         final Config? config = main_dart.loadConfigFileFromArgResults(
           argResults,
@@ -162,22 +160,23 @@ flutter_launcher_icons:
       });
 
       test('prefers the file when its images exist', () async {
-        await setCurrentDirectory('both_real');
-        await File('flutter_launcher_icons.yaml').writeAsString('''
+        final dir = await createCase('both_real', [
+          d.file('flutter_launcher_icons.yaml', '''
 flutter_launcher_icons:
   image_path: "yaml.png"
   android:
     generate: true
-''');
-        await File('pubspec.yaml').writeAsString('''
+'''),
+          d.file('pubspec.yaml', '''
 flutter_launcher_icons:
   image_path: "real.png"
   android:
     generate: true
-''');
-        await File('yaml.png').writeAsBytes([0]);
-        await File('real.png').writeAsBytes([0]);
-        final ArgResults argResults = parser.parse(<String>[]);
+'''),
+          d.file('yaml.png', 'png-bytes'),
+          d.file('real.png', 'png-bytes'),
+        ]);
+        final ArgResults argResults = parser.parse(<String>['-p', dir]);
         final Config? config =
             main_dart.loadConfigFileFromArgResults(argResults);
         expect(config, isNotNull);
@@ -185,26 +184,30 @@ flutter_launcher_icons:
       });
     });
 
-    test('custom', () async {      await setCurrentDirectory('custom');
-      await File('custom.yaml').writeAsString('''
+    test('custom', () async {
+      final dir = await createCase('custom', [
+        d.file('custom.yaml', '''
 flutter_launcher_icons:
   android:
     generate: true
   ios:
     generate: true
-''');
+'''),
+      ]);
       // if no argument set, should fail
-      ArgResults argResults = parser.parse(<String>['-f', 'custom.yaml']);
+      ArgResults argResults =
+          parser.parse(<String>['-f', 'custom.yaml', '-p', dir]);
       final Config? config = main_dart.loadConfigFileFromArgResults(argResults);
       expect(config, isNotNull);
       expect(config!.iosConfig!.generate, isTrue);
 
       // should fail if no argument
-      argResults = parser.parse(<String>[]);
+      argResults = parser.parse(<String>['-p', dir]);
       expect(main_dart.loadConfigFileFromArgResults(argResults), isNull);
 
       // or missing file
-      argResults = parser.parse(<String>['-f', 'missing_custom.yaml']);
+      argResults =
+          parser.parse(<String>['-f', 'missing_custom.yaml', '-p', dir]);
       expect(main_dart.loadConfigFileFromArgResults(argResults), isNull);
     });
   });
