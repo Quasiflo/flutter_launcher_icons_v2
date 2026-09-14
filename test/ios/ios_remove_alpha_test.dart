@@ -47,12 +47,14 @@ void main() {
       await File('icon.png').writeAsBytes(encodePng(source));
 
       // Minimal runner layout expected by the generator.
-      await Directory(path.join(
-        'ios',
-        'Runner',
-        'Assets.xcassets',
-        'AppIcon.appiconset',
-      )).create(recursive: true);
+      await Directory(
+        path.join(
+          'ios',
+          'Runner',
+          'Assets.xcassets',
+          'AppIcon.appiconset',
+        ),
+      ).create(recursive: true);
       final pbxproj =
           File(path.join('ios', 'Runner.xcodeproj', 'project.pbxproj'));
       await pbxproj.create(recursive: true);
