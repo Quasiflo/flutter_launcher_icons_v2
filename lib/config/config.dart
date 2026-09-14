@@ -225,5 +225,5 @@ class Config {
   Map<String, dynamic> toJson() => _$ConfigToJson(this);
 
   @override
-  String toString() => 'FlutterLauncherIconsConfig: ${toJson()}';
+  String toString() => 'LauncherIconsConfig: ${toJson()}';
 }

@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs
 
 import 'dart:io';
 
@@ -11,13 +10,20 @@ import 'package:launcher_icons/logger.dart';
 import 'package:launcher_icons/utils.dart' as utils;
 import 'package:launcher_icons/xml_templates.dart' as xml_template;
 
+/// A legacy launcher icon density target: [directoryName] under the
+/// flavor-aware res folder, rendered at [size] px square.
 class AndroidIconTemplate {
+  /// Creates an instance of [AndroidIconTemplate].
   AndroidIconTemplate({required this.size, required this.directoryName});
 
+  /// Resource directory name (e.g. `mipmap-xxxhdpi`).
   final String directoryName;
+
+  /// Icon edge length in pixels.
   final int size;
 }
 
+/// Adaptive foreground/background density targets (108dp layers).
 final List<AndroidIconTemplate> adaptiveForegroundIcons = <AndroidIconTemplate>[
   AndroidIconTemplate(directoryName: 'drawable-mdpi', size: 108),
   AndroidIconTemplate(directoryName: 'drawable-hdpi', size: 162),
@@ -26,6 +32,7 @@ final List<AndroidIconTemplate> adaptiveForegroundIcons = <AndroidIconTemplate>[
   AndroidIconTemplate(directoryName: 'drawable-xxxhdpi', size: 432),
 ];
 
+/// Legacy mipmap density targets (48dp across 1x–4x).
 List<AndroidIconTemplate> androidIcons = <AndroidIconTemplate>[
   AndroidIconTemplate(directoryName: 'mipmap-mdpi', size: 48),
   AndroidIconTemplate(directoryName: 'mipmap-hdpi', size: 72),
@@ -34,6 +41,8 @@ List<AndroidIconTemplate> androidIcons = <AndroidIconTemplate>[
   AndroidIconTemplate(directoryName: 'mipmap-xxxhdpi', size: 192),
 ];
 
+/// Creates the legacy mipmap icons (overwriting defaults, or adding a new
+/// icon when `android.icon_name` is set) and wires the manifest.
 Future<void> createDefaultIcons(
   Config config,
   String? flavor, {
@@ -163,6 +172,8 @@ bool isAndroidIconNameCorrectFormat(String iconName) {
   return true;
 }
 
+/// Creates the adaptive foreground/background icons and `colors.xml`
+/// entries.
 Future<void> createAdaptiveIcons(
   Config config,
   String? flavor, {
@@ -224,6 +235,7 @@ Future<void> createAdaptiveIcons(
   await Future.wait(concurrentImageUpdates);
 }
 
+/// Creates the adaptive monochrome icons.
 Future<void> createAdaptiveMonochromeIcons(
   Config config,
   String? flavor, {
@@ -266,6 +278,7 @@ String androidAdaptiveRoundXmlName(Config config) {
       : constants.androidAdaptiveRoundIconName;
 }
 
+/// Creates the opt-in adaptive round icons.
 Future<void> createAdaptiveRoundIcons(
   Config config,
   String? flavor, {
@@ -338,6 +351,8 @@ Future<void> createPlayStoreIcon(
   }
 }
 
+/// Creates the `mipmap-anydpi-v26` adaptive-icon xml (plus the round
+/// variant when configured), clearing stale adaptive artifacts otherwise.
 Future<void> createMipmapXmlFile(
   Config config,
   String? flavor, {

@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs
 
 import 'dart:io';
 
@@ -18,13 +17,25 @@ import 'package:launcher_icons/web/web_icon_generator.dart';
 import 'package:launcher_icons/windows/windows_icon_generator.dart';
 import 'package:path/path.dart' as path;
 
+/// CLI option name for the config file path (`-f`).
 const String fileOption = 'file';
+
+/// CLI flag name for usage help (`-h`).
 const String helpFlag = 'help';
+
+/// CLI flag name for verbose logging (`-v`).
 const String verboseFlag = 'verbose';
+
+/// CLI option name for the project-root prefix (`-p`).
 const String prefixOption = 'prefix';
+
+/// Default config file name.
 const String defaultConfigFile = 'launcher_icons.yaml';
+
+/// File-name pattern for per-flavor configs (`launcher_icons-<flavor>.yaml`).
 const String flavorConfigFilePattern = r'^launcher_icons-(.*).yaml$';
 
+/// Discovers flavor names by scanning [searchPath] for flavor config files.
 Future<List<String>> getFlavors({String searchPath = '.'}) async {
   final List<String> flavors = [];
 
@@ -50,6 +61,9 @@ String? explicitFlavorFromArgs(ArgResults argResults) {
   return match?.group(1);
 }
 
+/// CLI entry point: parses [arguments], loads configs (including the
+/// flavor loop), and generates icons, exiting 0/1/2 on success,
+/// generation failure, or config/CLI failure.
 Future<void> createIconsFromArguments(List<String> arguments) async {
   final ArgParser parser = ArgParser(allowTrailingOptions: true);
   parser
@@ -196,6 +210,8 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
   }
 }
 
+/// Generates icons for every enabled platform in [flutterConfigs],
+/// throwing when no platform is enabled or a platform run fails.
 Future<void> createIconsFromConfig(
   Config flutterConfigs,
   LILogger logger,
@@ -237,6 +253,8 @@ Future<void> createIconsFromConfig(
   );
 }
 
+/// Loads the config named by `-f` (falling back to `pubspec.yaml`),
+/// preferring pubspec when the default file is an unedited template.
 Config? loadConfigFileFromArgResults(
   ArgResults argResults, {
   bool explicitFile = false,

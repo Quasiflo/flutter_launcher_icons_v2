@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs
 
 import 'dart:convert';
 import 'dart:io';
@@ -39,11 +38,15 @@ void printStatus(String message, [LILogger? logger]) {
   }
 }
 
+/// Formats [e] for CLI output as `✗ ERROR: <Type>` plus [error] detail.
 String generateError(Exception e, String? error) {
   final errorOutput = error == null ? '' : ' \n$error';
   return '\n✗ ERROR: ${(e).runtimeType.toString()}$errorOutput';
 }
 
+/// Decodes the image at [filePath], throwing [FileSystemException] when
+/// missing and [NoDecoderForImageFormatException] when undecodable.
+/// Never returns null.
 Future<Image> decodeImageFile(String filePath) async {
   final bytes = await File(filePath).readAsBytes();
   final image = decodeImage(bytes);
@@ -131,4 +134,5 @@ String? areFSEntiesExist(List<String> paths) {
   return null;
 }
 
+/// Config file name for [flavor] (e.g. `launcher_icons-staging.yaml`).
 String flavorConfigFile(String flavor) => 'launcher_icons-$flavor.yaml';
