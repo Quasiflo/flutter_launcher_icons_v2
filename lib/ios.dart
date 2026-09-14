@@ -522,6 +522,7 @@ Future<void> changeIosLauncherIcon(String iconName, String? flavor) async {
 
   bool onConfigurationSection = false;
   String? currentConfig;
+  bool replacedAny = false;
 
   for (int x = 0; x < lines.length; x++) {
     final String line = lines[x];
@@ -542,12 +543,30 @@ Future<void> changeIosLauncherIcon(String iconName, String? flavor) async {
           line.contains('ASSETCATALOG') &&
           line.contains('APPICON_NAME')) {
         lines[x] = line.replaceAll(RegExp('\=(.*);'), '= $iconName;');
+        replacedAny = true;
       }
     }
   }
 
+  if (flavor != null && !replacedAny) {
+    // The flavor catalog was generated on disk but Xcode will keep building
+    // the previous icon set. Warn loudly instead of reporting silent
+    // success (#341).
+    print(
+      '\nWARNING: No ASSETCATALOG_COMPILER_APPICON_NAME entry for "$flavor" '
+      'configurations was found in project.pbxproj, so Xcode will keep using '
+      'the previous icon set. Set the Primary App Icon Set Name to '
+      '"$iconName" for the $flavor configurations in Xcode, or add the '
+      'missing build setting.\n',
+    );
+  }
+
   final String entireFile = '${lines.join('\n')}\n';
-  await iOSConfigFile.writeAsString(entireFile);
+  // Write via temp-file rename so a crash cannot leave a half-written,
+  // corrupt project file behind (#636).
+  final tmpFile = File('${iOSConfigFile.path}.tmp');
+  await tmpFile.writeAsString(entireFile);
+  await tmpFile.rename(iOSConfigFile.path);
 }
 
 /// Create the Contents.json file

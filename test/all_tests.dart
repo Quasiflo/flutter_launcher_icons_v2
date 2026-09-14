@@ -4,6 +4,7 @@ import 'abs/icon_generator_test.dart' as icon_generator_test;
 import 'android_test.dart' as android_test;
 import 'config_test.dart' as fli_config;
 import 'custom_exceptions_test.dart' as custom_exceptions_test;
+import 'ios/ios_change_icon_test.dart' as ios_change_icon_test;
 import 'ios/ios_liquid_glass_test.dart' as ios_liquid_glass_test;
 import 'ios/ios_pbxproj_test.dart' as ios_pbxproj_test;
 import 'ios/ios_remove_alpha_test.dart' as ios_remove_alpha_test;
@@ -28,6 +29,7 @@ void main() {
     // android
     android_test.main();
     // ios
+    ios_change_icon_test.main();
     ios_liquid_glass_test.main();
     ios_pbxproj_test.main();
     ios_remove_alpha_test.main();
