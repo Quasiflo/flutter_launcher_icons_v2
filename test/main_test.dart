@@ -12,7 +12,24 @@ import 'package:test_descriptor/test_descriptor.dart' as d;
 // Unit tests for main.dart
 void main() {
   test('iOS icon list is correct size', () {
-    expect(ios.iosIcons.length, 16);
+    expect(ios.iosIcons.length, 20);
+  });
+
+  test('iOS icon list includes 1x switcher sizes (#661)', () {
+    for (final name in ['-20x20@1x', '-29x29@1x', '-40x40@1x', '-76x76@1x']) {
+      expect(
+        ios.iosIcons.map((template) => template.name),
+        contains(name),
+      );
+    }
+    // Both the base and the dark-appearance entries must exist in Contents.
+    final contents = ios.createImageList('AppIcon', 'AppIcon-Dark', null);
+    for (final size in ['20x20', '29x29', '40x40', '76x76']) {
+      final matches = contents
+          .where((entry) => entry['size'] == size && entry['scale'] == '1x')
+          .toList();
+      expect(matches.length, equals(2), reason: size);
+    }
   });
 
   test('iOS legacy icon list is correct size', () {
@@ -34,8 +51,8 @@ void main() {
       () {
     expect(
       ios.createImageList('blah', 'dark-blah', null).length,
-      16 * 2 + 1,
-    ); // 16 normal, 16 dark icons + 1 marketing icon
+      20 * 2 + 1,
+    ); // 20 normal, 20 dark icons + 1 marketing icon
   });
 
   test(
@@ -43,8 +60,8 @@ void main() {
       () {
     expect(
       ios.createImageList('blah', null, 'tinted-blah').length,
-      16 * 2 + 1,
-    ); // 16 normal, 16 tinted icons + 1 marketing icon
+      20 * 2 + 1,
+    ); // 20 normal, 20 tinted icons + 1 marketing icon
   });
 
   test(
@@ -52,8 +69,8 @@ void main() {
       () {
     expect(
       ios.createImageList('blah', 'dark-blah', 'tinted-blah').length,
-      16 * 3 + 1,
-    ); // 16 normal, 16 dark, 16 tinted icons + 1 marketing icon
+      20 * 3 + 1,
+    ); // 20 normal, 20 dark, 20 tinted icons + 1 marketing icon
   });
 
   group('config file from args', () {

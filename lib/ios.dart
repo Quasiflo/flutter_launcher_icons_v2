@@ -48,12 +48,15 @@ List<IosIconTemplate> legacyIosIcons = <IosIconTemplate>[
 ];
 
 List<IosIconTemplate> iosIcons = <IosIconTemplate>[
+  IosIconTemplate(name: '-20x20@1x', size: 20),
   IosIconTemplate(name: '-20x20@2x', size: 40),
   IosIconTemplate(name: '-20x20@3x', size: 60),
+  IosIconTemplate(name: '-29x29@1x', size: 29),
   IosIconTemplate(name: '-29x29@2x', size: 58),
   IosIconTemplate(name: '-29x29@3x', size: 87),
   IosIconTemplate(name: '-38x38@2x', size: 76),
   IosIconTemplate(name: '-38x38@3x', size: 114),
+  IosIconTemplate(name: '-40x40@1x', size: 40),
   IosIconTemplate(name: '-40x40@2x', size: 80),
   IosIconTemplate(name: '-40x40@3x', size: 120),
   IosIconTemplate(name: '-60x60@2x', size: 120),
@@ -61,6 +64,7 @@ List<IosIconTemplate> iosIcons = <IosIconTemplate>[
   IosIconTemplate(name: '-64x64@2x', size: 128),
   IosIconTemplate(name: '-64x64@3x', size: 192),
   IosIconTemplate(name: '-68x68@2x', size: 136),
+  IosIconTemplate(name: '-76x76@1x', size: 76),
   IosIconTemplate(name: '-76x76@2x', size: 152),
   IosIconTemplate(name: '-83.5x83.5@2x', size: 167),
   IosIconTemplate(name: '-1024x1024@1x', size: 1024),
@@ -758,13 +762,13 @@ List<Map<String, dynamic>> createImageList(
       'size': '20x20',
       'idiom': 'universal',
       'platform': 'ios',
-      'scales': ['2x', '3x'],
+      'scales': ['1x', '2x', '3x'],
     },
     {
       'size': '29x29',
       'idiom': 'universal',
       'platform': 'ios',
-      'scales': ['2x', '3x'],
+      'scales': ['1x', '2x', '3x'],
     },
     {
       'size': '38x38',
@@ -776,7 +780,7 @@ List<Map<String, dynamic>> createImageList(
       'size': '40x40',
       'idiom': 'universal',
       'platform': 'ios',
-      'scales': ['2x', '3x'],
+      'scales': ['1x', '2x', '3x'],
     },
     {
       'size': '60x60',
@@ -800,7 +804,7 @@ List<Map<String, dynamic>> createImageList(
       'size': '76x76',
       'idiom': 'universal',
       'platform': 'ios',
-      'scales': ['2x'],
+      'scales': ['1x', '2x'],
     },
     {
       'size': '83.5x83.5',
