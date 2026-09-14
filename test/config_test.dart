@@ -114,6 +114,7 @@ void main() {
           equals(<String, dynamic>{
             'generate': true,
             'image_path': 'app_icon.png',
+            'icon_filename': 'app_icon.ico',
           }),
         );
         // macos
@@ -291,6 +292,7 @@ void main() {
           equals(<String, dynamic>{
             'generate': true,
             'image_path': 'app_icon.png',
+            'icon_filename': 'app_icon.ico',
           }),
         );
         // macos
@@ -393,6 +395,7 @@ void main() {
           equals(<String, dynamic>{
             'generate': true,
             'image_path': 'app_icon.png',
+            'icon_filename': 'app_icon.ico',
           }),
         );
         // macos

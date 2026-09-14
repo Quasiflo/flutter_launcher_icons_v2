@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 import 'dart:io';
 
+import 'package:image/image.dart';
 import 'package:launcher_icons/abs/icon_generator.dart';
 import 'package:launcher_icons/config/config.dart';
 import 'package:launcher_icons/config/windows_config.dart';
@@ -18,7 +19,8 @@ import 'windows_icon_generator_test.mocks.dart';
 
 /// Parses the ICONDIR of a `.ico` file, returning one entry per embedded
 /// image. Width/height of `0` means 256 (per the ICO spec).
-List<({int width, int height, int offset, int size})> _parseIcoDirectory(
+List<({int width, int height, int offset, int size, int planes, int bitCount})>
+    _parseIcoDirectory(
   List<int> bytes,
 ) {
   if (bytes.length < 6) {
@@ -41,8 +43,22 @@ List<({int width, int height, int offset, int size})> _parseIcoDirectory(
             bytes[6 + i * 16 + 13] << 8 |
             bytes[6 + i * 16 + 14] << 16 |
             bytes[6 + i * 16 + 15] << 24,
+        planes: bytes[6 + i * 16 + 4] | bytes[6 + i * 16 + 5] << 8,
+        bitCount: bytes[6 + i * 16 + 6] | bytes[6 + i * 16 + 7] << 8,
       ),
   ];
+}
+
+/// Captures `info` output so warning routing can be asserted.
+class _RecordingLogger extends LILogger {
+  final List<String> messages = <String>[];
+
+  _RecordingLogger() : super(false);
+
+  @override
+  void info(Object? message) {
+    messages.add(message.toString());
+  }
 }
 
 @GenerateMocks([Config, WindowsConfig, LILogger])
@@ -217,11 +233,11 @@ void main() {
       int toPixels(int byte) => byte == 0 ? 256 : byte;
       expect(
         entries.map((e) => toPixels(e.width)).toList(),
-        [16, 24, 32, 48, 256],
+        [16, 24, 32, 40, 48, 64, 256],
       );
       expect(
         entries.map((e) => toPixels(e.height)).toList(),
-        [16, 24, 32, 48, 256],
+        [16, 24, 32, 40, 48, 64, 256],
       );
 
       final firstDataOffset = 6 + entries.length * 16;
@@ -230,6 +246,78 @@ void main() {
         expect(entries[i].offset, entries[i - 1].offset + entries[i - 1].size);
       }
       expect(entries.last.offset + entries.last.size, icoBytes.length);
+
+      // Every frame must stay PNG-compressed 32bpp so a `package:image`
+      // upgrade cannot silently regress to BMP. (`package:image` emits
+      // planes=0, which Windows accepts; locked here to detect change.)
+      for (final entry in entries) {
+        expect(
+          icoBytes.sublist(entry.offset, entry.offset + 4),
+          [0x89, 0x50, 0x4E, 0x47],
+        );
+        expect(entry.planes, equals(0));
+        expect(entry.bitCount, equals(32));
+      }
+    });
+
+    test('icon_filename overrides the output name (flavors)', () async {
+      final config = Config.fromJson(<String, dynamic>{
+        'windows': {
+          'generate': true,
+          'image_path': 'app_icon.png',
+          'icon_filename': 'app_icon_staging.ico',
+        },
+      });
+      final customGenerator = WindowsIconGenerator(
+        IconGeneratorContext(
+          config: config,
+          prefixPath: prefixPath,
+          logger: LILogger(false),
+        ),
+      );
+
+      expect(customGenerator.validateRequirements(), isTrue);
+      await customGenerator.createIcons();
+
+      expect(
+        File(
+          path.join(
+            prefixPath,
+            'windows',
+            'runner',
+            'resources',
+            'app_icon_staging.ico',
+          ),
+        ).existsSync(),
+        isTrue,
+      );
+    });
+
+    test('warns when the source is smaller than 256px', () async {
+      final small = Image(width: 64, height: 64, numChannels: 3);
+      await File(path.join(prefixPath, 'small.png'))
+          .writeAsBytes(encodePng(small));
+      final config = Config.fromJson(<String, dynamic>{
+        'windows': {
+          'generate': true,
+          'image_path': 'small.png',
+        },
+      });
+      final logger = _RecordingLogger();
+      final smallGenerator = WindowsIconGenerator(
+        IconGeneratorContext(
+          config: config,
+          prefixPath: prefixPath,
+          logger: logger,
+        ),
+      );
+
+      await smallGenerator.createIcons();
+
+      expect(
+        logger.messages.any((m) => m.contains('256')),
+        isTrue,
+      );
     });
   });
 }
