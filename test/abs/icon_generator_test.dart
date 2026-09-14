@@ -1,5 +1,6 @@
 import 'package:launcher_icons/abs/icon_generator.dart';
 import 'package:launcher_icons/config/config.dart';
+import 'package:launcher_icons/custom_exceptions.dart';
 import 'package:launcher_icons/logger.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -73,20 +74,61 @@ void main() {
       verifyNever(mockGenerator.createIcons());
     });
 
-    test('should skip platform if any exception occurred', () {
+    test('a platform failure throws IconGenerationException', () async {
       when(mockGenerator.validateRequirements()).thenReturn(true);
       when(mockGenerator.createIcons())
-          .thenThrow(Exception('should-skip-platform'));
-      generateIconsFor(
-        config: mockLIConfig,
-        flavor: null,
-        prefixPath: prefixPath,
-        logger: logger,
-        platforms: (context) => [mockGenerator],
+          .thenThrow(Exception('should-fail-platform'));
+      await expectLater(
+        generateIconsFor(
+          config: mockLIConfig,
+          flavor: null,
+          prefixPath: prefixPath,
+          logger: logger,
+          platforms: (context) => [mockGenerator],
+        ),
+        throwsA(
+          isA<IconGenerationException>().having(
+            (e) => e.failedPlatforms,
+            'failedPlatforms',
+            equals(['Mock']),
+          ),
+        ),
       );
       verify(mockGenerator.validateRequirements()).called(equals(1));
       verify(mockGenerator.createIcons()).called(equals(1));
-      expect(() => mockGenerator.createIcons(), throwsException);
+    });
+
+    test('a failing platform does not stop the remaining platforms',
+        () async {
+      final failingGenerator = MockIconGenerator();
+      when(failingGenerator.platformName).thenReturn('Failing');
+      when(failingGenerator.isEnabled).thenReturn(true);
+      when(failingGenerator.validateRequirements()).thenReturn(true);
+      when(failingGenerator.createIcons())
+          .thenThrow(Exception('should-fail-platform'));
+
+      when(mockGenerator.platformName).thenReturn('Healthy');
+      when(mockGenerator.validateRequirements()).thenReturn(true);
+      when(mockGenerator.createIcons()).thenAnswer((_) async {});
+
+      await expectLater(
+        generateIconsFor(
+          config: mockLIConfig,
+          flavor: null,
+          prefixPath: prefixPath,
+          logger: logger,
+          platforms: (context) => [failingGenerator, mockGenerator],
+        ),
+        throwsA(
+          isA<IconGenerationException>().having(
+            (e) => e.failedPlatforms,
+            'failedPlatforms',
+            equals(['Failing']),
+          ),
+        ),
+      );
+      verify(failingGenerator.createIcons()).called(equals(1));
+      verify(mockGenerator.createIcons()).called(equals(1));
     });
   });
 }

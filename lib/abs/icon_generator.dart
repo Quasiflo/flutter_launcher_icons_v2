@@ -5,6 +5,7 @@ import 'package:launcher_icons/config/linux_config.dart';
 import 'package:launcher_icons/config/macos_config.dart';
 import 'package:launcher_icons/config/web_config.dart';
 import 'package:launcher_icons/config/windows_config.dart';
+import 'package:launcher_icons/custom_exceptions.dart';
 import 'package:launcher_icons/logger.dart';
 
 /// A base class to generate icons
@@ -81,6 +82,7 @@ Future<void> generateIconsFor({
   required LILogger logger,
   required List<IconGenerator> Function(IconGeneratorContext context) platforms,
 }) async {
+  final failedPlatforms = <String>[];
   try {
     final platformList = platforms(
       IconGeneratorContext(
@@ -105,7 +107,9 @@ Future<void> generateIconsFor({
       logger.verbose(
         'Validating platform requirements for ${platform.platformName}',
       );
-      // in case a platform throws an exception it should not effect other platforms
+      // A failing platform must not stop the remaining ones, but the run
+      // as a whole still fails: failures are collected and reported together
+      // via [IconGenerationException] below.
       try {
         if (!platform.validateRequirements()) {
           logger.error(
@@ -121,6 +125,7 @@ Future<void> generateIconsFor({
         logger
           ..error(e.toString())
           ..verbose(st);
+        failedPlatforms.add(platform.platformName);
         continue;
       }
     }
@@ -132,5 +137,8 @@ Future<void> generateIconsFor({
       ..error(e.toString())
       ..verbose(st);
     exit(1);
+  }
+  if (failedPlatforms.isNotEmpty) {
+    throw IconGenerationException(failedPlatforms);
   }
 }
