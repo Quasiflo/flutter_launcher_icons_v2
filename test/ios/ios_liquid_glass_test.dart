@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:launcher_icons/config/config.dart';
-import 'package:launcher_icons/constants.dart';
-import 'package:launcher_icons/custom_exceptions.dart';
-import 'package:launcher_icons/ios_liquid_glass_icon_generator.dart';
+import 'package:launcher_icons/src/config/config.dart';
+import 'package:launcher_icons/src/core/constants.dart';
+import 'package:launcher_icons/src/core/custom_exceptions.dart';
+import 'package:launcher_icons/src/platforms/ios/liquid_glass_icon_generator.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
-// Unit tests for ios_liquid_glass_icon_generator.dart
+// Unit tests for the liquid glass icon generator (lib/src/platforms/ios).
 void main() {
   group('hasLiquidGlassIconConfig', () {
     test('is true when ios.image_path_liquid_glass_icon is set', () {

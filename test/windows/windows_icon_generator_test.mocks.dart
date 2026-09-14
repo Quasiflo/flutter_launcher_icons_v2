@@ -5,9 +5,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 
 import 'package:cli_util/cli_logging.dart' as _i2;
-import 'package:launcher_icons/config/config.dart' as _i3;
-import 'package:launcher_icons/config/windows_config.dart' as _i4;
-import 'package:launcher_icons/logger.dart' as _i6;
+import 'package:launcher_icons/src/config/config.dart' as _i3;
+import 'package:launcher_icons/src/config/windows_config.dart' as _i4;
+import 'package:launcher_icons/src/core/logger.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i5;
 

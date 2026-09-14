@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:launcher_icons/abs/icon_generator.dart';
-import 'package:launcher_icons/config/config.dart';
-import 'package:launcher_icons/config/linux_config.dart';
-import 'package:launcher_icons/linux/linux_icon_generator.dart';
-import 'package:launcher_icons/logger.dart';
+import 'package:launcher_icons/src/config/config.dart';
+import 'package:launcher_icons/src/config/linux_config.dart';
+import 'package:launcher_icons/src/core/icon_generator.dart';
+import 'package:launcher_icons/src/core/logger.dart';
+import 'package:launcher_icons/src/platforms/linux/linux_icon_generator.dart';
 import 'package:test/test.dart';
 
 const _ccBody = '''

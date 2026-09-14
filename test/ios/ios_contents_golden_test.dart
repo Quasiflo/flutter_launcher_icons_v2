@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:launcher_icons/ios.dart' as ios;
+import 'package:launcher_icons/src/platforms/ios/ios.dart' as ios;
 import 'package:test/test.dart';
 
 // Golden tests for the Contents.json schema: the modern (Xcode 14+)

@@ -1,4 +1,4 @@
-import 'package:launcher_icons/utils.dart';
+import 'package:launcher_icons/src/core/utils.dart';
 
 /// Base class for all launcher_icons exceptions.
 ///

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:launcher_icons/main.dart' as main_dart;
+import 'package:launcher_icons/src/cli.dart' as main_dart;
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 

@@ -1,4 +1,4 @@
-import 'package:launcher_icons/macos/macos_icon_template.dart';
+import 'package:launcher_icons/src/platforms/macos/macos_icon_template.dart';
 import 'package:test/test.dart';
 
 void main() {

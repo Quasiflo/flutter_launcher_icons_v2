@@ -6,8 +6,8 @@
 
 import 'dart:async' as _i5;
 
-import 'package:launcher_icons/abs/icon_generator.dart' as _i2;
-import 'package:launcher_icons/config/config.dart' as _i3;
+import 'package:launcher_icons/src/core/icon_generator.dart' as _i2;
+import 'package:launcher_icons/src/config/config.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i4;
 

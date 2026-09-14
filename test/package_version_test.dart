@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:launcher_icons/pubspec_parser.dart';
+import 'package:launcher_icons/src/core/pubspec_parser.dart';
 import 'package:launcher_icons/src/version.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';

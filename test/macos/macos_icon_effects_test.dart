@@ -1,7 +1,7 @@
 import 'package:image/image.dart';
-import 'package:launcher_icons/config/macos_config.dart';
-import 'package:launcher_icons/macos/macos_icon_effects.dart';
-import 'package:launcher_icons/utils.dart' as utils;
+import 'package:launcher_icons/src/config/macos_config.dart';
+import 'package:launcher_icons/src/core/utils.dart' as utils;
+import 'package:launcher_icons/src/platforms/macos/macos_icon_effects.dart';
 import 'package:test/test.dart';
 
 Image _solidRed([int size = 64]) {

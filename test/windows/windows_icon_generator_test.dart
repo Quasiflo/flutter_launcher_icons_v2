@@ -2,12 +2,12 @@
 import 'dart:io';
 
 import 'package:image/image.dart';
-import 'package:launcher_icons/abs/icon_generator.dart';
-import 'package:launcher_icons/config/config.dart';
-import 'package:launcher_icons/config/windows_config.dart';
-import 'package:launcher_icons/custom_exceptions.dart';
-import 'package:launcher_icons/logger.dart';
-import 'package:launcher_icons/windows/windows_icon_generator.dart';
+import 'package:launcher_icons/src/config/config.dart';
+import 'package:launcher_icons/src/config/windows_config.dart';
+import 'package:launcher_icons/src/core/custom_exceptions.dart';
+import 'package:launcher_icons/src/core/icon_generator.dart';
+import 'package:launcher_icons/src/core/logger.dart';
+import 'package:launcher_icons/src/platforms/windows/windows_icon_generator.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:path/path.dart' as path;

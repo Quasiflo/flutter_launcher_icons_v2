@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:launcher_icons/config/android_config.dart';
-import 'package:launcher_icons/config/config.dart';
-import 'package:launcher_icons/config/ios_config.dart';
-import 'package:launcher_icons/config/linux_config.dart';
-import 'package:launcher_icons/config/macos_config.dart';
-import 'package:launcher_icons/config/web_config.dart';
-import 'package:launcher_icons/config/windows_config.dart';
+import 'package:launcher_icons/src/config/android_config.dart';
+import 'package:launcher_icons/src/config/config.dart';
+import 'package:launcher_icons/src/config/ios_config.dart';
+import 'package:launcher_icons/src/config/linux_config.dart';
+import 'package:launcher_icons/src/config/macos_config.dart';
+import 'package:launcher_icons/src/config/web_config.dart';
+import 'package:launcher_icons/src/config/windows_config.dart';
 import 'package:test/test.dart';
 
 import '../bin/generate.dart' as generate;

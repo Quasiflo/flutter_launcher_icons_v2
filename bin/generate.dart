@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
-import 'package:launcher_icons/constants.dart';
+import 'package:launcher_icons/src/core/constants.dart';
 import 'package:launcher_icons/src/version.dart';
 
 const _defaultConfigFileName = './launcher_icons.yaml';

@@ -1,4 +1,4 @@
-import 'package:launcher_icons/web/web_template.dart';
+import 'package:launcher_icons/src/platforms/web/web_template.dart';
 import 'package:test/test.dart';
 
 void main() {

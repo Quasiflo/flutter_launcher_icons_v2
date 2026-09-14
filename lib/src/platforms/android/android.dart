@@ -1,13 +1,14 @@
 import 'dart:io';
 
 import 'package:image/image.dart';
-import 'package:launcher_icons/config/config.dart';
-import 'package:launcher_icons/constants.dart' as constants;
-import 'package:launcher_icons/constants.dart';
-import 'package:launcher_icons/custom_exceptions.dart';
-import 'package:launcher_icons/logger.dart';
-import 'package:launcher_icons/utils.dart' as utils;
-import 'package:launcher_icons/xml_templates.dart' as xml_template;
+import 'package:launcher_icons/src/config/config.dart';
+import 'package:launcher_icons/src/core/constants.dart' as constants;
+import 'package:launcher_icons/src/core/constants.dart';
+import 'package:launcher_icons/src/core/custom_exceptions.dart';
+import 'package:launcher_icons/src/core/logger.dart';
+import 'package:launcher_icons/src/core/utils.dart' as utils;
+import 'package:launcher_icons/src/platforms/android/xml_templates.dart'
+    as xml_template;
 
 /// A legacy launcher icon density target: [directoryName] under the
 /// flavor-aware res folder, rendered at [size] px square.
