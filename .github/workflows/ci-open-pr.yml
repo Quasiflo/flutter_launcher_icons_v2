@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
       - uses: dart-lang/setup-dart@6a218f2413a3e78e9087f638a238f6b40893203d # v1.3
