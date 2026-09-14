@@ -357,7 +357,7 @@ launcher_icons:
       'ios': {'generate': true},
     };
     final config = Config.fromJson(flutterIconsConfig);
-    expect(config.hasPlatformConfig, isTrue);
+    expect(config.hasEnabledPlatform, isTrue);
   });
 
   test('No platform specified in config', () {
@@ -365,7 +365,7 @@ launcher_icons:
       'image_path': 'assets/images/icon-710x599.png',
     };
     final config = Config.fromJson(flutterIconsConfig);
-    expect(config.hasPlatformConfig, isFalse);
+    expect(config.hasEnabledPlatform, isFalse);
   });
 
   test('At least one platform enabled in config file', () {
@@ -390,7 +390,6 @@ launcher_icons:
     };
     final config = Config.fromJson(flutterIconsConfig);
     // Sections are present but nothing is enabled: presence is not intent.
-    expect(config.hasPlatformConfig, isTrue);
     expect(config.hasEnabledPlatform, isFalse);
   });
 

@@ -72,13 +72,6 @@ class MockConfig extends _i1.Mock implements _i3.Config {
       ) as bool);
 
   @override
-  bool get hasPlatformConfig => (super.noSuchMethod(
-        Invocation.getter(#hasPlatformConfig),
-        returnValue: false,
-        returnValueForMissingStub: false,
-      ) as bool);
-
-  @override
   bool get hasEnabledPlatform => (super.noSuchMethod(
         Invocation.getter(#hasEnabledPlatform),
         returnValue: false,
