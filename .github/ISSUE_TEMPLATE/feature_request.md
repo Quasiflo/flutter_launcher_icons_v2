@@ -1,12 +1,13 @@
 ---
-name: Feature request
 about: Suggest an idea to improve Flutter Launcher Icons
-title: ''
-labels: improvement
 assignees: ''
 
+labels: improvement
+name: Feature request
+title: ''
 ---
 
-### :speech_balloon: Description
+<!-- rumdl-disable-next-line MD063 -->
+## :speech_balloon: Description
 
 <!-- A clear and concise description of what you would like to be added to Flutter Launcher Icons. -->
