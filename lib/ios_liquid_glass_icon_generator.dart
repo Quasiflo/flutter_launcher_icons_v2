@@ -36,14 +36,6 @@ Future<void> generateLiquidGlassIcon(
     );
   }
 
-  // Check if source image exists
-  final sourceImageFile = File(withPrefix(prefixPath, liquidGlassImagePath));
-  if (!sourceImageFile.existsSync()) {
-    throw InvalidConfigException(
-      'Liquid glass icon image not found at: $liquidGlassImagePath',
-    );
-  }
-
   printStatus('Creating liquid glass .icon for $iconName', logger);
 
   // Create directory structure
@@ -57,12 +49,34 @@ Future<void> generateLiquidGlassIcon(
   await createDirIfNotExist(iconFolderPath);
   await createDirIfNotExist(assetsFolderPath);
 
-  // Copy image to Assets folder
-  final imageFileName = path.basename(liquidGlassImagePath);
-  final destinationImagePath = path.join(assetsFolderPath, imageFileName);
-  await sourceImageFile.copy(destinationImagePath);
+  // Resolve per-appearance sources. Variants fall back to the dark/tinted
+  // app artwork so one file serves both unless explicitly overridden.
+  final darkSource = iosConfig.imagePathLiquidGlassIconDark ??
+      iosConfig.imagePathDarkTransparent;
+  final tintedSource = iosConfig.imagePathLiquidGlassIconTinted ??
+      iosConfig.imagePathTintedGrayscale;
+
+  // Copy image(s) to Assets folder. Sources pass through verbatim and are
+  // never decoded, so SVG layers work as-is.
+  final sources = <String>{
+    liquidGlassImagePath,
+    if (darkSource != null) darkSource,
+    if (tintedSource != null) tintedSource,
+  };
+  for (final source in sources) {
+    final sourceImageFile = File(withPrefix(prefixPath, source));
+    if (!sourceImageFile.existsSync()) {
+      throw InvalidConfigException(
+        'Liquid glass icon image not found at: $source',
+      );
+    }
+    final destinationImagePath =
+        path.join(assetsFolderPath, path.basename(source));
+    await sourceImageFile.copy(destinationImagePath);
+  }
 
   // Generate icon.json
+  final imageFileName = path.basename(liquidGlassImagePath);
   final iconConfig = generateIconConfig(config, imageFileName);
   final configFile = await createFileIfNotExist(configFilePath);
   await configFile.writeAsString(prettifyJsonEncode(iconConfig));
@@ -81,6 +95,44 @@ Map<String, dynamic> generateIconConfig(Config config, String imageFileName) {
   // Extract image name without extension for the layer name
   final imageName = path.basenameWithoutExtension(imageFileName);
 
+  // Per-appearance layer sources, resolved with the same fallback as the
+  // filesystem copy above. A present base key silently wins over the
+  // specializations array, so when variants exist the light case becomes
+  // the unmarked entry and no base `image-name` is emitted.
+  String? variantName(String? source) {
+    if (source == null || path.basename(source) == imageFileName) {
+      return null;
+    }
+    return path.basename(source);
+  }
+
+  final darkName = variantName(iosConfig.imagePathLiquidGlassIconDark ??
+      iosConfig.imagePathDarkTransparent,);
+  final tintedName = variantName(iosConfig.imagePathLiquidGlassIconTinted ??
+      iosConfig.imagePathTintedGrayscale,);
+
+  final layer = <String, dynamic>{
+    'glass': !iosConfig.removeLiquidGlass,
+    'hidden': false,
+    'name': imageName,
+    'position': {
+      'scale': iosConfig.liquidGlassIconScale,
+      'translation-in-points': [
+        iosConfig.liquidGlassOffsetX ?? 0.0,
+        iosConfig.liquidGlassOffsetY ?? 0.0,
+      ],
+    },
+  };
+  if (darkName == null && tintedName == null) {
+    layer['image-name'] = imageFileName;
+  } else {
+    layer['image-name-specializations'] = [
+      {'value': imageFileName},
+      if (darkName != null) {'appearance': 'dark', 'value': darkName},
+      if (tintedName != null) {'appearance': 'tinted', 'value': tintedName},
+    ];
+  }
+
   return {
     'fill': {
       'solid': displayP3Color,
@@ -88,21 +140,7 @@ Map<String, dynamic> generateIconConfig(Config config, String imageFileName) {
     'groups': [
       {
         'blur-material': iosConfig.liquidGlassBlur,
-        'layers': [
-          {
-            'glass': !iosConfig.removeLiquidGlass,
-            'hidden': false,
-            'image-name': imageFileName,
-            'name': imageName,
-            'position': {
-              'scale': iosConfig.liquidGlassIconScale,
-              'translation-in-points': [
-                iosConfig.liquidGlassOffsetX ?? 0.0,
-                iosConfig.liquidGlassOffsetY ?? 0.0,
-              ],
-            },
-          },
-        ],
+        'layers': [layer],
         'shadow': {
           'kind': iosConfig.liquidGlassShadowKind.toLowerCase() == 'chromatic'
               ? 'layer-color'
