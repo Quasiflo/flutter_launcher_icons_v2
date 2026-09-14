@@ -22,13 +22,10 @@ class LinuxIconGenerator extends IconGenerator {
 
     context.logger.verbose('Using Linux icon at $iconPath...');
 
-    // Validate that the icon path starts with assets/ (since it needs to be runtime accessible)
-    if (!iconPath.startsWith('assets/')) {
-      context.logger.error(
-        'Linux icon path must be in assets directory (e.g., "assets/images/icon.png") to be accessible at runtime',
-      );
-      throw Exception('Invalid Linux icon path: $iconPath');
-    }
+    // The icon must be a bundled flutter asset: the runner resolves it at
+    // runtime via data/flutter_assets (a filesystem path, not an asset
+    // handle), so an absolute host path would not be portable.
+    // Bundling is enforced by validateRequirements() via _hasPubspecAsset.
 
     // Update my_application.cc file with the icon path
     await _updateMyApplicationFile(iconPath);
@@ -50,14 +47,6 @@ class LinuxIconGenerator extends IconGenerator {
 
     final iconPath = context.config
         .resolveImagePath(linuxConfig.imagePath)!;
-
-    // Check that icon path is in assets
-    if (!iconPath.startsWith('assets/')) {
-      context.logger.error(
-        'Linux icon path must be in assets directory (e.g., "assets/images/icon.png") to be accessible at runtime',
-      );
-      return false;
-    }
 
     final entitesToCheck = [
       path.join(context.prefixPath, constants.linuxDirPath),
@@ -87,7 +76,7 @@ class LinuxIconGenerator extends IconGenerator {
 
     if (!pubspecFile.existsSync()) {
       context.logger.error(
-        'pubspec.yaml not found. Please add "$iconPath" to your flutter.assets section.',
+        'pubspec.yaml not found. Please add "$iconPath" to the `assets:` list under `flutter:` in pubspec.yaml.',
       );
       return false;
     }
@@ -109,7 +98,7 @@ class LinuxIconGenerator extends IconGenerator {
     final flutter = yamlDoc['flutter'] as Map<dynamic, dynamic>?;
     if (flutter == null) {
       context.logger.error(
-        'No flutter section found in pubspec.yaml. Please add $iconPath to your flutter.assets section.',
+        'No `flutter:` section found in pubspec.yaml. Please add $iconPath to the `assets:` list under `flutter:`.',
       );
       return false;
     }
@@ -117,7 +106,7 @@ class LinuxIconGenerator extends IconGenerator {
     final assets = flutter['assets'] as List<dynamic>?;
     if (assets == null) {
       context.logger.error(
-        'No assets section found in pubspec.yaml. Please add "$iconPath" to your flutter.assets section.',
+        'No `assets:` list found under `flutter:` in pubspec.yaml. Please add "$iconPath" to it.',
       );
       return false;
     }
@@ -136,7 +125,7 @@ class LinuxIconGenerator extends IconGenerator {
     }
 
     context.logger.error(
-      'Icon path $iconPath not found in pubspec.yaml assets. Please add "$iconPath" or "$iconDir" to your flutter.assets section.',
+      'Icon path $iconPath not found in the `assets:` list under `flutter:` in pubspec.yaml. Please add "$iconPath" or "$iconDir" to it.',
     );
     return false;
   }

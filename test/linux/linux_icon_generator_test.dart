@@ -116,22 +116,36 @@ flutter:
       expect(testGenerator.validateRequirements(), isFalse);
     });
 
-    test('validateRequirements returns false when image path is not in assets',
-        () {
+    test('validateRequirements accepts any pubspec-declared asset path',
+        () async {
+      const iconPath = 'images/icon.png';
+      final linuxDir = Directory('${tempDir.path}/linux');
+      await linuxDir.create();
+      final runnerDir = Directory('${tempDir.path}/linux/runner');
+      await runnerDir.create();
+      await File('${tempDir.path}/linux/runner/my_application.cc').create();
+      final iconFile = File('${tempDir.path}/$iconPath');
+      await iconFile.parent.create(recursive: true);
+      await iconFile.writeAsBytes([0]);
+      await File('${tempDir.path}/pubspec.yaml').writeAsString('''
+name: test_app
+
+flutter:
+  assets:
+    - $iconPath
+''');
+
       const config = Config(
-        imagePath: 'images/icon.png', // Not in assets/
+        imagePath: iconPath,
         linuxConfig: LinuxConfig(generate: true),
       );
-
       final testContext = IconGeneratorContext(
         config: config,
         logger: LILogger(false),
         prefixPath: tempDir.path,
       );
 
-      final testGenerator = LinuxIconGenerator(testContext);
-
-      expect(testGenerator.validateRequirements(), isFalse);
+      expect(LinuxIconGenerator(testContext).validateRequirements(), isTrue);
     });
 
     test(
@@ -183,25 +197,12 @@ flutter:
       expect(generator.validateRequirements(), isTrue);
     });
 
-    test('createIcons throws exception when icon path is not in assets',
-        () async {
-      const config = Config(
-        imagePath: 'images/icon.png', // Not in assets/
-        linuxConfig: LinuxConfig(generate: true),
-      );
+    test(
+        'validateRequirements returns false when icon is missing from '
+        'pubspec assets', () async {
+      await setUpValidProject(pubspecAssetsEntry: 'assets/images/other.png');
 
-      final testContext = IconGeneratorContext(
-        config: config,
-        logger: LILogger(false),
-        prefixPath: tempDir.path,
-      );
-
-      final testGenerator = LinuxIconGenerator(testContext);
-
-      expect(
-        () => testGenerator.createIcons(),
-        throwsA(isA<Exception>()),
-      );
+      expect(generator.validateRequirements(), isFalse);
     });
 
     group('my_application.cc modifications', () {
