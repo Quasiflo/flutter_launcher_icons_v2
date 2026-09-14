@@ -75,6 +75,16 @@ class AndroidIconGenerator extends IconGenerator {
         ),
       );
     }
+    if (config.hasAndroidAdaptiveRoundConfig) {
+      concurrentIconCreation.add(
+        android.createAdaptiveRoundIcons(
+          config,
+          flavor,
+          logger: logger,
+          prefixPath: prefixPath,
+        ),
+      );
+    }
     await Future.wait(concurrentIconCreation);
     if (config.isNeedingNewAndroidIcon) {
       await android.createMipmapXmlFile(
@@ -83,6 +93,9 @@ class AndroidIconGenerator extends IconGenerator {
         logger: logger,
         prefixPath: prefixPath,
       );
+    }
+    if (config.androidConfig?.playStoreIcon == true) {
+      await android.createPlayStoreIcon(config, prefixPath, logger);
     }
   }
 }

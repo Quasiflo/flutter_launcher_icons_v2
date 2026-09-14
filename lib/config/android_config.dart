@@ -41,6 +41,21 @@ class AndroidConfig {
   @JsonKey(name: 'adaptive_icon_monochrome')
   final String? adaptiveIconMonochrome;
 
+  /// android adaptive_icon_round image (opt-in round icon).
+  ///
+  /// When set, `ic_launcher_round.png` drawables plus an
+  /// `ic_launcher_round.xml` adaptive icon are generated and the manifest
+  /// gains `android:roundIcon`. Requires the adaptive pair
+  /// (`adaptive_icon_background` + `adaptive_icon_foreground`).
+  @JsonKey(name: 'adaptive_icon_round')
+  final String? adaptiveIconRound;
+
+  /// Whether to emit a 512x512 Play Store upload icon (`play_store_icon.png`
+  /// next to the project). Off by default: it is a store-upload artifact,
+  /// never an `android/res` deliverable.
+  @JsonKey(name: 'play_store_icon')
+  final bool playStoreIcon;
+
   /// Creates a instance of [AndroidConfig]
   const AndroidConfig({
     this.generate = false,
@@ -50,6 +65,8 @@ class AndroidConfig {
     this.adaptiveIconForegroundInset = 16,
     this.adaptiveIconBackground,
     this.adaptiveIconMonochrome,
+    this.adaptiveIconRound,
+    this.playStoreIcon = false,
   });
 
   /// Creates [AndroidConfig] from [json]

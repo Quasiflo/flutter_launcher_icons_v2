@@ -155,6 +155,12 @@ class Config {
         androidConfig?.adaptiveIconMonochrome != null;
   }
 
+  /// whether or not there is configuration for round icons for android
+  bool get hasAndroidAdaptiveRoundConfig {
+    return isNeedingNewAndroidIcon &&
+        androidConfig?.adaptiveIconRound != null;
+  }
+
   /// Checks if contains any platform config
   bool get hasPlatformConfig {
     return androidConfig != null ||
