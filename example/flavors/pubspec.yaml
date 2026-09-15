@@ -64,26 +64,26 @@ flutter:
   # Icon sources for launcher_icons. Every file below is referenced by
   # launcher_icons-development.yaml / launcher_icons-production.yaml.
   assets:
-    - assets/icon/icon-dev.png
-    - assets/icon/icon-dev-dark.png
-    - assets/icon/icon-dev-tinted.png
-    - assets/icon/icon-dev-foreground.png
-    - assets/icon/icon-dev-monochrome.png
-    - assets/icon/icon-dev-round.png
-    - assets/icon/icon-dev-maskable.png
-    - assets/icon/icon-dev-favicon.png
-    - assets/icon/icon-prod.png
-    - assets/icon/icon-prod-dark.png
-    - assets/icon/icon-prod-tinted.png
-    - assets/icon/icon-prod-foreground.png
-    - assets/icon/icon-prod-monochrome.png
-    - assets/icon/icon-prod-background.png
-    - assets/icon/icon-prod-round.png
-    - assets/icon/icon-prod-maskable.png
-    - assets/icon/icon-prod-favicon.png
-    - assets/icon/icon-prod-glass.png
-    - assets/icon/icon-prod-glass-dark.png
-    - assets/icon/icon-prod-glass-tinted.png
+    - assets/icon/icon-dev.svg
+    - assets/icon/icon-dev-dark.svg
+    - assets/icon/icon-dev-tinted.svg
+    - assets/icon/icon-dev-foreground.svg
+    - assets/icon/icon-dev-monochrome.svg
+    - assets/icon/icon-dev-round.svg
+    - assets/icon/icon-dev-maskable.svg
+    - assets/icon/icon-dev-favicon.svg
+    - assets/icon/icon-prod.svg
+    - assets/icon/icon-prod-dark.svg
+    - assets/icon/icon-prod-tinted.svg
+    - assets/icon/icon-prod-foreground.svg
+    - assets/icon/icon-prod-monochrome.svg
+    - assets/icon/icon-prod-background.svg
+    - assets/icon/icon-prod-round.svg
+    - assets/icon/icon-prod-maskable.svg
+    - assets/icon/icon-prod-favicon.svg
+    - assets/icon/icon-prod-glass.svg
+    - assets/icon/icon-prod-glass-dark.svg
+    - assets/icon/icon-prod-glass-tinted.svg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

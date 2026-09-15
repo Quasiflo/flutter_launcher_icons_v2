@@ -27,7 +27,7 @@ flutter run --flavor production -t lib/main_production.dart
 
 | Area | development (transparency showcase) | production (opaque + glass showcase) |
 | --- | --- | --- |
-| Source art | Transparent SVG: alpha-gradient disc + translucent stripe | Opaque full-bleed RGB SVG gradient (no alpha channel) |
+| Source art | Prism Glyph "V" (teal, transparent-leaning) | Prism Glyph "A" (indigo, opaque) |
 | Android | `transparent` adaptive background keyword (no `colors.xml` entry), foreground inset, monochrome, **round icon** (`android:roundIcon` wiring), **Play Store sidecar** (`play_store_icon.png` at the root) | Image adaptive background, tighter inset, round icon, no sidecar |
 | iOS | `remove_alpha` matte blended onto `#123456`, transparent dark variant (system bg shows through), desaturated tinted variant, `flavor_mode: pbxproj` (rewrites `ASSETCATALOG_COMPILER_APPICON_NAME`) | Opaque art, `remove_alpha: false`, per-appearance glass layers + refractivity/lighting/specular placement, `flavor_mode: xcconfig` (`ios/Flutter/production-*.xcconfig` — assign as base configuration files in Xcode once) |
 | Web | Dedicated maskable source, `favicon.ico` (16+32+48) + PNG, separate `web_development/` root | No maskable source → padded fallback derivation (watch for the warning), PNG-only favicon, separate `web_production/` root |

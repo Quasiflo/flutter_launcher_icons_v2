@@ -1,1 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><rect width="1024" height="1024" fill="#1e2d78"/><circle cx="512" cy="512" r="290" fill="#ffffff"/><circle cx="512" cy="512" r="200" fill="#3f51b5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect x="0" y="0" width="1024" height="1024" fill="#1A237E"/>
+  <polygon points="512,400 596,648 552,648 512,528 472,648 428,648" fill="#FFFFFF"/>
+  <rect x="466" y="552" width="92" height="30" fill="#FFFFFF"/>
+  <circle cx="512" cy="512" r="330" fill="none" stroke="#FFFFFF" stroke-width="10" opacity="0.85"/>
+</svg>
