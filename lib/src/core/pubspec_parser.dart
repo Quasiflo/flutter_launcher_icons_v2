@@ -11,7 +11,8 @@ class PubspecParser {
   static Map<dynamic, dynamic> fromPathToMap(String path) {
     final File file = File(path);
     final String yamlString = file.readAsStringSync();
-    final Map<dynamic, dynamic> yamlMap = loadYaml(yamlString);
+    final Map<dynamic, dynamic> yamlMap =
+        loadYaml(yamlString) as Map<dynamic, dynamic>;
     return yamlMap;
   }
 }

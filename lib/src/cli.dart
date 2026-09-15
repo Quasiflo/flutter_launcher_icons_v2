@@ -93,18 +93,18 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
 
   final ArgResults argResults = parser.parse(arguments);
   // creating logger based on -v flag
-  final logger = LILogger(argResults[verboseFlag]);
+  final logger = LILogger(argResults.flag(verboseFlag));
 
   logger.verbose('Received args ${argResults.arguments}');
 
-  if (argResults[helpFlag]) {
+  if (argResults.flag(helpFlag)) {
     logger.info('Generates icons for iOS and Android');
     logger.info(parser.usage);
     exit(0);
   }
 
   // Flavors management
-  final String prefixPath = argResults[prefixOption];
+  final String prefixPath = argResults[prefixOption] as String;
 
   // An explicit `-f launcher_icons-<flavor>.yaml` runs only that
   // flavor instead of looping over every discovered flavor (fluttercommunity/flutter_launcher_icons#215). The file is loaded from the given path directly, so flavor configs in subdirectories work too.
@@ -150,7 +150,8 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
     return;
   }
 
-  final flavors = await getFlavors(searchPath: argResults['flavor-path']);
+  final flavors =
+      await getFlavors(searchPath: argResults['flavor-path'] as String);
   // An explicit `-f` for a non-flavor file is honored as-is instead of
   // looping over discovered flavor files (fluttercommunity/flutter_launcher_icons#426). (An explicit flavor file is already handled by the onlyFlavor branch above.) Suffixed
   // `launcher_icons-<flavor>:` sections inside the pinned file still count:
@@ -377,7 +378,7 @@ Config? loadConfigFileFromArgResults(
   bool explicitFile = false,
   LILogger? logger,
 }) {
-  final String prefixPath = argResults[prefixOption];
+  final String prefixPath = argResults[prefixOption] as String;
   final String filePath = argResults[fileOption] as String;
   final flutterLauncherIconsConfigs = Config.loadConfigFromPath(
         filePath,

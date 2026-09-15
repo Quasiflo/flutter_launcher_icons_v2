@@ -1257,10 +1257,10 @@ List<Map<String, dynamic>> createImageList(
   final List<Map<String, dynamic>> imageList = <Map<String, dynamic>>[];
 
   for (final config in imageConfigurations) {
-    final size = config['size']!;
-    final idiom = config['idiom']!;
-    final platform = config['platform'];
-    final List<String> scales = config['scales'];
+    final size = config['size']! as String;
+    final idiom = config['idiom']! as String;
+    final platform = config['platform'] as String?;
+    final scales = config['scales'] as List<String>;
 
     for (final scale in scales) {
       final filename = '$fileNamePrefix-$size@$scale.png';
@@ -1281,10 +1281,10 @@ List<Map<String, dynamic>> createImageList(
   if (darkFileNamePrefix != null) {
     for (final config
         in imageConfigurations.where((e) => e['idiom'] == 'universal')) {
-      final size = config['size']!;
-      final idiom = config['idiom']!;
-      final platform = config['platform'];
-      final List<String> scales = config['scales'];
+      final size = config['size']! as String;
+      final idiom = config['idiom']! as String;
+      final platform = config['platform'] as String?;
+      final scales = config['scales'] as List<String>;
 
       for (final scale in scales) {
         final filename = '$darkFileNamePrefix-$size@$scale.png';
@@ -1310,10 +1310,10 @@ List<Map<String, dynamic>> createImageList(
   if (tintedFileNamePrefix != null) {
     for (final config
         in imageConfigurations.where((e) => e['idiom'] == 'universal')) {
-      final size = config['size']!;
-      final idiom = config['idiom']!;
-      final platform = config['platform'];
-      final List<String> scales = config['scales'];
+      final size = config['size']! as String;
+      final idiom = config['idiom']! as String;
+      final platform = config['platform'] as String?;
+      final scales = config['scales'] as List<String>;
 
       for (final scale in scales) {
         final filename = '$tintedFileNamePrefix-$size@$scale.png';

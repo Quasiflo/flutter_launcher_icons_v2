@@ -127,7 +127,9 @@ class Config {
           if (json != null) {
             // if we have launcher_icons configuration ...
             if (json['launcher_icons'] != null) {
-              return Config.fromJson(json['launcher_icons']);
+              return Config.fromJson(
+                json['launcher_icons'] as Map<dynamic, dynamic>,
+              );
             }
           }
           return null;
