@@ -90,6 +90,9 @@ After generating, Xcode must point at the set: `Build Settings` > `Asset Catalog
 ### macOS
 
 - `generate`, `image_path`, `padding` (safe-area margin as % per side, default `0`), `rounded_corners` (continuous-corner squircle mask, default `false`). Flavors write `AppIcon-<flavor>.appiconset`; select it in Xcode like iOS. Transparency is preserved, never filled — prefer opaque art.
+- Liquid glass (writes a `.icon` bundle for Apple's Icon Composer next to the PNG catalog, which stays the fallback on macOS older than Tahoe 26 — same document format and options as iOS): `image_path_liquid_glass_icon` (enables it; SVGs pass through), `image_path_liquid_glass_icon_dark` / `_tinted` (no fallbacks — macOS has no dark/tinted catalog variants), `remove_liquid_glass`, `background_color` (`#ffffff`), `liquid_glass_icon_scale` (1.0), `liquid_glass_translucency` (0.5), `liquid_glass_specular` (true), `liquid_glass_shadow_kind` (`"Neutral"`/`"Chromatic"`), `liquid_glass_shadow_opacity` (0.5), `liquid_glass_blur` (0.5), `liquid_glass_offset_x` / `_y` (0.0), `liquid_glass_lighting` (`"individual"`/`"combined"`), `liquid_glass_refractivity_enabled` (+ `liquid_glass_refractivity_depth` / `_strength`), `liquid_glass_specular_highlight_placement` (`"inside"`/`"outside"`).
+
+After generating, add `<name>.icon` to the Xcode project (the tool registers the file reference in `project.pbxproj` automatically) and set the target's App Icon to it; the PNG set keeps working untouched.
 
 ### Linux
 

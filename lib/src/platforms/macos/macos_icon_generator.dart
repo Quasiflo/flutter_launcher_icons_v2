@@ -6,6 +6,7 @@ import 'package:launcher_icons/src/core/constants.dart' as constants;
 import 'package:launcher_icons/src/core/icon_generator.dart';
 import 'package:launcher_icons/src/core/utils.dart' as utils;
 import 'package:launcher_icons/src/platforms/ios/ios.dart' as ios;
+import 'package:launcher_icons/src/platforms/ios/liquid_glass_icon_generator.dart';
 import 'package:launcher_icons/src/platforms/macos/macos_icon_effects.dart'
     as effects;
 import 'package:launcher_icons/src/platforms/macos/macos_icon_template.dart';
@@ -129,6 +130,54 @@ class MacOSIconGenerator extends IconGenerator {
         );
       }
     }
+
+    // Generate liquid glass .icon if configured. The bundle shares the
+    // catalog name so Xcode associates it with the icon set; the PNG
+    // catalog stays the fallback on macOS older than Tahoe 26.
+    if (context.config.hasMacOSLiquidGlassIconConfig) {
+      final glassIconName =
+          context.flavor == null ? 'AppIcon' : 'AppIcon-${context.flavor}';
+      await generateMacOSLiquidGlassIcon(
+        context.config,
+        glassIconName,
+        logger: context.logger,
+        prefixPath: context.prefixPath,
+      );
+      await _addLiquidGlassIconToProject(glassIconName);
+    }
+  }
+
+  /// Adds the liquid glass `.icon` file reference to the macOS
+  /// project.pbxproj (same reference edit the iOS generator performs). A
+  /// missing project file only warns: the icons themselves are still valid.
+  Future<void> _addLiquidGlassIconToProject(String iconName) async {
+    final pbxprojPath = path.join(
+      context.prefixPath,
+      'macos',
+      'Runner.xcodeproj',
+      'project.pbxproj',
+    );
+    final pbxprojFile = File(pbxprojPath);
+    if (!pbxprojFile.existsSync()) {
+      context.logger.verbose(
+        'macOS project.pbxproj not found at $pbxprojPath: skipping .icon '
+        'reference addition (add $iconName.icon to the Xcode project '
+        'manually).',
+      );
+      return;
+    }
+    final wholeFile = await pbxprojFile.readAsString();
+    final changedFile = ios.addLiquidGlassIconReference(wholeFile, iconName);
+    if (changedFile == wholeFile) {
+      context.logger.verbose(
+        'Liquid glass .icon reference already exists in macOS project.pbxproj',
+      );
+      return;
+    }
+    await pbxprojFile.writeAsString(changedFile);
+    context.logger.verbose(
+      'Added liquid glass .icon reference to macOS project.pbxproj',
+    );
   }
 
   @override

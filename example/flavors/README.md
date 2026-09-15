@@ -32,7 +32,7 @@ flutter run --flavor production -t lib/main_production.dart
 | iOS | `remove_alpha` matte blended onto `#123456`, transparent dark variant (system bg shows through), desaturated tinted variant, `flavor_mode: pbxproj` (rewrites `ASSETCATALOG_COMPILER_APPICON_NAME`) | Opaque art, `remove_alpha: false`, per-appearance glass layers + refractivity/lighting/specular placement, `flavor_mode: xcconfig` (`ios/Flutter/production-*.xcconfig` — assign as base configuration files in Xcode once) |
 | Web | Dedicated maskable source, `favicon.ico` (16+32+48) + PNG, separate `web_development/` root | No maskable source → padded fallback derivation (watch for the warning), PNG-only favicon, separate `web_production/` root |
 | Windows | Per-flavor `app_icon_development.ico` (matches `Runner.rc.in`) | Default `app_icon.ico` |
-| macOS | `padding: 10` + `rounded_corners` squircle mask | Defaults (square, opaque) |
+| macOS | `padding: 10` + `rounded_corners` squircle mask | Defaults (square, opaque) + liquid glass `.icon` bundle (`AppIcon-production.icon`, per-appearance SVG layers + refractivity/lighting/specular placement) |
 | Linux | Window icon + hicolor tree + `.desktop` + snap packaging | Same targets (strictly only-if-absent, so the first run wins) |
 
 `icon_name` is deliberately absent from both configs: under flavors the catalog is always `AppIcon-<flavor>` (iOS/macOS) / `src/<flavor>/res` (Android), so a custom name would be ignored.

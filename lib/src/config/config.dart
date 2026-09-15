@@ -262,6 +262,11 @@ class Config {
   bool get hasLiquidGlassIconConfig =>
       iosConfig?.imagePathLiquidGlassIcon != null;
 
+  /// Whether or not configuration for generating a macOS liquid glass .icon
+  /// exists
+  bool get hasMacOSLiquidGlassIconConfig =>
+      macOSConfig?.imagePathLiquidGlassIcon != null;
+
   /// Resolves the effective image path for a platform: the platform-level
   /// `image_path` wins, falling back to the top-level `image_path`.
   /// Returns null when neither is set — callers throw [errorMissingImagePath].

@@ -7,8 +7,9 @@
 import 'package:cli_util/cli_logging.dart' as _i2;
 import 'package:launcher_icons/src/config/config.dart' as _i3;
 import 'package:launcher_icons/src/config/macos_config.dart' as _i4;
-import 'package:launcher_icons/src/core/logger.dart' as _i5;
+import 'package:launcher_icons/src/core/logger.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -192,6 +193,53 @@ class MockMacOSConfig extends _i1.Mock implements _i4.MacOSConfig {
       ) as bool);
 
   @override
+  bool get removeLiquidGlass => (super.noSuchMethod(
+        Invocation.getter(#removeLiquidGlass),
+        returnValue: false,
+        returnValueForMissingStub: false,
+      ) as bool);
+
+  @override
+  String get backgroundColor => (super.noSuchMethod(
+        Invocation.getter(#backgroundColor),
+        returnValue: _i5.dummyValue<String>(
+          this,
+          Invocation.getter(#backgroundColor),
+        ),
+        returnValueForMissingStub: _i5.dummyValue<String>(
+          this,
+          Invocation.getter(#backgroundColor),
+        ),
+      ) as String);
+
+  @override
+  double get liquidGlassIconScale => (super.noSuchMethod(
+        Invocation.getter(#liquidGlassIconScale),
+        returnValue: 0.0,
+        returnValueForMissingStub: 0.0,
+      ) as double);
+
+  @override
+  bool get liquidGlassSpecular => (super.noSuchMethod(
+        Invocation.getter(#liquidGlassSpecular),
+        returnValue: false,
+        returnValueForMissingStub: false,
+      ) as bool);
+
+  @override
+  String get liquidGlassShadowKind => (super.noSuchMethod(
+        Invocation.getter(#liquidGlassShadowKind),
+        returnValue: _i5.dummyValue<String>(
+          this,
+          Invocation.getter(#liquidGlassShadowKind),
+        ),
+        returnValueForMissingStub: _i5.dummyValue<String>(
+          this,
+          Invocation.getter(#liquidGlassShadowKind),
+        ),
+      ) as String);
+
+  @override
   Map<String, dynamic> toJson() => (super.noSuchMethod(
         Invocation.method(
           #toJson,
@@ -205,7 +253,7 @@ class MockMacOSConfig extends _i1.Mock implements _i4.MacOSConfig {
 /// A class which mocks [LILogger].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLILogger extends _i1.Mock implements _i5.LILogger {
+class MockLILogger extends _i1.Mock implements _i6.LILogger {
   @override
   bool get isVerbose => (super.noSuchMethod(
         Invocation.getter(#isVerbose),

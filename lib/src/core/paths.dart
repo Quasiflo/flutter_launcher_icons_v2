@@ -42,6 +42,23 @@ String iosLiquidGlassAssetsPath(String iconName) =>
 String iosLiquidGlassConfigPath(String iconName) =>
     '${iosLiquidGlassIconPath(iconName)}icon.json';
 
+// macOS Liquid Glass .icon constants
+
+/// Relative path to the macOS Runner folder
+const String macOSRunnerFolder = 'macos/Runner/';
+
+/// Relative path to a macOS liquid glass `.icon` bundle
+String macOSLiquidGlassIconPath(String iconName) =>
+    '$macOSRunnerFolder$iconName.icon/';
+
+/// Relative path to a macOS liquid glass `.icon` assets folder
+String macOSLiquidGlassAssetsPath(String iconName) =>
+    '${macOSLiquidGlassIconPath(iconName)}Assets/';
+
+/// Relative path to a macOS liquid glass `.icon` config file
+String macOSLiquidGlassConfigPath(String iconName) =>
+    '${macOSLiquidGlassIconPath(iconName)}icon.json';
+
 // web
 
 /// Relative web directory path
