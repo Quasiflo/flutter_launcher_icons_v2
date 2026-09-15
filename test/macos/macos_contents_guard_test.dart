@@ -72,8 +72,14 @@ void main() {
       sandbox.createSync(recursive: true);
       prefixPath = sandbox.absolute.path;
       logger = _RecordingLogger();
-      File(path.join(Directory.current.path, 'test', 'assets', 'master-light-1024.png'))
-          .copySync(path.join(prefixPath, 'master-light-1024.png'));
+      File(
+        path.join(
+          Directory.current.path,
+          'test',
+          'assets',
+          'master-light-1024.png',
+        ),
+      ).copySync(path.join(prefixPath, 'master-light-1024.png'));
     });
 
     tearDown(() {

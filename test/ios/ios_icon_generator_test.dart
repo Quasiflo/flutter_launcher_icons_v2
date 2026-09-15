@@ -84,8 +84,14 @@ void main() {
     });
 
     test('validateRequirements fails without an ios directory', () {
-      File(path.join(Directory.current.path, 'test', 'assets', 'master-light-1024.png'))
-          .copySync(path.join(prefixPath, 'icon.png'));
+      File(
+        path.join(
+          Directory.current.path,
+          'test',
+          'assets',
+          'master-light-1024.png',
+        ),
+      ).copySync(path.join(prefixPath, 'icon.png'));
       final generator = generatorFor(
         Config.fromJson(<String, dynamic>{
           'ios': {'generate': true, 'image_path': 'icon.png'},
@@ -95,8 +101,14 @@ void main() {
     });
 
     test('createIcons writes under prefixPath', () async {
-      File(path.join(Directory.current.path, 'test', 'assets', 'master-light-1024.png'))
-          .copySync(path.join(prefixPath, 'icon.png'));
+      File(
+        path.join(
+          Directory.current.path,
+          'test',
+          'assets',
+          'master-light-1024.png',
+        ),
+      ).copySync(path.join(prefixPath, 'icon.png'));
       await Directory(
         path.join(
           prefixPath,

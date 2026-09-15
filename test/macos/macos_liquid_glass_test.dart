@@ -343,7 +343,12 @@ void main() {
         }
         sandbox.createSync(recursive: true);
         File(
-          path.join(Directory.current.path, 'test', 'assets', 'master-light-1024.png'),
+          path.join(
+            Directory.current.path,
+            'test',
+            'assets',
+            'master-light-1024.png',
+          ),
         ).copySync(path.join(sandbox.path, 'master-light-1024.png'));
         prefixPath = sandbox.absolute.path;
       });
@@ -495,8 +500,14 @@ void main() {
           'project.pbxproj',
         ),
       ).writeAsString(_pbxproj);
-      File(path.join(Directory.current.path, 'test', 'assets', 'master-light-1024.png'))
-          .copySync(path.join(sandbox.path, 'master-light-1024.png'));
+      File(
+        path.join(
+          Directory.current.path,
+          'test',
+          'assets',
+          'master-light-1024.png',
+        ),
+      ).copySync(path.join(sandbox.path, 'master-light-1024.png'));
       prefixPath = sandbox.absolute.path;
     });
 

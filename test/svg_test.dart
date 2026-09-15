@@ -191,7 +191,8 @@ void main() {
         d.dir('windows/runner/resources'),
         d.file(
           'icon.svg',
-          File(path.join(assetPath, 'vector-opaque-1024.svg')).readAsBytesSync(),
+          File(path.join(assetPath, 'vector-opaque-1024.svg'))
+              .readAsBytesSync(),
         ),
       ]).create();
       final prefix = path.join(d.sandbox, name);
