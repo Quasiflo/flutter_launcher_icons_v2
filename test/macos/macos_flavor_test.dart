@@ -20,9 +20,7 @@ const _pbxproj = r'''
 }
 ''';
 
-// Flavor runs write AppIcon-<flavor>.appiconset/ but the built app keeps
-// showing the old icon unless the macOS pbxproj is rewired to the flavor
-// catalog — the same wiring iOS performs.
+// Flavor runs write AppIcon-<flavor>.appiconset/ but the built app keeps showing the old icon unless the macOS pbxproj is rewired to the flavor catalog — the same wiring iOS performs.
 void main() {
   group('MacOSIconGenerator flavors', () {
     late String prefixPath;

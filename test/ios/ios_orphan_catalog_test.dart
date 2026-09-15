@@ -27,9 +27,7 @@ const _pbxproj = r'''
 }
 ''';
 
-// Renamed flavors leave orphaned AppIcon-<old> catalogs behind. A flavor run
-// deletes catalogs nothing references anymore, but never the default set or
-// catalogs the project still points at.
+// Renamed flavors leave orphaned AppIcon-<old> catalogs behind. A flavor run deletes catalogs nothing references anymore, but never the default set or catalogs the project still points at.
 void main() {
   group('createIcons orphan flavor catalog cleanup', () {
     late String originalDir;

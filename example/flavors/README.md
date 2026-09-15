@@ -1,9 +1,6 @@
 # Flavors Example
 
-A complete, runnable Flutter app (fresh `flutter create` template) with two
-flavors — **development** and **production** — and a `launcher_icons-*` config
-that fills in **every option for every platform**. Generated outputs are
-checked in, so you can inspect exactly what each key produces.
+A complete, runnable Flutter app (fresh `flutter create` template) with two flavors — **development** and **production** — and a `launcher_icons-*` config that fills in **every option for every platform**. Generated outputs are checked in, so you can inspect exactly what each key produces.
 
 ## Run the Icon Generation
 
@@ -13,9 +10,7 @@ dart pub get
 dart run launcher_icons
 ```
 
-Both flavors live as `launcher_icons-development:` /
-`launcher_icons-production:` sections in `pubspec.yaml` — no per-flavor files
-needed. The plain run loops over every flavor; `--flavor` runs one:
+Both flavors live as `launcher_icons-development:` / `launcher_icons-production:` sections in `pubspec.yaml` — no per-flavor files needed. The plain run loops over every flavor; `--flavor` runs one:
 
 ```shell
 dart run launcher_icons --flavor development
@@ -40,36 +35,17 @@ flutter run --flavor production -t lib/main_production.dart
 | macOS | `padding: 10` + `rounded_corners` squircle mask | Defaults (square, opaque) |
 | Linux | Window icon + hicolor tree + `.desktop` + snap packaging | Same targets (strictly only-if-absent, so the first run wins) |
 
-`icon_name` is deliberately absent from both configs: under flavors the
-catalog is always `AppIcon-<flavor>` (iOS/macOS) / `src/<flavor>/res`
-(Android), so a custom name would be ignored.
+`icon_name` is deliberately absent from both configs: under flavors the catalog is always `AppIcon-<flavor>` (iOS/macOS) / `src/<flavor>/res` (Android), so a custom name would be ignored.
 
 ## Native Flavor Wiring (Current Flutter Pattern)
 
 - **pubspec**: `flutter.default-flavor: development`.
-- **Android** (`android/app/build.gradle.kts`): `productFlavors` with
-  `applicationIdSuffix` + `app_name` res value; `AndroidManifest.xml` uses
-  `@string/app_name`. Matches `docs.flutter.dev/deployment/flavors`.
-- **iOS/macOS**: per-flavor build configurations (`Debug-development`, …)
-  carrying `APP_DISPLAY_NAME` + flavor bundle-id suffix, one scheme per
-  flavor, `Info.plist` display name `$(APP_DISPLAY_NAME)`. The tool's
-  `pbxproj` mode wires configurations that share the base `.xcconfig`.
-- **Linux**: `FLUTTER_APP_FLAVOR` application-id branches + window-title
-  switch in `my_application.cc`.
-- **Windows**: `Runner.rc.in` / `main.cpp.in` templates configured with the
-  per-flavor title and icon name. Matches
-  `docs.flutter.dev/deployment/flavors-windows`. (`Runner.rc` / `main.cpp`
-  are generated at build time — the checked-in copies reflect the last
-  flavor run.)
-- **Web**: no native flavors upstream; separation is via per-flavor
-  `output_path`. Serve that directory when building
-  (`flutter build web` serves `web/` unless reconfigured).
+- **Android** (`android/app/build.gradle.kts`): `productFlavors` with `applicationIdSuffix` + `app_name` res value; `AndroidManifest.xml` uses `@string/app_name`. Matches `docs.flutter.dev/deployment/flavors`.
+- **iOS/macOS**: per-flavor build configurations (`Debug-development`, …) carrying `APP_DISPLAY_NAME` + flavor bundle-id suffix, one scheme per flavor, `Info.plist` display name `$(APP_DISPLAY_NAME)`. The tool's `pbxproj` mode wires configurations that share the base `.xcconfig`.
+- **Linux**: `FLUTTER_APP_FLAVOR` application-id branches + window-title switch in `my_application.cc`.
+- **Windows**: `Runner.rc.in` / `main.cpp.in` templates configured with the per-flavor title and icon name. Matches `docs.flutter.dev/deployment/flavors-windows`. (`Runner.rc` / `main.cpp` are generated at build time — the checked-in copies reflect the last flavor run.)
+- **Web**: no native flavors upstream; separation is via per-flavor `output_path`. Serve that directory when building (`flutter build web` serves `web/` unless reconfigured).
 
 ## Regenerating from Scratch
 
-Delete the generated outputs (or run the two commands above — every writer
-is idempotent) and re-run. All per-platform sources live under
-`assets/icon/` as SVGs (`*-dev*` transparent set, `*-prod*` opaque set +
-`*-glass*` liquid-glass layers), so this demo also exercises the vector
-pipeline end to end: alpha recovery, the `remove_alpha` matte, dark/tinted
-variants, and native SVG glass layers.
+Delete the generated outputs (or run the two commands above — every writer is idempotent) and re-run. All per-platform sources live under `assets/icon/` as SVGs (`*-dev*` transparent set, `*-prod*` opaque set + `*-glass*` liquid-glass layers), so this demo also exercises the vector pipeline end to end: alpha recovery, the `remove_alpha` matte, dark/tinted variants, and native SVG glass layers.

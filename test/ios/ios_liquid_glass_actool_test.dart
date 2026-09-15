@@ -5,9 +5,7 @@ import 'package:launcher_icons/src/platforms/ios/liquid_glass_icon_generator.dar
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
-// Validates generated `.icon` bundles with Apple's own `actool`, the same
-// compiler Xcode runs during builds. Requires macOS + Xcode; skipped
-// elsewhere (the JSON-shape unit tests cover all platforms).
+// Validates generated `.icon` bundles with Apple's own `actool`, the same compiler Xcode runs during builds. Requires macOS + Xcode; skipped elsewhere (the JSON-shape unit tests cover all platforms).
 void main() {
   group(
     'generateLiquidGlassIcon actool validation',

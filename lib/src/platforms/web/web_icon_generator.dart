@@ -40,8 +40,7 @@ class WebIconGenerator extends IconGenerator {
   String get _faviconIcoFilePath => path.join(_webDirPath, 'favicon.ico');
   String get _iconsDirPath => path.join(_webDirPath, 'icons');
 
-  /// Opaque 180x180 apple-touch-icon for iOS Safari, which ignores manifest
-  /// icons or picks the wrong art without an explicit tag.
+  /// Opaque 180x180 apple-touch-icon for iOS Safari, which ignores manifest icons or picks the wrong art without an explicit tag.
   String get _appleTouchIconFilePath =>
       path.join(_iconsDirPath, 'apple-touch-icon.png');
 
@@ -62,8 +61,7 @@ class WebIconGenerator extends IconGenerator {
       logger: context.logger,
     );
 
-    // resolve the favicon image path and file, which is either one explicitly
-    // provided or the same as the image file loaded above
+    // resolve the favicon image path and file, which is either one explicitly provided or the same as the image file loaded above
     late final String faviconImgFilePath;
     late final utils.SizeImageLoader loadFavicon;
     final faviconImagePathOverride = context.webConfig!.imagePathFavicon;

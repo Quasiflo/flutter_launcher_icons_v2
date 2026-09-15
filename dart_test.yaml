@@ -1,7 +1,2 @@
-# Some suites (android_test, ios_liquid_glass_test) change the process-wide
-# working directory because the generators under test use CWD-relative paths
-# and have no prefix support yet. CWD is process-global, so those suites race
-# when the runner executes test files concurrently. Serialize suite execution
-# until the generators accept absolute prefix paths. The canonical entrypoint
-# remains `dart test test/all_tests.dart` (single file, always sequential).
+# Some suites (android_test, ios_liquid_glass_test) change the process-wide working directory because the generators under test use CWD-relative paths and have no prefix support yet. CWD is process-global, so those suites race when the runner executes test files concurrently. Serialize suite execution until the generators accept absolute prefix paths. The canonical entrypoint remains `dart test test/all_tests.dart` (single file, always sequential).
 concurrency: 1

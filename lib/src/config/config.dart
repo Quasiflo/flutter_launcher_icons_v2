@@ -64,8 +64,7 @@ class Config {
     );
   }
 
-  /// Loads every `launcher_icons-<flavor>` section from [filePath], keyed by
-  /// flavor name. Each section has the same shape as the plain
+  /// Loads every `launcher_icons-<flavor>` section from [filePath], keyed by flavor name. Each section has the same shape as the plain
   /// `launcher_icons:` config and stands alone (no merging with it).
   /// Returns an empty map when the file does not exist or declares no
   /// flavor sections.
@@ -172,10 +171,7 @@ class Config {
 
   /// Rasterize SVG sources separately at every output size (default false).
   ///
-  /// Off: each SVG rasterizes once at 1024px and every size downscales from
-  /// that master — as crisp for icon art and far faster. On: every output
-  /// size gets its own vector rasterization (crisper pixel-aligned edges,
-  /// much slower on large sets like iOS).
+  /// Off: each SVG rasterizes once at 1024px and every size downscales from that master — as crisp for icon art and far faster. On: every output size gets its own vector rasterization (crisper pixel-aligned edges, much slower on large sets like iOS).
   @JsonKey(name: 'svg_rasterize_per_size')
   final bool svgRasterizePerSize;
 
@@ -223,8 +219,7 @@ class Config {
   }
 
   /// Checks if at least one platform section has `generate: true`.
-  /// Presence alone is not intent: an all-`generate: false` config must fail
-  /// loudly instead of exiting successfully with no work done.
+  /// Presence alone is not intent: an all-`generate: false` config must fail loudly instead of exiting successfully with no work done.
   bool get hasEnabledPlatform {
     return isNeedingNewAndroidIcon ||
         isNeedingNewIOSIcon ||
@@ -252,9 +247,7 @@ class Config {
   /// Whether or not configuration for generating Linux icons exists
   bool get hasLinuxConfig => linuxConfig != null;
 
-  /// Check to see if a custom Android icon name was specified via `icon_name`.
-  /// When set, a new launcher icon is generated without removing the old
-  /// default existing Flutter launcher icon.
+  /// Check to see if a custom Android icon name was specified via `icon_name`. When set, a new launcher icon is generated without removing the old default existing Flutter launcher icon.
   bool get isCustomAndroidFile => androidConfig?.iconName != null;
 
   /// if we are needing a new Android icon
@@ -274,8 +267,7 @@ class Config {
       platformImagePath ?? imagePath;
 
   /// Method for the retrieval of the Android icon path
-  /// If android.image_path is found, this will be prioritised over the image_path
-  /// value.
+  /// If android.image_path is found, this will be prioritised over the image_path value.
   String? getImagePathAndroid() => resolveImagePath(androidConfig?.imagePath);
 
   /// get the image path for IOS

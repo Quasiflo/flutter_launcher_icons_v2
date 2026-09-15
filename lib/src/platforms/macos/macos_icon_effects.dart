@@ -6,12 +6,9 @@ import 'package:image/image.dart';
 /// rectangle with this radius is a close, cheap approximation.
 const double macOSCornerRadiusFraction = 0.225;
 
-/// Builds one macOS icon of [size] pixels, loading artwork at [artworkSize]
-/// through [loadArtwork] (so vector sources rasterize at exact pixels).
+/// Builds one macOS icon of [size] pixels, loading artwork at [artworkSize] through [loadArtwork] (so vector sources rasterize at exact pixels).
 ///
-/// When [paddingPercent] is 0 the artwork fills [size] (historical behavior,
-/// byte-identical). Otherwise the artwork is centered on a transparent canvas,
-/// leaving a safe-area margin of [paddingPercent]% on every side. When
+/// When [paddingPercent] is 0 the artwork fills [size] (historical behavior, byte-identical). Otherwise the artwork is centered on a transparent canvas, leaving a safe-area margin of [paddingPercent]% on every side. When
 /// [roundedCorners] is true the canvas corners are masked off.
 Future<Image> buildMacOSIconImage(
   Future<Image> Function(int) loadArtwork,
@@ -41,9 +38,7 @@ Future<Image> buildMacOSIconImage(
 /// transparent. The input is left unmodified when it already fits.
 ///
 /// The mask is a superellipse (|x|^4 + |y|^4 <= r^4) rather than a plain
-/// circular arc: Apple uses continuous-curvature ("squircle") corners, and
-/// the superellipse keeps more of the corner diagonal at the same 22.5%
-/// radius. Only `rounded_corners: true` output changes.
+/// circular arc: Apple uses continuous-curvature ("squircle") corners, and the superellipse keeps more of the corner diagonal at the same 22.5% radius. Only `rounded_corners: true` output changes.
 Image applyRoundedCorners(Image image) {
   final size = image.width;
   assert(image.height == size, 'macOS icons must be square');

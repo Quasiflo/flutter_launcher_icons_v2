@@ -19,8 +19,7 @@ static void my_application_activate(GApplication* application) {
 }
 ''';
 
-// The my_application.cc inserter must round-trip foreign line endings and a
-// missing trailing newline instead of normalizing them.
+// The my_application.cc inserter must round-trip foreign line endings and a missing trailing newline instead of normalizing them.
 void main() {
   group('my_application.cc line endings', () {
     late Directory tempDir;

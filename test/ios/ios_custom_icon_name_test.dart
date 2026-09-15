@@ -16,10 +16,7 @@ const _pbxproj = r'''
 }
 ''';
 
-// A custom icon_name must get its own catalog: <custom>.appiconset holding
-// the PNGs + Contents.json, with APPICON_NAME pointing at it. Writing the
-// PNGs into AppIcon.appiconset while naming another catalog leaves Xcode
-// unable to resolve the set.
+// A custom icon_name must get its own catalog: <custom>.appiconset holding the PNGs + Contents.json, with APPICON_NAME pointing at it. Writing the PNGs into AppIcon.appiconset while naming another catalog leaves Xcode unable to resolve the set.
 void main() {
   group('createIcons custom icon_name', () {
     late String originalDir;

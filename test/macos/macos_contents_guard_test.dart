@@ -49,8 +49,7 @@ const _corruptContentsJson = r'''
 }
 ''';
 
-// A pre-existing Contents.json with non-mac entries (or garbage bytes) must
-// warn, not crash — and the tool-owned images list is still refreshed.
+// A pre-existing Contents.json with non-mac entries (or garbage bytes) must warn, not crash — and the tool-owned images list is still refreshed.
 void main() {
   group('MacOSIconGenerator corrupt Contents.json guard', () {
     late String prefixPath;

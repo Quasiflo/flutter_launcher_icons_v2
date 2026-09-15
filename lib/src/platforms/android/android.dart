@@ -41,8 +41,7 @@ List<AndroidIconTemplate> androidIcons = <AndroidIconTemplate>[
   AndroidIconTemplate(directoryName: 'mipmap-xxxhdpi', size: 192),
 ];
 
-/// Creates the legacy mipmap icons (overwriting defaults, or adding a new
-/// icon when `android.icon_name` is set) and wires the manifest.
+/// Creates the legacy mipmap icons (overwriting defaults, or adding a new icon when `android.icon_name` is set) and wires the manifest.
 Future<void> createDefaultIcons(
   Config config,
   String? flavor, {
@@ -134,9 +133,7 @@ Future<void> createDefaultIcons(
 
 /// Deletes legacy `<old>.png` files after an icon-name switch.
 ///
-/// The manifest's previous icon name proves tool ownership: only the tool
-/// writes custom names there. `ic_launcher` (possibly Flutter's originals)
-/// and the incoming name are never touched.
+/// The manifest's previous icon name proves tool ownership: only the tool writes custom names there. `ic_launcher` (possibly Flutter's originals) and the incoming name are never touched.
 Future<void> removeStaleLegacyIconsForSwitch(
   File androidManifestFile,
   String newIconName,
@@ -241,9 +238,7 @@ Future<void> createAdaptiveIcons(
       ),
     );
   } else {
-    // colors.xml has a single writer (this branch) and is awaited before the
-    // foreground/background fan-out below, so no locking is needed despite
-    // the concurrent PNG writes.
+    // colors.xml has a single writer (this branch) and is awaited before the foreground/background fan-out below, so no locking is needed despite the concurrent PNG writes.
     await updateColorsXmlFile(
       backgroundConfig,
       flavor,
@@ -497,9 +492,7 @@ Future<void> createMipmapXmlFile(
 /// Deletes adaptive icon artifacts left behind by a previous adaptive
 /// configuration so they cannot shadow freshly generated icons (fluttercommunity/flutter_launcher_icons#328).
 ///
-/// Only tool-owned file names are removed (`colors.xml` is shared and left
-/// untouched). Both the default and the custom icon xml names are covered so
-/// switching in either direction is cleaned up.
+/// Only tool-owned file names are removed (`colors.xml` is shared and left untouched). Both the default and the custom icon xml names are covered so switching in either direction is cleaned up.
 Future<void> _removeStaleAdaptiveIcons(
   Config config,
   String? flavor, {
@@ -549,11 +542,9 @@ Future<void> _removeStaleAdaptiveIcons(
 
 /// Retrieves the colors.xml file for the project.
 ///
-/// If the colors.xml file is found, it is updated with a new color item for the
-/// adaptive icon background.
+/// If the colors.xml file is found, it is updated with a new color item for the adaptive icon background.
 ///
-/// If not, the colors.xml file is created and a color item for the adaptive icon
-/// background is included in the new colors.xml file.
+/// If not, the colors.xml file is created and a color item for the adaptive icon background is included in the new colors.xml file.
 Future<void> updateColorsXmlFile(
   String backgroundConfig,
   String? flavor, {
@@ -600,8 +591,7 @@ Future<void> _createAdaptiveBackgrounds(
   );
 
   final concurrentImageUpdates = <Future<void>>[];
-  // creates a png image (ic_adaptive_background.png) for the adaptive icon background in each of the locations
-  // it is required
+  // creates a png image (ic_adaptive_background.png) for the adaptive icon background in each of the locations it is required
   for (AndroidIconTemplate androidIcon in adaptiveForegroundIcons) {
     concurrentImageUpdates.add(
       loadSize(androidIcon.size).then(
@@ -634,8 +624,7 @@ Future<void> createNewColorsFile(
 /// Updates the colors.xml with the new adaptive launcher icon color
 Future<void> updateColorsFile(File colorsFile, String backgroundColor) async {
   // Normalize bare hex colors (`ffffff` -> `#ffffff`, #673). Image paths
-  // never reach this function (see createAdaptiveIcons), so a plain 6/8-digit
-  // hex string here is always meant to be a color.
+  // never reach this function (see createAdaptiveIcons), so a plain 6/8-digit hex string here is always meant to be a color.
   if (RegExp(r'^[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$').hasMatch(backgroundColor)) {
     backgroundColor = '#$backgroundColor';
   }
@@ -669,9 +658,7 @@ Future<void> updateColorsFile(File colorsFile, String backgroundColor) async {
   await colorsFile.writeAsString(lines.join('\n'));
 }
 
-/// Writes [image] resized to [template.size] as a PNG file named [filename]
-/// inside [template.directoryName] (see [utils.createResizedImage] for the
-/// interpolation policy).
+/// Writes [image] resized to [template.size] as a PNG file named [filename] inside [template.directoryName] (see [utils.createResizedImage] for the interpolation policy).
 Future<void> writeResizedPng(
   AndroidIconTemplate template,
   Image image,
@@ -692,8 +679,7 @@ Future<void> writeResizedPng(
   await pngFile.writeAsBytes(encodePng(resizedImage));
 }
 
-/// Updates the line which specifies the launcher icon within the AndroidManifest.xml
-/// with the new icon name (only if it has changed)
+/// Updates the line which specifies the launcher icon within the AndroidManifest.xml with the new icon name (only if it has changed)
 ///
 /// Note: default iconName = "ic_launcher"
 Future<void> overwriteAndroidManifestWithNewLauncherIcon(
@@ -723,8 +709,7 @@ Future<void> overwriteAndroidManifestWithNewLauncherIcon(
   }
 }
 
-/// Updates only the line containing android:icon with the specified iconName,
-/// wiring android:roundIcon alongside it when [roundIconName] is given
+/// Updates only the line containing android:icon with the specified iconName, wiring android:roundIcon alongside it when [roundIconName] is given
 List<String> _transformAndroidManifestWithNewLauncherIcon(
   List<String> oldManifestLines,
   String iconName, [
@@ -779,18 +764,14 @@ bool isAdaptiveIconConfigImageFile(String backgroundFile) {
       normalizedPath.endsWith('.svg');
 }
 
-/// Returns true when the adaptive background is the `transparent` keyword
-/// (case-insensitive), meaning `@android:color/transparent` with no
-/// colors.xml entry (fluttercommunity/flutter_launcher_icons#535).
+/// Returns true when the adaptive background is the `transparent` keyword (case-insensitive), meaning `@android:color/transparent` with no colors.xml entry (fluttercommunity/flutter_launcher_icons#535).
 bool isTransparentAdaptiveBackground(String? backgroundConfig) {
   return backgroundConfig?.toLowerCase() == 'transparent';
 }
 
 /// (NOTE THIS IS JUST USED FOR UNIT TEST)
 /// Ensures the correct path is used for generating adaptive icons
-/// "Next you must create alternative drawable resources in your app for use with
-/// Android 8.0 (API level 26) in res/mipmap-anydpi/ic_launcher.xml"
-/// Source: https://developer.android.com/develop/ui/compose/system/icon_design_adaptive
+/// "Next you must create alternative drawable resources in your app for use with Android 8.0 (API level 26) in res/mipmap-anydpi/ic_launcher.xml" Source: https://developer.android.com/develop/ui/compose/system/icon_design_adaptive
 bool isCorrectMipmapDirectoryForAdaptiveIcon(String path) {
   return path == 'android/app/src/main/res/mipmap-anydpi-v26/';
 }

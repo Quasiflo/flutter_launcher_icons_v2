@@ -4,10 +4,7 @@ import 'package:launcher_icons/src/platforms/ios/ios.dart' as ios;
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
-// Tests for changeIosLauncherIcon: scoped rewrites (fluttercommunity/flutter_launcher_icons#565), atomic writes
-// (fluttercommunity/flutter_launcher_icons#636) and the missing-key warning (fluttercommunity/flutter_launcher_icons#341).
-// NOTE: a trailing newline keeps written output byte-identical when
-// nothing is replaced.
+// Tests for changeIosLauncherIcon: scoped rewrites (fluttercommunity/flutter_launcher_icons#565), atomic writes (fluttercommunity/flutter_launcher_icons#636) and the missing-key warning (fluttercommunity/flutter_launcher_icons#341). NOTE: a trailing newline keeps written output byte-identical when nothing is replaced.
 const _fixture = r'''
 // !$*UTF8*$!
 {

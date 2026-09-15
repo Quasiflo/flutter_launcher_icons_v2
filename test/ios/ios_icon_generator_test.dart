@@ -18,8 +18,7 @@ const _pbxproj = r'''
 }
 ''';
 
-// The generator must honor prefixPath: with CWD left at the repo root, all
-// reads and writes happen under the given prefix.
+// The generator must honor prefixPath: with CWD left at the repo root, all reads and writes happen under the given prefix.
 void main() {
   group('IosIconGenerator', () {
     late String prefixPath;

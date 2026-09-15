@@ -51,8 +51,7 @@ Future<List<String>> getFlavors({String searchPath = '.'}) async {
   return flavors;
 }
 
-/// Returns the flavor named by an explicit `-f launcher_icons-<flavor>.yaml`
-/// argument, or `null` when `-f` does not point at a flavor config file.
+/// Returns the flavor named by an explicit `-f launcher_icons-<flavor>.yaml` argument, or `null` when `-f` does not point at a flavor config file.
 String? explicitFlavorFromArgs(ArgResults argResults) {
   final String filePath = argResults[fileOption] as String;
   final match =
@@ -108,9 +107,7 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
   final String prefixPath = argResults[prefixOption];
 
   // An explicit `-f launcher_icons-<flavor>.yaml` runs only that
-  // flavor instead of looping over every discovered flavor (fluttercommunity/flutter_launcher_icons#215).
-  // The file is loaded from the given path directly, so flavor configs in
-  // subdirectories work too.
+  // flavor instead of looping over every discovered flavor (fluttercommunity/flutter_launcher_icons#215). The file is loaded from the given path directly, so flavor configs in subdirectories work too.
   final onlyFlavor = explicitFlavorFromArgs(argResults);
   if (onlyFlavor != null) {
     final requestedFlavor = argResults['flavor'] as String?;
@@ -155,15 +152,13 @@ Future<void> createIconsFromArguments(List<String> arguments) async {
 
   final flavors = await getFlavors(searchPath: argResults['flavor-path']);
   // An explicit `-f` for a non-flavor file is honored as-is instead of
-  // looping over discovered flavor files (fluttercommunity/flutter_launcher_icons#426). (An explicit flavor file is
-  // already handled by the onlyFlavor branch above.) Suffixed
+  // looping over discovered flavor files (fluttercommunity/flutter_launcher_icons#426). (An explicit flavor file is already handled by the onlyFlavor branch above.) Suffixed
   // `launcher_icons-<flavor>:` sections inside the pinned file still count:
   // `-f` pins the file, not the absence of flavors.
   final hasFileFlavors = flavors.isNotEmpty && !isFileOptionExplicit(arguments);
 
   // Suffixed flavor sections live in the pinned file when `-f` names one,
-  // otherwise in launcher_icons.yaml (when present) and pubspec.yaml, with
-  // the yaml winning a name conflict.
+  // otherwise in launcher_icons.yaml (when present) and pubspec.yaml, with the yaml winning a name conflict.
   final Map<String, Config> keyFlavors = {};
   if (isFileOptionExplicit(arguments)) {
     keyFlavors.addAll(
@@ -394,9 +389,7 @@ Config? loadConfigFileFromArgResults(
   }
   // fluttercommunity/flutter_launcher_icons#628: an unedited `:generate` template still points at the phantom
   // `assets/icon/icon.png`. When the default config file is in play (not an
-  // explicit `-f`) and none of its images exist while pubspec's do, the stale
-  // template is shadowing the real config — warn and prefer pubspec.
-  // An explicitly requested file is always honored, with a warning.
+  // explicit `-f`) and none of its images exist while pubspec's do, the stale template is shadowing the real config — warn and prefer pubspec. An explicitly requested file is always honored, with a warning.
   if (filePath == defaultConfigFile) {
     final pubspecConfigs = Config.loadConfigFromPubSpec(prefixPath);
     if (pubspecConfigs != null &&

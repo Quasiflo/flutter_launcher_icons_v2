@@ -50,9 +50,7 @@ class AndroidConfig {
   @JsonKey(name: 'adaptive_icon_round')
   final String? adaptiveIconRound;
 
-  /// Whether to emit a 512x512 Play Store upload icon (`play_store_icon.png`
-  /// next to the project). Off by default: it is a store-upload artifact,
-  /// never an `android/res` deliverable.
+  /// Whether to emit a 512x512 Play Store upload icon (`play_store_icon.png` next to the project). Off by default: it is a store-upload artifact, never an `android/res` deliverable.
   @JsonKey(name: 'play_store_icon')
   final bool playStoreIcon;
 

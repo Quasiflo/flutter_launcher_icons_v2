@@ -9,9 +9,7 @@ import 'package:pure_svg/svg.dart' as pure_svg;
 import 'custom_exceptions.dart';
 import 'logger.dart';
 
-/// Note: Do not change interpolation unless you end up with better results
-/// (see issue for result when using cubic interpolation)
-/// https://github.com/Quasiflo/launcher_icons/issues/101#issuecomment-495528733
+/// Note: Do not change interpolation unless you end up with better results (see issue for result when using cubic interpolation) https://github.com/Quasiflo/launcher_icons/issues/101#issuecomment-495528733
 Image createResizedImage(int iconSize, Image image) {
   if (image.width >= iconSize) {
     return copyResize(
@@ -63,8 +61,7 @@ Future<Image> decodeImageFile(String filePath) async {
 /// Whether [imagePath] points at an SVG source (case-insensitive).
 bool isSvgPath(String imagePath) => imagePath.toLowerCase().endsWith('.svg');
 
-/// Raster width/height for SVG sources in single-master mode. Vectors scale
-/// losslessly, so one 1024 master feeds every downscale below it.
+/// Raster width/height for SVG sources in single-master mode. Vectors scale losslessly, so one 1024 master feeds every downscale below it.
 const int svgMasterSize = 1024;
 
 /// Rasterizes the SVG at [filePath] to exactly [width]×[height] pixels
@@ -73,8 +70,7 @@ const int svgMasterSize = 1024;
 /// declares no dimensions.
 ///
 /// Transparency is recovered by difference matting: the source renders
-/// twice (over solid white and solid black) because the renderer flattens
-/// alpha, and per-pixel alpha is derived from the channel differences.
+/// twice (over solid white and solid black) because the renderer flattens alpha, and per-pixel alpha is derived from the channel differences.
 Future<Image> rasterizeSvgFile(
   String filePath, {
   int width = svgMasterSize,
@@ -105,9 +101,7 @@ Future<Image> rasterizeSvgFile(
 }
 
 /// Rejects SVG sources with no usable viewport before rendering: the
-/// renderer reports missing dimensions through an unhandled async error the
-/// caller cannot catch, so detect it here with a clear message instead.
-/// Only the root `<svg>` tag's attributes count.
+/// renderer reports missing dimensions through an unhandled async error the caller cannot catch, so detect it here with a clear message instead. Only the root `<svg>` tag's attributes count.
 void _requireSvgDimensions(String source, String filePath) {
   Never fail(String reason) => throw InvalidConfigException(
         'Cannot rasterize SVG image at "$filePath": $reason',
@@ -138,10 +132,7 @@ Future<Image> _renderSvg(String source, int width, int height) async {
   return image;
 }
 
-/// Paints a full-bleed [hexColor] background behind [source] by inserting a
-/// rect as the root's first child. Oversized pixel coordinates (rather than
-/// percentages, which the parser rejects) cover any viewport, including
-/// negative origins; the canvas clips the excess.
+/// Paints a full-bleed [hexColor] background behind [source] by inserting a rect as the root's first child. Oversized pixel coordinates (rather than percentages, which the parser rejects) cover any viewport, including negative origins; the canvas clips the excess.
 String _svgWithBackground(String source, String hexColor, String filePath) {
   final openTag = RegExp(r'<svg[^>]*>').firstMatch(source);
   if (openTag == null) {
@@ -157,10 +148,7 @@ String _svgWithBackground(String source, String hexColor, String filePath) {
   );
 }
 
-/// Recovers per-pixel alpha from opaque [white]/[black] background renders
-/// of the same artwork: each render composites the art over its background
-/// (`observed = art × α + bg × (1 − α)`), so one minus the white-minus-black
-/// difference is alpha, and the black render holds the premultiplied color.
+/// Recovers per-pixel alpha from opaque [white]/[black] background renders of the same artwork: each render composites the art over its background (`observed = art × α + bg × (1 − α)`), so one minus the white-minus-black difference is alpha, and the black render holds the premultiplied color.
 ///
 /// The alpha channel is stripped when every pixel is opaque, so downstream
 /// `hasAlpha` checks (remove_alpha, store warnings) see opaque art as opaque.
@@ -211,9 +199,7 @@ Image matteWhiteBlack(Image white, Image black) {
 
 /// Builds a per-size artwork loader for [imagePath].
 ///
-/// Raster sources decode once and resize per size. SVG sources rasterize at
-/// each requested size when [perSize], otherwise once at [svgMasterSize] and
-/// resize — equivalent crispness for icon art at a fraction of the cost.
+/// Raster sources decode once and resize per size. SVG sources rasterize at each requested size when [perSize], otherwise once at [svgMasterSize] and resize — equivalent crispness for icon art at a fraction of the cost.
 typedef SizeImageLoader = Future<Image> Function(int size);
 
 /// Builds a [SizeImageLoader] for [imagePath] — see [SizeImageLoader].
@@ -241,8 +227,7 @@ Future<SizeImageLoader> sizeImageLoaderFor(
 
 /// Joins [prefixPath] with a project-relative [target] path.
 ///
-/// The default `'.'` prefix leaves [target] untouched so default runs keep
-/// their historical relative paths; any other prefix is joined normally.
+/// The default `'.'` prefix leaves [target] untouched so default runs keep their historical relative paths; any other prefix is joined normally.
 String withPrefix(String prefixPath, String target) =>
     prefixPath == '.' ? target : path.join(prefixPath, target);
 

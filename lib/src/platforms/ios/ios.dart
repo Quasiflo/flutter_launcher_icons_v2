@@ -25,9 +25,7 @@ class IosIconTemplate {
 
 /// details of the ios icons which need to be generated
 ///
-/// Covers the modern (Xcode 14+) universal set, including the 1x switcher
-/// sizes. The legacy iphone/ipad list was removed in v3 (fluttercommunity/flutter_launcher_icons#528): it emitted
-/// obsolete sizes (57x57, 50x50, 72x72) that Xcode no longer references.
+/// Covers the modern (Xcode 14+) universal set, including the 1x switcher sizes. The legacy iphone/ipad list was removed in v3 (fluttercommunity/flutter_launcher_icons#528): it emitted obsolete sizes (57x57, 50x50, 72x72) that Xcode no longer references.
 List<IosIconTemplate> iosIcons = <IosIconTemplate>[
   IosIconTemplate(name: '-20x20@1x', size: 20),
   IosIconTemplate(name: '-20x20@2x', size: 40),
@@ -109,10 +107,7 @@ Future<void> createIcons(
     }
   }
 
-  // remove_alpha mattes the base image onto the background color. The dark
-  // variant intentionally keeps its transparency (Apple: the system
-  // background shows through), while the tinted variant is forced opaque
-  // like the base image.
+  // remove_alpha mattes the base image onto the background color. The dark variant intentionally keeps its transparency (Apple: the system background shows through), while the tinted variant is forced opaque like the base image.
   if (config.iosConfig?.removeAlpha == true) {
     if (image.hasAlpha) {
       image = _removeAlphaChannel(image, config);
@@ -299,8 +294,7 @@ Future<void> createIcons(
       prefixPath,
     );
   } else if (customIconName != null) {
-    // If a custom icon_name is configured then the user has specified a new icon to be created
-    // and for the old icon file to be kept
+    // If a custom icon_name is configured then the user has specified a new icon to be created and for the old icon file to be kept
     final String newIconName = customIconName;
     // Like the flavor flow, a custom name gets its own catalog so the
     // folder matches APPICON_NAME (<custom>.appiconset, not AppIcon).
@@ -371,8 +365,7 @@ Future<void> createIcons(
       prefixPath,
     );
   }
-  // Otherwise the user wants the new icon to use the default icons name and
-  // update config file to use it
+  // Otherwise the user wants the new icon to use the default icons name and update config file to use it
   else {
     printStatus('Overwriting default iOS launcher icon with new icon', logger);
     for (IosIconTemplate template in generateIosIcons) {
@@ -467,10 +460,7 @@ Future<void> createIcons(
 /// regardless of image size) instead of a full O(n) pixel walk.
 ///
 /// A sample counts as colored when its channel spread exceeds 8 levels,
-/// tolerating JPEG-style compression noise around true gray. Checking one
-/// pixel (or every pixel) is the wrong trade-off: a single origin sample
-/// misses off-center color, while a full scan costs millions of reads on a
-/// 1024px source to answer a boolean.
+/// tolerating JPEG-style compression noise around true gray. Checking one pixel (or every pixel) is the wrong trade-off: a single origin sample misses off-center color, while a full scan costs millions of reads on a 1024px source to answer a boolean.
 bool isGrayscaleImage(Image image, {int gridDivisions = 8}) {
   assert(gridDivisions > 0, 'gridDivisions must be positive');
   for (var row = 0; row < gridDivisions; row++) {
@@ -500,8 +490,7 @@ bool isGrayscaleImage(Image image, {int gridDivisions = 8}) {
   return true;
 }
 
-/// Overwrites the default `AppIcon` set in place, optionally suffixed for
-/// the dark/tinted variants.
+/// Overwrites the default `AppIcon` set in place, optionally suffixed for the dark/tinted variants.
 Future<void> overwriteDefaultIcons(
   IosIconTemplate template,
   Image image, [
@@ -865,9 +854,7 @@ bool _isFlavorConfig(String configName, String flavor) {
   return configName == flavor || configName.endsWith('-$flavor');
 }
 
-/// Removes flavor-matching `ASSETCATALOG_COMPILER_APPICON_NAME` lines from
-/// project.pbxproj so `xcconfig` overrides take effect (pbxproj values
-/// shadow xcconfig base values — verified with `xcodebuild
+/// Removes flavor-matching `ASSETCATALOG_COMPILER_APPICON_NAME` lines from project.pbxproj so `xcconfig` overrides take effect (pbxproj values shadow xcconfig base values — verified with `xcodebuild
 /// -showBuildSettings`). Returns the number of removed lines.
 Future<int> clearIosFlavorAppIconLines(
   String flavor, [
@@ -937,8 +924,7 @@ Future<int> clearIosFlavorAppIconLines(
 /// Writes per-mode `ios/Flutter/<flavor>-<Mode>.xcconfig` overrides pointing
 /// `ASSETCATALOG_COMPILER_APPICON_NAME` at [catalogName], creating missing
 /// files seeded with the Generated include. Assign the files as the base
-/// configuration files in Xcode once; the tool keeps the setting in place
-/// after that.
+/// configuration files in Xcode once; the tool keeps the setting in place after that.
 Future<void> writeIosFlavorXcconfigs(
   String flavor,
   String catalogName, {
@@ -1077,8 +1063,7 @@ Future<void> modifyDefaultContentsFile(
   await contentsJsonFile.writeAsString(contentsFileContent);
 }
 
-/// Serializes the `Contents.json` image list (plus `xcode` info block) to
-/// a JSON string.
+/// Serializes the `Contents.json` image list (plus `xcode` info block) to a JSON string.
 String generateContentsFileAsString(
   String newIconName,
   String? darkIconName,

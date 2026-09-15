@@ -8,8 +8,7 @@ import 'package:launcher_icons/src/core/logger.dart';
 import 'package:launcher_icons/src/platforms/linux/linux_icon_generator.dart';
 import 'package:test/test.dart';
 
-// The real Linux launcher deliverables: hicolor PNG tree, .desktop entries,
-// and snap packaging — all strictly only-if-absent, never overwriting.
+// The real Linux launcher deliverables: hicolor PNG tree, .desktop entries, and snap packaging — all strictly only-if-absent, never overwriting.
 void main() {
   group('LinuxIconGenerator packaging', () {
     late Directory tempDir;

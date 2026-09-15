@@ -1,5 +1,4 @@
-# Runs formatting, the full test suite, and the analyzer for any PR opened
-# to merge into the main branch.
+# Runs formatting, the full test suite, and the analyzer for any PR opened to merge into the main branch.
 name: run checks for new pr
 
 on:

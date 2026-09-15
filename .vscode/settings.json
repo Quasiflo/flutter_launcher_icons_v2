@@ -1,5 +1,6 @@
 {
     //! Editor Behaviour
+    "editor.wordWrap": "on", // files use continuous lines, never hard-wrapped; the editor wraps visually
     "files.insertFinalNewline": true,
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,

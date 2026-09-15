@@ -7,8 +7,7 @@ import 'package:launcher_icons/src/platforms/ios/ios.dart' as ios;
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
-// Tinted validation: a sampled chroma scan (not a single pixel, not a full
-// O(n) walk) warns when the tinted source carries real color.
+// Tinted validation: a sampled chroma scan (not a single pixel, not a full O(n) walk) warns when the tinted source carries real color.
 void main() {
   group('isGrayscaleImage', () {
     Image solid(int size, int r, int g, int b) {
