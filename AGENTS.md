@@ -6,14 +6,14 @@ Dart CLI package (`launcher_icons`, SDK `>=3.0.0 <4.0.0`). No monorepo. Entrypoi
 
 ```shell
 dart pub get
-dart test test/all_tests.dart   # canonical entrypoint, always sequential
+dart test                     # canonical entrypoint: discovers every test/**/*_test.dart
 hk check --all                  # verify: format, lints, analyzer, markdown, workflows (no writes)
 hk fix --all                    # apply fixes: format + `dart fix` + codegen
 ```
 
 - Setup (see `CONTRIBUTING.md`): `mise install`, then `hk install --global` (or repo-only `hk install`). Skip hooks once with `HK=0`.
 - CI (`.github/workflows/ci-open-pr.yml`): `dart format --output=none --set-exit-if-changed .` + `dart analyze --fatal-infos` + `dart test`. Match it locally via `hk check --all`.
-- `dart_test.yaml` sets `concurrency: 1` because android/ios-liquid-glass suites mutate process-wide CWD. Prefer `dart test test/all_tests.dart` over running files in parallel; single file e.g. `dart test test/config_test.dart` is fine for focus.
+- `dart_test.yaml` sets `concurrency: 1` because android/ios-liquid-glass suites mutate process-wide CWD. Never raise it or pass `--concurrency`; single file e.g. `dart test test/config_test.dart` is fine for focus.
 
 ## Codegen — Never Delete Outputs
 
