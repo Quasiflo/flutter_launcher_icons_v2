@@ -1,4 +1,5 @@
 /test/*
+/tool/*
 /.config/*
 /.vscode/*
 /.github/*
