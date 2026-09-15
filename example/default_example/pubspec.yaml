@@ -4,7 +4,7 @@ description: A new Flutter project to quickly test launcher_icons.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ^3.13.2
 
 dependencies:
   flutter:
@@ -40,8 +40,8 @@ launcher_icons:
   web:
     generate: true
     image_path: "assets/images/icon-1024x1024.png"
-    background_color: "#hexcode"
-    theme_color: "#hexcode"
+    background_color: "#aafb2b"
+    theme_color: "#aafb2b"
   windows:
     generate: true
     image_path: "assets/images/icon-1024x1024.png"

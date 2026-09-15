@@ -1,0 +1,43 @@
+# Main Folders
+/android
+/ios
+/lib
+/linux
+/macos
+/share
+/snap
+/test
+/web
+/windows
+/doc
+
+# Miscellaneous
+analysis_options.yaml
+.metadata
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Flutter/Dart/Pub related
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+.widget_preview/
