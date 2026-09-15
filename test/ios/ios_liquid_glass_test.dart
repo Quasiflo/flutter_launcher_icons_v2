@@ -244,8 +244,8 @@ void main() {
           sandbox.deleteSync(recursive: true);
         }
         sandbox.createSync(recursive: true);
-        File(path.join(originalDir, 'test', 'assets', 'app_icon.png'))
-            .copySync(path.join(sandboxDir, 'app_icon.png'));
+        File(path.join(originalDir, 'test', 'assets', 'master-light-1024.png'))
+            .copySync(path.join(sandboxDir, 'master-light-1024.png'));
         Directory.current = sandboxDir;
       });
 
@@ -257,7 +257,7 @@ void main() {
         final config = Config.fromJson(<String, dynamic>{
           'ios': {
             'generate': true,
-            'image_path_liquid_glass_icon': 'app_icon.png',
+            'image_path_liquid_glass_icon': 'master-light-1024.png',
             'background_color': '#FF0000',
           },
         });
@@ -265,7 +265,7 @@ void main() {
         await generateLiquidGlassIcon(config, 'AppIcon');
 
         final assetsImage =
-            File(iosLiquidGlassAssetsPath('AppIcon') + 'app_icon.png');
+            File(iosLiquidGlassAssetsPath('AppIcon') + 'master-light-1024.png');
         expect(assetsImage.existsSync(), isTrue);
 
         final configFile = File(iosLiquidGlassConfigPath('AppIcon'));
@@ -292,7 +292,7 @@ void main() {
         final config = Config.fromJson(<String, dynamic>{
           'ios': {
             'generate': true,
-            'image_path_liquid_glass_icon': 'app_icon.png',
+            'image_path_liquid_glass_icon': 'master-light-1024.png',
             'background_color': '#FF0000',
           },
         });
@@ -309,7 +309,7 @@ void main() {
 
         expect(stale.existsSync(), isFalse);
         expect(
-          File(iosLiquidGlassAssetsPath('AppIcon') + 'app_icon.png')
+          File(iosLiquidGlassAssetsPath('AppIcon') + 'master-light-1024.png')
               .existsSync(),
           isTrue,
         );

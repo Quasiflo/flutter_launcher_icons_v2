@@ -118,7 +118,7 @@ void main() {
     test('padding and rounded_corners parse', () {
       final config = MacOSConfig.fromJson(<String, dynamic>{
         'generate': true,
-        'image_path': 'app_icon.png',
+        'image_path': 'master-light-1024.png',
         'padding': 10,
         'rounded_corners': true,
       });

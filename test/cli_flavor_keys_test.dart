@@ -50,7 +50,7 @@ launcher_icons-production:
       sandbox.createSync(recursive: true);
       await Directory(path.join(sandboxDir, 'windows', 'runner', 'resources'))
           .create(recursive: true);
-      File(path.join(originalDir, 'test', 'assets', 'app_icon.png'))
+      File(path.join(originalDir, 'test', 'assets', 'master-light-1024.png'))
           .copySync(path.join(sandboxDir, 'icon.png'));
       await File(path.join(sandboxDir, 'launcher_icons.yaml'))
           .writeAsString(keyedYaml);

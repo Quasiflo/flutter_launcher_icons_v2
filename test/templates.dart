@@ -4,7 +4,7 @@ launcher_icons:
   android:
     generate: true
     image_path: "assets/images/icon-710x599-android.png"
-    adaptive_icon_background: "assets/images/christmas-background.png"
+    adaptive_icon_background: "assets/images/christmas-adaptive-bg-1024.png"
     adaptive_icon_foreground: "assets/images/icon-foreground-432x432.png"
     adaptive_icon_monochrome: "assets/images/icon-monochrome-432x432.png"
   ios:
@@ -13,20 +13,20 @@ launcher_icons:
     remove_alpha: false
   web:
     generate: true
-    image_path: "app_icon.png" # filepath
+    image_path: "master-light-1024.png" # filepath
     background_color: "#0175C2" # hex_color
     theme_color: "#0175C2" # hex_color
     apple_mobile_web_app_title: "demo"
     apple_mobile_web_app_status_bar_style: "hex_color"
   windows:
     generate: true
-    image_path: "app_icon.png"
+    image_path: "master-light-1024.png"
   macos:
     generate: true
-    image_path: "app_icon.png"
+    image_path: "master-light-1024.png"
   linux:
     generate: true
-    image_path: "app_icon.png"
+    image_path: "master-light-1024.png"
 ''';
 
 const flavorLIConfigTemplate = liConfigTemplate;
@@ -35,7 +35,7 @@ const liWebConfig = r'''
 launcher_icons:
   web:
     generate: true
-    image_path: "app_icon.png" # filepath
+    image_path: "master-light-1024.png" # filepath
     background_color: "#0175C2" # hex_color
     theme_color: "#0175C2" # hex_color
     apple_mobile_web_app_title: "demo"
@@ -46,7 +46,7 @@ const liWindowsConfig = r'''
 launcher_icons:
   windows:
     generate: true
-    image_path: "app_icon.png"
+    image_path: "master-light-1024.png"
 ''';
 
 const invalidliConfigTemplate = r'''
@@ -57,12 +57,12 @@ image_path: "assets/images/icon-128x128.png"
  ad
 image_path_android: "assets/images/icon-710x599-android.png"
 image_path_ios: "assets/images/icon-1024x1024.png"
-adaptive_icon_background: "assets/images/christmas-background.png"
+adaptive_icon_background: "assets/images/christmas-adaptive-bg-1024.png"
 adaptive_icon_foreground: "assets/images/icon-foreground-432x432.png"
 adaptive_icon_monochrome: "assets/images/icon-monochrome-432x432.png"
 web:
   generate: true
-  image_path: "app_icon.png" # filepath
+  image_path: "master-light-1024.png" # filepath
   background_color: "#0175C2" # hex_color
   theme_color: "#0175C2" # hex_color
   apple_mobile_web_app_title: "demo"
@@ -112,7 +112,7 @@ launcher_icons:
   android:
     generate: true
     image_path: "assets/images/icon-710x599-android.png"
-    adaptive_icon_background: "assets/images/christmas-background.png"
+    adaptive_icon_background: "assets/images/christmas-adaptive-bg-1024.png"
     adaptive_icon_foreground: "assets/images/icon-foreground-432x432.png"
     adaptive_icon_monochrome: "assets/images/icon-monochrome-432x432.png"
   ios:
@@ -121,7 +121,7 @@ launcher_icons:
     remove_alpha: false
   web:
     generate: true
-    image_path: "app_icon.png" # filepath
+    image_path: "master-light-1024.png" # filepath
     image_path_favicon: "app_icon_favicon.png" # filepath
     background_color: "#0175C2" # hex_color
     theme_color: "#0175C2" # hex_color
@@ -129,13 +129,13 @@ launcher_icons:
     apple_mobile_web_app_status_bar_style: "hex_color"
   windows:
     generate: true
-    image_path: "app_icon.png"
+    image_path: "master-light-1024.png"
   macos:
     generate: true
-    image_path: "app_icon.png"
+    image_path: "master-light-1024.png"
   linux:
     generate: true
-    image_path: "app_icon.png"
+    image_path: "master-light-1024.png"
 ''';
 
 const invalidPubspecTemplate = r'''
@@ -183,19 +183,19 @@ launcher_icons:
   image_path: "assets/images/icon-128x128.png"
   image_path_android: "assets/images/icon-710x599-android.png"
   image_path_ios: "assets/images/icon-1024x1024.png"
-  adaptive_icon_background: "assets/images/christmas-background.png"
+  adaptive_icon_background: "assets/images/christmas-adaptive-bg-1024.png"
   adaptive_icon_foreground: "assets/images/icon-foreground-432x432.png"
   adaptive_icon_monochrome: "assets/images/icon-monochrome-432x432.png"
   web:
     generate: true
-    image_path: "app_icon.png" # filepath
+    image_path: "master-light-1024.png" # filepath
     background_color: "#0175C2" # hex_color
     theme_color: "#0175C2" # hex_color
     apple_mobile_web_app_title: "demo"
     apple_mobile_web_app_status_bar_style: "hex_color"
   windows:
     generate: true
-    image_path: "app_icon.png"
+    image_path: "master-light-1024.png"
 ''';
 
 const webManifestTemplate = r'''

@@ -75,7 +75,7 @@ void main() {
     group('#validateRequirments', () {
       setUpAll(() {
         // make sure test file exists before starting test
-        testImageFile = File(path.join(assetPath, 'app_icon.png'));
+        testImageFile = File(path.join(assetPath, 'master-light-1024.png'));
         expect(testImageFile.existsSync(), isTrue);
       });
       setUp(() async {
@@ -97,9 +97,9 @@ void main() {
         when(mockConfig.windowsConfig).thenReturn(mockWindowsConfig);
         when(mockWindowsConfig.generate).thenReturn(true);
         when(mockWindowsConfig.imagePath)
-            .thenReturn(path.join(prefixPath, 'app_icon.png'));
+            .thenReturn(path.join(prefixPath, 'master-light-1024.png'));
         when(mockConfig.imagePath)
-            .thenReturn(path.join(prefixPath, 'app_icon.png'));
+            .thenReturn(path.join(prefixPath, 'master-light-1024.png'));
         // resolveImagePath is mocked: implement the real fallback rule so
         // the unit tests exercise the generators, not the mock default.
         when(mockConfig.resolveImagePath(argThat(anything))).thenAnswer(
@@ -149,11 +149,11 @@ void main() {
 
       test('should return false when windows dir does not exist', () async {
         await d.dir('fli_test', [
-          d.file('app_icon.png', testImageFile.readAsBytesSync()),
+          d.file('master-light-1024.png', testImageFile.readAsBytesSync()),
         ]).create();
         await expectLater(
           d.dir('fli_test', [
-            d.file('app_icon.png', anything),
+            d.file('master-light-1024.png', anything),
           ]).validate(),
           completes,
         );
@@ -179,13 +179,13 @@ void main() {
     final assetPath = path.join(Directory.current.path, 'test', 'assets');
 
     setUp(() async {
-      final imageFile = File(path.join(assetPath, 'app_icon.png'));
+      final imageFile = File(path.join(assetPath, 'master-light-1024.png'));
       expect(imageFile.existsSync(), isTrue);
       await d.dir('fli_test', [
         d.dir('windows'),
         d.file('launcher_icons.yaml', templates.liWindowsConfig),
         d.file('pubspec.yaml', templates.pubspecTemplate),
-        d.file('app_icon.png', imageFile.readAsBytesSync()),
+        d.file('master-light-1024.png', imageFile.readAsBytesSync()),
       ]).create();
       prefixPath = path.join(d.sandbox, 'fli_test');
       config = Config.loadConfigFromPath(
@@ -262,7 +262,7 @@ void main() {
       final config = Config.fromJson(<String, dynamic>{
         'windows': {
           'generate': true,
-          'image_path': 'app_icon.png',
+          'image_path': 'master-light-1024.png',
           'icon_filename': 'app_icon_staging.ico',
         },
       });

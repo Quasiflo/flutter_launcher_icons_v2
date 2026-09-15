@@ -148,7 +148,7 @@ void main() {
   // RangeError in downstream pixel operations on older `image` versions.
   group('#decodeImageFile exotic PNG variants', () {
     test('decodes indexed-color PNG and survives icon ops', () async {
-      final image = await utils.decodeImageFile('test/assets/indexed.png');
+      final image = await utils.decodeImageFile('test/assets/paletted-opaque-2x2.png');
       expect(image, isNotNull);
       final pixel = image.getPixel(0, 0);
       expect(pixel.r, equals(255));
@@ -157,7 +157,7 @@ void main() {
 
     test('decodes indexed PNG with tRNS transparency', () async {
       final image =
-          await utils.decodeImageFile('test/assets/indexed_transparent.png');
+          await utils.decodeImageFile('test/assets/paletted-alpha-2x2.png');
       expect(image, isNotNull);
       expect(image.getPixel(0, 0).a, equals(255));
       expect(utils.createResizedImage(48, image).width, equals(48));

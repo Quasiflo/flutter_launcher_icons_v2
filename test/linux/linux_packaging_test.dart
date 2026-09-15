@@ -40,7 +40,7 @@ static void my_application_activate(GApplication* application) {
 }
 ''');
       final iconBytes = File(
-        '${Directory.current.path}/test/assets/app_icon.png',
+        '${Directory.current.path}/test/assets/master-light-1024.png',
       ).readAsBytesSync();
       await Directory('${tempDir.path}/assets/images').create(
         recursive: true,

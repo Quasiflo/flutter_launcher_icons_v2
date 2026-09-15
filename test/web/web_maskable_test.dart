@@ -29,7 +29,7 @@ void main() {
     final assetPath = path.join(Directory.current.path, 'test', 'assets');
 
     setUp(() async {
-      final imageFile = File(path.join(assetPath, 'app_icon.png'));
+      final imageFile = File(path.join(assetPath, 'master-light-1024.png'));
       expect(imageFile.existsSync(), isTrue);
       await d.dir('fli_test', [
         d.dir('web', [
@@ -39,7 +39,7 @@ void main() {
         ]),
         d.file('launcher_icons.yaml', templates.liWebConfig),
         d.file('pubspec.yaml', templates.pubspecTemplate),
-        d.file('app_icon.png', imageFile.readAsBytesSync()),
+        d.file('master-light-1024.png', imageFile.readAsBytesSync()),
       ]).create();
       prefixPath = path.join(d.sandbox, 'fli_test');
 
@@ -74,7 +74,7 @@ void main() {
     test('uses image_path_maskable when provided', () async {
       final generator = generatorFor(<String, dynamic>{
         'generate': true,
-        'image_path': 'app_icon.png',
+        'image_path': 'master-light-1024.png',
         'image_path_maskable': 'maskable.png',
         'background_color': '#0175C2',
         'theme_color': '#0175C2',
@@ -92,7 +92,7 @@ void main() {
     test('derives opaque padded maskable art without a source', () async {
       final generator = generatorFor(<String, dynamic>{
         'generate': true,
-        'image_path': 'app_icon.png',
+        'image_path': 'master-light-1024.png',
         'background_color': '#ff0000',
       });
 
@@ -113,7 +113,7 @@ void main() {
       final generator = generatorFor(
         <String, dynamic>{
           'generate': true,
-          'image_path': 'app_icon.png',
+          'image_path': 'master-light-1024.png',
           'background_color': '#ff0000',
         },
         logger: logger,

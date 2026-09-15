@@ -52,9 +52,9 @@ void main() {
       sandbox.createSync(recursive: true);
       prefixPath = sandbox.absolute.path;
       final assets = path.join(Directory.current.path, 'test', 'assets');
-      File(path.join(assets, 'app_icon.png'))
-          .copySync(path.join(prefixPath, 'app_icon.png'));
-      File(path.join(assets, 'app_icon.png'))
+      File(path.join(assets, 'master-light-1024.png'))
+          .copySync(path.join(prefixPath, 'master-light-1024.png'));
+      File(path.join(assets, 'master-light-1024.png'))
           .copySync(path.join(prefixPath, 'round.png'));
       Directory(
         path.join(prefixPath, 'android', 'app', 'src', 'main'),
@@ -80,9 +80,9 @@ void main() {
     Config roundConfig() => Config.fromJson(<String, dynamic>{
           'android': {
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
             'adaptive_icon_background': '#ffffff',
-            'adaptive_icon_foreground': 'app_icon.png',
+            'adaptive_icon_foreground': 'master-light-1024.png',
             'adaptive_icon_round': 'round.png',
           },
         });
@@ -181,7 +181,7 @@ void main() {
       await stalePng.writeAsBytes([0]);
 
       final config = Config.fromJson(<String, dynamic>{
-        'android': {'generate': true, 'image_path': 'app_icon.png'},
+        'android': {'generate': true, 'image_path': 'master-light-1024.png'},
       });
       await android.createMipmapXmlFile(config, null, prefixPath: prefixPath);
 
@@ -212,7 +212,7 @@ void main() {
       ).writeAsStringSync(shadowManifest);
 
       final config = Config.fromJson(<String, dynamic>{
-        'android': {'generate': true, 'image_path': 'app_icon.png'},
+        'android': {'generate': true, 'image_path': 'master-light-1024.png'},
       });
       final logger = _RecordingLogger();
       await android.createDefaultIcons(
@@ -249,8 +249,8 @@ void main() {
       sandbox.createSync(recursive: true);
       prefixPath = sandbox.absolute.path;
       final assets = path.join(Directory.current.path, 'test', 'assets');
-      File(path.join(assets, 'app_icon.png'))
-          .copySync(path.join(prefixPath, 'app_icon.png'));
+      File(path.join(assets, 'master-light-1024.png'))
+          .copySync(path.join(prefixPath, 'master-light-1024.png'));
       Directory(
         path.join(prefixPath, 'android', 'app', 'src', 'main'),
       ).createSync(recursive: true);
@@ -284,7 +284,7 @@ void main() {
       final config = Config.fromJson(<String, dynamic>{
         'android': {
           'generate': true,
-          'image_path': 'app_icon.png',
+          'image_path': 'master-light-1024.png',
           'play_store_icon': true,
         },
       });
@@ -302,7 +302,7 @@ void main() {
       final config = Config.fromJson(<String, dynamic>{
         'android': {
           'generate': true,
-          'image_path': 'app_icon.png',
+          'image_path': 'master-light-1024.png',
         },
       });
 

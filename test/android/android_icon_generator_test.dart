@@ -57,7 +57,7 @@ void main() {
         });
 
     void writeImage([String name = 'icon.png']) {
-      File(path.join(Directory.current.path, 'test', 'assets', 'app_icon.png'))
+      File(path.join(Directory.current.path, 'test', 'assets', 'master-light-1024.png'))
           .copySync(path.join(prefixPath, name));
     }
 

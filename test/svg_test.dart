@@ -29,7 +29,7 @@ void main() {
   group('rasterizeSvgFile', () {
     test('renders at the requested size with gradients intact', () async {
       final image = await utils.rasterizeSvgFile(
-        path.join(assetPath, 'icon-test.svg'),
+        path.join(assetPath, 'vector-opaque-1024.svg'),
         width: 48,
         height: 48,
       );
@@ -51,7 +51,7 @@ void main() {
 
     test('recovers transparency by difference matting', () async {
       final image = await utils.rasterizeSvgFile(
-        path.join(assetPath, 'icon-test-transparent.svg'),
+        path.join(assetPath, 'vector-transparent-1024.svg'),
         width: 64,
         height: 64,
       );
@@ -82,7 +82,7 @@ void main() {
 
     test('defaults to a 1024 master', () async {
       final image = await utils.rasterizeSvgFile(
-        path.join(assetPath, 'icon-test.svg'),
+        path.join(assetPath, 'vector-opaque-1024.svg'),
       );
 
       expect(image.width, equals(utils.svgMasterSize));
@@ -130,7 +130,7 @@ void main() {
   group('decodeImageFile', () {
     test('routes svg sources through the rasterizer', () async {
       final image = await utils.decodeImageFile(
-        path.join(assetPath, 'icon-test.svg'),
+        path.join(assetPath, 'vector-opaque-1024.svg'),
       );
 
       expect(image.width, equals(utils.svgMasterSize));
@@ -140,7 +140,7 @@ void main() {
   group('sizeImageLoaderFor', () {
     test('raster sources decode once and resize', () async {
       final load = await utils.sizeImageLoaderFor(
-        path.join(assetPath, 'app_icon.png'),
+        path.join(assetPath, 'master-light-1024.png'),
         perSize: true,
       );
 
@@ -151,7 +151,7 @@ void main() {
 
     test('svg single-master mode resizes one 1024 raster', () async {
       final load = await utils.sizeImageLoaderFor(
-        path.join(assetPath, 'icon-test.svg'),
+        path.join(assetPath, 'vector-opaque-1024.svg'),
         perSize: false,
       );
 
@@ -162,7 +162,7 @@ void main() {
 
     test('svg per-size mode rasterizes at each size', () async {
       final load = await utils.sizeImageLoaderFor(
-        path.join(assetPath, 'icon-test.svg'),
+        path.join(assetPath, 'vector-opaque-1024.svg'),
         perSize: true,
       );
 
@@ -191,7 +191,7 @@ void main() {
         d.dir('windows/runner/resources'),
         d.file(
           'icon.svg',
-          File(path.join(assetPath, 'icon-test.svg')).readAsBytesSync(),
+          File(path.join(assetPath, 'vector-opaque-1024.svg')).readAsBytesSync(),
         ),
       ]).create();
       final prefix = path.join(d.sandbox, name);

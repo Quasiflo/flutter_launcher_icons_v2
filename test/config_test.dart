@@ -46,7 +46,7 @@ void main() {
                 'assets/images/icon-foreground-432x432.png',
             'adaptive_icon_foreground_inset': 16,
             'adaptive_icon_background':
-                'assets/images/christmas-background.png',
+                'assets/images/christmas-adaptive-bg-1024.png',
             'adaptive_icon_monochrome':
                 'assets/images/icon-monochrome-432x432.png',
             'adaptive_icon_round': null,
@@ -104,7 +104,7 @@ void main() {
           configs.webConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
             'image_path_favicon': null,
             'image_path_maskable': null,
             'favicon_size': 16,
@@ -122,7 +122,7 @@ void main() {
           configs.windowsConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
             'icon_filename': 'app_icon.ico',
           }),
         );
@@ -134,7 +134,7 @@ void main() {
           configs.macOSConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
             'padding': 0,
             'rounded_corners': false,
             'image_path_liquid_glass_icon': null,
@@ -166,7 +166,7 @@ void main() {
           configs.linuxConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
           }),
         );
       });
@@ -252,7 +252,7 @@ void main() {
                 'assets/images/icon-foreground-432x432.png',
             'adaptive_icon_foreground_inset': 16,
             'adaptive_icon_background':
-                'assets/images/christmas-background.png',
+                'assets/images/christmas-adaptive-bg-1024.png',
             'adaptive_icon_monochrome':
                 'assets/images/icon-monochrome-432x432.png',
             'adaptive_icon_round': null,
@@ -310,7 +310,7 @@ void main() {
           configs.webConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
             'image_path_favicon': 'app_icon_favicon.png',
             'image_path_maskable': null,
             'favicon_size': 16,
@@ -328,7 +328,7 @@ void main() {
           configs.windowsConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
             'icon_filename': 'app_icon.ico',
           }),
         );
@@ -340,7 +340,7 @@ void main() {
           configs.macOSConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
             'padding': 0,
             'rounded_corners': false,
             'image_path_liquid_glass_icon': null,
@@ -372,7 +372,7 @@ void main() {
           configs.linuxConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
           }),
         );
       });
@@ -431,7 +431,7 @@ void main() {
           configs.webConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
             'image_path_favicon': null,
             'image_path_maskable': null,
             'favicon_size': 16,
@@ -449,7 +449,7 @@ void main() {
           configs.windowsConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
             'icon_filename': 'app_icon.ico',
           }),
         );
@@ -461,7 +461,7 @@ void main() {
           configs.macOSConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
             'padding': 0,
             'rounded_corners': false,
             'image_path_liquid_glass_icon': null,
@@ -493,7 +493,7 @@ void main() {
           configs.linuxConfig!.toJson(),
           equals(<String, dynamic>{
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
           }),
         );
       });

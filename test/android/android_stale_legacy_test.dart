@@ -37,8 +37,8 @@ void main() {
       sandbox.createSync(recursive: true);
       prefixPath = sandbox.absolute.path;
       final assets = path.join(Directory.current.path, 'test', 'assets');
-      File(path.join(assets, 'app_icon.png'))
-          .copySync(path.join(prefixPath, 'app_icon.png'));
+      File(path.join(assets, 'master-light-1024.png'))
+          .copySync(path.join(prefixPath, 'master-light-1024.png'));
       Directory(
         path.join(prefixPath, 'android', 'app', 'src', 'main'),
       ).createSync(recursive: true);
@@ -98,7 +98,7 @@ void main() {
     Config customConfig(String iconName) => Config.fromJson(<String, dynamic>{
           'android': {
             'generate': true,
-            'image_path': 'app_icon.png',
+            'image_path': 'master-light-1024.png',
             'icon_name': iconName,
           },
         });
@@ -131,7 +131,7 @@ void main() {
 
       await android.createDefaultIcons(
         Config.fromJson(<String, dynamic>{
-          'android': {'generate': true, 'image_path': 'app_icon.png'},
+          'android': {'generate': true, 'image_path': 'master-light-1024.png'},
         }),
         null,
         prefixPath: prefixPath,

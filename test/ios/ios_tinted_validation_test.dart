@@ -58,7 +58,7 @@ void main() {
         sandbox.deleteSync(recursive: true);
       }
       sandbox.createSync(recursive: true);
-      File(path.join(originalDir, 'test', 'assets', 'app_icon.png'))
+      File(path.join(originalDir, 'test', 'assets', 'master-light-1024.png'))
           .copySync(path.join(sandboxDir, 'icon.png'));
       final red = Image(width: 16, height: 16, numChannels: 3);
       for (var y = 0; y < 16; y++) {

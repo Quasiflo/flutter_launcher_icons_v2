@@ -27,7 +27,7 @@ void main() {
         }
         sandbox.createSync(recursive: true);
         for (final name in ['icon.png', 'icon-dark.png', 'icon-tinted.png']) {
-          File(path.join(originalDir, 'test', 'assets', 'app_icon.png'))
+          File(path.join(originalDir, 'test', 'assets', 'master-light-1024.png'))
               .copySync(path.join(sandboxDir, name));
         }
         Directory.current = sandboxDir;

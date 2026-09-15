@@ -32,7 +32,7 @@ void main() {
         'android': {
           'generate': true,
           'adaptive_icon_background': '#ffffff',
-          'adaptive_icon_foreground': 'app_icon.png',
+          'adaptive_icon_foreground': 'master-light-1024.png',
         },
       });
       // Reuse the adaptive sandbox layout: android/ + icon file.
@@ -52,9 +52,9 @@ void main() {
           Directory.current.path,
           'test',
           'assets',
-          'app_icon.png',
+          'master-light-1024.png',
         ),
-      ).copySync(path.join(sandboxDir, 'app_icon.png'));
+      ).copySync(path.join(sandboxDir, 'master-light-1024.png'));
       final originalDir = Directory.current.path;
       Directory.current = sandboxDir;
       try {
@@ -89,31 +89,31 @@ void main() {
 
   test('Adaptive icon background image paths are detected', () {
     expect(
-      android.isAdaptiveIconConfigImageFile('assets/background.png'),
+      android.isAdaptiveIconConfigImageFile('assets/adaptive-bg-1024.png'),
       isTrue,
     );
     expect(
-      android.isAdaptiveIconConfigImageFile('assets/background.PNG'),
+      android.isAdaptiveIconConfigImageFile('assets/adaptive-bg-1024.PNG'),
       isTrue,
     );
     expect(
-      android.isAdaptiveIconConfigImageFile('assets/background.jpg'),
+      android.isAdaptiveIconConfigImageFile('assets/adaptive-bg-1024.jpg'),
       isTrue,
     );
     expect(
-      android.isAdaptiveIconConfigImageFile('assets/background.JPG'),
+      android.isAdaptiveIconConfigImageFile('assets/adaptive-bg-1024.JPG'),
       isTrue,
     );
     expect(
-      android.isAdaptiveIconConfigImageFile('assets/background.jpeg'),
+      android.isAdaptiveIconConfigImageFile('assets/adaptive-bg-1024.jpeg'),
       isTrue,
     );
     expect(
-      android.isAdaptiveIconConfigImageFile('assets/background.Jpeg'),
+      android.isAdaptiveIconConfigImageFile('assets/adaptive-bg-1024.Jpeg'),
       isTrue,
     );
     expect(
-      android.isAdaptiveIconConfigImageFile('assets/background.webp'),
+      android.isAdaptiveIconConfigImageFile('assets/adaptive-bg-1024.webp'),
       isTrue,
     );
     expect(
@@ -148,12 +148,12 @@ void main() {
         sandbox.deleteSync(recursive: true);
       }
       sandbox.createSync(recursive: true);
-      File(path.join(originalDir, 'test', 'assets', 'app_icon.png'))
-          .copySync(path.join(sandboxDir, 'app_icon.png'));
-      File(path.join(originalDir, 'test', 'assets', 'background.jpg'))
-          .copySync(path.join(sandboxDir, 'background.jpg'));
-      File(path.join(originalDir, 'test', 'assets', 'background.webp'))
-          .copySync(path.join(sandboxDir, 'background.webp'));
+      File(path.join(originalDir, 'test', 'assets', 'master-light-1024.png'))
+          .copySync(path.join(sandboxDir, 'master-light-1024.png'));
+      File(path.join(originalDir, 'test', 'assets', 'adaptive-bg-1024.jpg'))
+          .copySync(path.join(sandboxDir, 'adaptive-bg-1024.jpg'));
+      File(path.join(originalDir, 'test', 'assets', 'adaptive-bg-1024.webp'))
+          .copySync(path.join(sandboxDir, 'adaptive-bg-1024.webp'));
       Directory.current = sandboxDir;
     });
 
@@ -176,8 +176,8 @@ void main() {
       final config = Config.fromJson(<String, dynamic>{
         'android': {
           'generate': true,
-          'adaptive_icon_background': 'background.jpg',
-          'adaptive_icon_foreground': 'app_icon.png',
+          'adaptive_icon_background': 'adaptive-bg-1024.jpg',
+          'adaptive_icon_foreground': 'master-light-1024.png',
         },
       });
 
@@ -208,8 +208,8 @@ void main() {
       final config = Config.fromJson(<String, dynamic>{
         'android': {
           'generate': true,
-          'adaptive_icon_background': 'background.webp',
-          'adaptive_icon_foreground': 'app_icon.png',
+          'adaptive_icon_background': 'adaptive-bg-1024.webp',
+          'adaptive_icon_foreground': 'master-light-1024.png',
         },
       });
 
@@ -229,7 +229,7 @@ void main() {
         'android': {
           'generate': true,
           'adaptive_icon_background': '#ffffff',
-          'adaptive_icon_foreground': 'app_icon.png',
+          'adaptive_icon_foreground': 'master-light-1024.png',
         },
       });
 
@@ -260,7 +260,7 @@ void main() {
         'android': {
           'generate': true,
           'adaptive_icon_background': 'ffffff',
-          'adaptive_icon_foreground': 'app_icon.png',
+          'adaptive_icon_foreground': 'master-light-1024.png',
         },
       });
 
@@ -283,7 +283,7 @@ void main() {
         'android': {
           'generate': true,
           'adaptive_icon_background': 'Transparent',
-          'adaptive_icon_foreground': 'app_icon.png',
+          'adaptive_icon_foreground': 'master-light-1024.png',
         },
       });
 
@@ -355,8 +355,8 @@ void main() {
         sandbox.deleteSync(recursive: true);
       }
       sandbox.createSync(recursive: true);
-      File(path.join(originalDir, 'test', 'assets', 'app_icon.png'))
-          .copySync(path.join(sandboxDir, 'app_icon.png'));
+      File(path.join(originalDir, 'test', 'assets', 'master-light-1024.png'))
+          .copySync(path.join(sandboxDir, 'master-light-1024.png'));
       Directory.current = sandboxDir;
     });
 
@@ -380,7 +380,7 @@ void main() {
     test('zero inset emits the canonical plain monochrome form', () async {
       final mipmapXml = await mipmapXmlFor(<String, dynamic>{
         'generate': true,
-        'adaptive_icon_monochrome': 'app_icon.png',
+        'adaptive_icon_monochrome': 'master-light-1024.png',
         'adaptive_icon_foreground_inset': 0,
       });
       expect(
@@ -395,7 +395,7 @@ void main() {
     test('nonzero inset wraps monochrome in an inset block', () async {
       final mipmapXml = await mipmapXmlFor(<String, dynamic>{
         'generate': true,
-        'adaptive_icon_monochrome': 'app_icon.png',
+        'adaptive_icon_monochrome': 'master-light-1024.png',
       });
       expect(mipmapXml, contains('<monochrome>'));
       expect(

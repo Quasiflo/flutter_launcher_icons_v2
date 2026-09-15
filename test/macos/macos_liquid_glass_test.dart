@@ -343,8 +343,8 @@ void main() {
         }
         sandbox.createSync(recursive: true);
         File(
-          path.join(Directory.current.path, 'test', 'assets', 'app_icon.png'),
-        ).copySync(path.join(sandbox.path, 'app_icon.png'));
+          path.join(Directory.current.path, 'test', 'assets', 'master-light-1024.png'),
+        ).copySync(path.join(sandbox.path, 'master-light-1024.png'));
         prefixPath = sandbox.absolute.path;
       });
 
@@ -358,7 +358,7 @@ void main() {
         final config = Config.fromJson(<String, dynamic>{
           'macos': {
             'generate': true,
-            'image_path_liquid_glass_icon': 'app_icon.png',
+            'image_path_liquid_glass_icon': 'master-light-1024.png',
             'background_color': '#FF0000',
           },
         });
@@ -376,7 +376,7 @@ void main() {
             'Runner',
             'AppIcon.icon',
             'Assets',
-            'app_icon.png',
+            'master-light-1024.png',
           ),
         );
         expect(assetsImage.existsSync(), isTrue);
@@ -413,7 +413,7 @@ void main() {
         final config = Config.fromJson(<String, dynamic>{
           'macos': {
             'generate': true,
-            'image_path_liquid_glass_icon': 'app_icon.png',
+            'image_path_liquid_glass_icon': 'master-light-1024.png',
             'background_color': '#FF0000',
           },
         });
@@ -495,8 +495,8 @@ void main() {
           'project.pbxproj',
         ),
       ).writeAsString(_pbxproj);
-      File(path.join(Directory.current.path, 'test', 'assets', 'app_icon.png'))
-          .copySync(path.join(sandbox.path, 'app_icon.png'));
+      File(path.join(Directory.current.path, 'test', 'assets', 'master-light-1024.png'))
+          .copySync(path.join(sandbox.path, 'master-light-1024.png'));
       prefixPath = sandbox.absolute.path;
     });
 
@@ -510,8 +510,8 @@ void main() {
       final config = Config.fromJson(<String, dynamic>{
         'macos': {
           'generate': true,
-          'image_path': 'app_icon.png',
-          'image_path_liquid_glass_icon': 'app_icon.png',
+          'image_path': 'master-light-1024.png',
+          'image_path_liquid_glass_icon': 'master-light-1024.png',
         },
       });
       final generator = MacOSIconGenerator(
@@ -567,8 +567,8 @@ void main() {
       final config = Config.fromJson(<String, dynamic>{
         'macos': {
           'generate': true,
-          'image_path': 'app_icon.png',
-          'image_path_liquid_glass_icon': 'app_icon.png',
+          'image_path': 'master-light-1024.png',
+          'image_path_liquid_glass_icon': 'master-light-1024.png',
         },
       });
       final generator = MacOSIconGenerator(
@@ -609,7 +609,7 @@ void main() {
       final config = Config.fromJson(<String, dynamic>{
         'macos': {
           'generate': true,
-          'image_path': 'app_icon.png',
+          'image_path': 'master-light-1024.png',
         },
       });
       final generator = MacOSIconGenerator(

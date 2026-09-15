@@ -20,7 +20,7 @@ void main() {
     final assetPath = path.join(Directory.current.path, 'test', 'assets');
 
     setUp(() async {
-      final imageFile = File(path.join(assetPath, 'app_icon.png'));
+      final imageFile = File(path.join(assetPath, 'master-light-1024.png'));
       expect(imageFile.existsSync(), isTrue);
       await d.dir('fli_test', [
         d.dir('web', [
@@ -30,7 +30,7 @@ void main() {
         ]),
         d.file('launcher_icons.yaml', templates.liWebConfig),
         d.file('pubspec.yaml', templates.pubspecTemplate),
-        d.file('app_icon.png', imageFile.readAsBytesSync()),
+        d.file('master-light-1024.png', imageFile.readAsBytesSync()),
         d.file('app_icon_favicon.png', imageFile.readAsBytesSync()),
       ]).create();
       prefixPath = path.join(d.sandbox, 'fli_test');
@@ -79,7 +79,7 @@ void main() {
       final sizedConfig = Config.fromJson(<String, dynamic>{
         'web': {
           'generate': true,
-          'image_path': 'app_icon.png',
+          'image_path': 'master-light-1024.png',
           'favicon_size': 32,
         },
       });
@@ -125,7 +125,7 @@ void main() {
       final outputConfig = Config.fromJson(<String, dynamic>{
         'web': {
           'generate': true,
-          'image_path': 'app_icon.png',
+          'image_path': 'master-light-1024.png',
           'output_path': 'web_prod',
         },
       });

@@ -69,8 +69,8 @@ void main() {
           'project.pbxproj',
         ),
       ).writeAsString(_pbxproj);
-      File(path.join(Directory.current.path, 'test', 'assets', 'app_icon.png'))
-          .copySync(path.join(sandbox.path, 'app_icon.png'));
+      File(path.join(Directory.current.path, 'test', 'assets', 'master-light-1024.png'))
+          .copySync(path.join(sandbox.path, 'master-light-1024.png'));
       prefixPath = sandbox.absolute.path;
     });
 
@@ -84,7 +84,7 @@ void main() {
       final config = Config.fromJson(<String, dynamic>{
         'macos': {
           'generate': true,
-          'image_path': 'app_icon.png',
+          'image_path': 'master-light-1024.png',
         },
       });
       final generator = MacOSIconGenerator(

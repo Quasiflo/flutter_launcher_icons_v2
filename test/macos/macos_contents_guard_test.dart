@@ -72,8 +72,8 @@ void main() {
       sandbox.createSync(recursive: true);
       prefixPath = sandbox.absolute.path;
       logger = _RecordingLogger();
-      File(path.join(Directory.current.path, 'test', 'assets', 'app_icon.png'))
-          .copySync(path.join(prefixPath, 'app_icon.png'));
+      File(path.join(Directory.current.path, 'test', 'assets', 'master-light-1024.png'))
+          .copySync(path.join(prefixPath, 'master-light-1024.png'));
     });
 
     tearDown(() {
@@ -101,7 +101,7 @@ void main() {
             config: Config.fromJson(<String, dynamic>{
               'macos': {
                 'generate': true,
-                'image_path': 'app_icon.png',
+                'image_path': 'master-light-1024.png',
               },
             }),
             logger: logger,

@@ -33,7 +33,7 @@ void main() {
 
     group('#validateRequirments', () {
       setUpAll(() {
-        testImageFile = File(path.join(assetPath, 'app_icon.png'));
+        testImageFile = File(path.join(assetPath, 'master-light-1024.png'));
         expect(testImageFile.existsSync(), isTrue);
       });
       setUp(() {
@@ -55,9 +55,9 @@ void main() {
         when(mockConfig.macOSConfig).thenReturn(mockMacOSConfig);
         when(mockMacOSConfig.generate).thenReturn(true);
         when(mockMacOSConfig.imagePath)
-            .thenReturn(path.join(prefixPath, 'app_icon.png'));
+            .thenReturn(path.join(prefixPath, 'master-light-1024.png'));
         when(mockConfig.imagePath)
-            .thenReturn(path.join(prefixPath, 'app_icon.png'));
+            .thenReturn(path.join(prefixPath, 'master-light-1024.png'));
         // resolveImagePath is mocked: implement the real fallback rule so
         // the unit tests exercise the generators, not the mock default.
         when(mockConfig.resolveImagePath(argThat(anything))).thenAnswer(
@@ -92,11 +92,11 @@ void main() {
 
       test('should return false when macos dir does not exist', () async {
         await d.dir('fli_test', [
-          d.file('app_icon.png', testImageFile.readAsBytesSync()),
+          d.file('master-light-1024.png', testImageFile.readAsBytesSync()),
         ]).create();
         await expectLater(
           d.dir('fli_test', [
-            d.file('app_icon.png', anything),
+            d.file('master-light-1024.png', anything),
           ]).validate(),
           completes,
         );
@@ -115,12 +115,12 @@ void main() {
       test('flavor validates without a pre-existing icon set', () async {
         await d.dir('fli_test', [
           d.dir('macos/Runner/Assets.xcassets'),
-          d.file('app_icon.png', testImageFile.readAsBytesSync()),
+          d.file('master-light-1024.png', testImageFile.readAsBytesSync()),
         ]).create();
         await expectLater(
           d.dir('fli_test', [
             d.dir('macos/Runner/Assets.xcassets'),
-            d.file('app_icon.png', anything),
+            d.file('master-light-1024.png', anything),
           ]).validate(),
           completes,
         );
@@ -146,14 +146,14 @@ void main() {
     final assetPath = path.join(Directory.current.path, 'test', 'assets');
 
     setUp(() async {
-      final imageFile = File(path.join(assetPath, 'app_icon.png'));
+      final imageFile = File(path.join(assetPath, 'master-light-1024.png'));
       expect(imageFile.existsSync(), isTrue);
       await d.dir('fli_test', [
         d.dir('macos/Runner/Assets.xcassets/AppIcon.appiconset', [
           d.file('Contents.json', templates.macOSContentsJsonFile),
         ]),
         d.file('launcher_icons.yaml', templates.liConfigTemplate),
-        d.file('app_icon.png', imageFile.readAsBytesSync()),
+        d.file('master-light-1024.png', imageFile.readAsBytesSync()),
       ]).create();
       prefixPath = path.join(d.sandbox, 'fli_test');
       config = Config.loadConfigFromPath(
@@ -202,13 +202,13 @@ void main() {
     test(
         'should generate flavor icons into AppIcon-<flavor>.appiconset (fluttercommunity/flutter_launcher_icons#638)',
         () async {
-      final imageFile = File(path.join(assetPath, 'app_icon.png'));
+      final imageFile = File(path.join(assetPath, 'master-light-1024.png'));
       await d.dir('fli_test_flavor', [
         d.dir('macos/Runner/Assets.xcassets/AppIcon-staging.appiconset', [
           d.file('Contents.json', templates.macOSContentsJsonFile),
         ]),
         d.file('launcher_icons.yaml', templates.liConfigTemplate),
-        d.file('app_icon.png', imageFile.readAsBytesSync()),
+        d.file('master-light-1024.png', imageFile.readAsBytesSync()),
       ]).create();
       final flavorPrefix = path.join(d.sandbox, 'fli_test_flavor');
       final flavorConfig = Config.loadConfigFromPath(
@@ -251,11 +251,11 @@ void main() {
       );
     });
     test('flavor bootstraps a missing icon set from scratch', () async {
-      final imageFile = File(path.join(assetPath, 'app_icon.png'));
+      final imageFile = File(path.join(assetPath, 'master-light-1024.png'));
       await d.dir('fli_test_fresh', [
         d.dir('macos/Runner/Assets.xcassets'),
         d.file('launcher_icons.yaml', templates.liConfigTemplate),
-        d.file('app_icon.png', imageFile.readAsBytesSync()),
+        d.file('master-light-1024.png', imageFile.readAsBytesSync()),
       ]).create();
       final freshPrefix = path.join(d.sandbox, 'fli_test_fresh');
       final freshConfig = Config.loadConfigFromPath(
@@ -288,16 +288,16 @@ void main() {
     test(
         'rounded config produces transparent corners end-to-end (fluttercommunity/flutter_launcher_icons#463)',
         () async {
-      final imageFile = File(path.join(assetPath, 'app_icon.png'));
+      final imageFile = File(path.join(assetPath, 'master-light-1024.png'));
       await d.dir('fli_test_rounded', [
         d.dir('macos/Runner/Assets.xcassets/AppIcon.appiconset', [
           d.file('Contents.json', templates.macOSContentsJsonFile),
         ]),
-        d.file('app_icon.png', imageFile.readAsBytesSync()),
+        d.file('master-light-1024.png', imageFile.readAsBytesSync()),
       ]).create();
       final roundedPrefix = path.join(d.sandbox, 'fli_test_rounded');
       const roundedConfig = Config(
-        imagePath: 'app_icon.png',
+        imagePath: 'master-light-1024.png',
         macOSConfig: MacOSConfig(generate: true, roundedCorners: true),
       );
       final roundedContext = IconGeneratorContext(

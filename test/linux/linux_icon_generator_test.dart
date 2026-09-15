@@ -52,7 +52,7 @@ void main() {
       await iconFile.parent.create(recursive: true);
       // Real decodable bytes: the generator renders PNGs from the source.
       await iconFile.writeAsBytes(
-        File('${Directory.current.path}/test/assets/app_icon.png')
+        File('${Directory.current.path}/test/assets/master-light-1024.png')
             .readAsBytesSync(),
       );
 
@@ -228,7 +228,7 @@ flutter:
         await assetsDir.create(recursive: true);
         final iconFile = File('${tempDir.path}/assets/images/icon.png');
         await iconFile.writeAsBytes(
-          File('${Directory.current.path}/test/assets/app_icon.png')
+          File('${Directory.current.path}/test/assets/master-light-1024.png')
               .readAsBytesSync(),
         );
       });
@@ -415,7 +415,7 @@ static void my_application_activate(GApplication* application) {
         await iconsDir.create(recursive: true);
         final customIconFile = File('${tempDir.path}/assets/icons/custom.png');
         await customIconFile.writeAsBytes(
-          File('${Directory.current.path}/test/assets/app_icon.png')
+          File('${Directory.current.path}/test/assets/master-light-1024.png')
               .readAsBytesSync(),
         );
 
