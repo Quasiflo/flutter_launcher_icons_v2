@@ -18,6 +18,11 @@ import 'package:launcher_icons/src/core/utils.dart' as utils;
 
 /// One derived fixture: [svg] master rendered at [width]x[height], encoded
 /// with [encode], asserting [gate] on the raster before writing.
+///
+/// [gate] is the test-contract check and only applies to `test/assets`
+/// fixtures. Example projects render like a normal user project would —
+/// no gates — so their art stays free to follow product rules
+/// (e.g. full-bleed squares) instead of test rules.
 class _Job {
   const _Job({
     required this.svg,
@@ -25,7 +30,7 @@ class _Job {
     required this.width,
     required this.height,
     required this.encode,
-    required this.gate,
+    this.gate,
   });
 
   final String svg;
@@ -33,7 +38,7 @@ class _Job {
   final int width;
   final int height;
   final List<int> Function(Image image) encode;
-  final void Function(Image image) gate;
+  final void Function(Image image)? gate;
 }
 
 void _opaque(Image image, String name) {
@@ -118,59 +123,47 @@ Future<void> main(List<String> arguments) async {
       encode: (image) => encodeWebP(image),
       gate: (image) => _opaque(image, 'adaptive-bg-1024.svg'),
     ),
-    _Job(
+    const _Job(
       svg: 'example/default_example/assets/images/icon-master-1024.svg',
       out: 'example/default_example/assets/images/icon-master-1024.png',
       width: 1024,
       height: 1024,
       encode: encodePng,
-      gate: (image) {
-        _expect(image.getPixel(0, 0).a == 0, 'corner must be transparent');
-      },
     ),
-    _Job(
+    const _Job(
       svg: 'example/default_example/assets/images/icon-android-710x599.svg',
       out: 'example/default_example/assets/images/icon-android-710x599.png',
       width: 710,
       height: 599,
       encode: encodePng,
-      gate: (image) => _opaque(image, 'icon-android-710x599.svg'),
     ),
-    _Job(
+    const _Job(
       svg: 'example/default_example/assets/images/icon-ios-710x599.svg',
       out: 'example/default_example/assets/images/icon-ios-710x599.png',
       width: 710,
       height: 599,
       encode: encodePng,
-      gate: (image) => _opaque(image, 'icon-ios-710x599.svg'),
     ),
-    _Job(
+    const _Job(
       svg: 'example/default_example/assets/images/icon-foreground-432.svg',
       out: 'example/default_example/assets/images/icon-foreground-432.png',
       width: 432,
       height: 432,
       encode: encodePng,
-      gate: (image) {
-        _expect(image.numChannels == 4, 'foreground must keep alpha');
-      },
     ),
-    _Job(
+    const _Job(
       svg: 'example/default_example/assets/images/icon-monochrome-432.svg',
       out: 'example/default_example/assets/images/icon-monochrome-432.png',
       width: 432,
       height: 432,
       encode: encodePng,
-      gate: (image) {
-        _expect(image.numChannels == 4, 'monochrome must keep alpha');
-      },
     ),
-    _Job(
+    const _Job(
       svg: 'example/default_example/assets/images/bg-christmas-620x420.svg',
       out: 'example/default_example/assets/images/bg-christmas-620x420.png',
       width: 620,
       height: 420,
       encode: encodePng,
-      gate: (image) => _opaque(image, 'bg-christmas-620x420.svg'),
     ),
   ];
 
@@ -180,7 +173,7 @@ Future<void> main(List<String> arguments) async {
       width: job.width,
       height: job.height,
     );
-    job.gate(image);
+    job.gate?.call(image);
     if (job.out.isEmpty) {
       continue; // gate-only job: no derived file to write.
     }
