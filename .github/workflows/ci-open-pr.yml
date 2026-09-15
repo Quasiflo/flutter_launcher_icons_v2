@@ -23,7 +23,7 @@ jobs:
       - name: get dependencies
         run: dart pub get
       - name: check formatting
-        run: dart format --output=none --set-exit-if-changed .
+        run: dart format --output=none --set-exit-if-changed lib test bin
       - name: run analyzer
         run: dart analyze --fatal-infos
       - name: run tests

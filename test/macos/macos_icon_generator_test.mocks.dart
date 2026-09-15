@@ -157,6 +157,13 @@ class MockConfig extends _i1.Mock implements _i3.Config {
       ) as bool);
 
   @override
+  bool get hasMacOSLiquidGlassIconConfig => (super.noSuchMethod(
+        Invocation.getter(#hasMacOSLiquidGlassIconConfig),
+        returnValue: false,
+        returnValueForMissingStub: false,
+      ) as bool);
+
+  @override
   Map<String, dynamic> toJson() => (super.noSuchMethod(
         Invocation.method(
           #toJson,
