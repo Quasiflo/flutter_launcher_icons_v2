@@ -130,9 +130,7 @@ Future<void> generateIconsFor({
       }
     }
   } catch (e, st) {
-    // TODO(RatakondalaArun): better error handling
-    // stacktrace should only print when verbose is turned on
-    // else a normal help line
+    // Stacktrace only prints when verbose is turned on, else a normal help line.
     logger
       ..error(e.toString())
       ..verbose(st);

@@ -105,9 +105,8 @@ void main() {
         defaultsTo: '.',
       );
 
-    // NOTE: these tests never change the process working directory (see the
-    // test-isolation note in TODO.md §9). Every fixture lives in an absolute
-    // test_descriptor sandbox passed via `-p`.
+    // NOTE: these tests never change the process working directory. Every
+    // fixture lives in an absolute test_descriptor sandbox passed via `-p`.
     Future<String> createCase(
       String name,
       List<d.Descriptor> contents,
