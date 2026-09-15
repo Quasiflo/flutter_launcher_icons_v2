@@ -56,6 +56,12 @@ class MockConfig extends _i1.Mock implements _i3.Config {
   }
 
   @override
+  bool get svgRasterizePerSize => (super.noSuchMethod(
+        Invocation.getter(#svgRasterizePerSize),
+        returnValue: false,
+      ) as bool);
+
+  @override
   bool get hasAndroidAdaptiveConfig => (super.noSuchMethod(
         Invocation.getter(#hasAndroidAdaptiveConfig),
         returnValue: false,

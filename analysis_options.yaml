@@ -1,14 +1,16 @@
 analyzer:
   language:
-    # strict-casts: true 19 issues found
+    strict-casts: true
     strict-inference: true
     strict-raw-types: true
 
   errors:
-    # treat missing required parameters as a warning (not a hint)
-    missing_required_param: warning
-    # treat missing returns as a warning (not a hint)
-    missing_return: warning
+    missing_required_param: error
+    missing_return: error
+    inference_failure_on_function_invocation: error
+    parameter_assignments: warning
+    record_literal_one_positional_no_trailing_comma: error
+    equal_keys_in_map: error
   exclude:
     - "example/**"
     - "**/*.g.dart"
